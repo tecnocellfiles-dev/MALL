@@ -3,116 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FamilyCell | Distribuidor Autorizado</title>
+    <title>FamilyCell | Luxury Mall Tech</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 </head>
 <body class="store-page">
 
     <nav class="nav-minimal">
         <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">LUXURY<span>MALL</span></a></div>
         <div class="nav-right">
-            <button class="cart-trigger" onclick="toggleCart()">BAG (<span id="cart-count">0</span>)</button>
+            <button class="cart-trigger" onclick="toggleCart()">BOLSA (<span id="cart-count">0</span>)</button>
         </div>
     </nav>
 
     <header class="store-hero tech-header">
         <div class="overlay"></div>
         <div class="header-content">
-            <span class="tag">FamilyCell Technology</span>
-            <h1>PREMIUM <br>LAPTOPS</h1>
-            <p>Hardware seleccionado con garantía extendida y soporte técnico profesional.</p>
+            <span class="tag">FamilyCell Premium Technology</span>
+            <h1>SISTEMAS <br>AVANZADOS</h1>
+            <p>Hardware de alto rendimiento con garantía directa.</p>
         </div>
     </header>
 
-<section class="product-showcase">
-    <h2 class="section-title">EQUIPOS DISPONIBLES</h2>
-    <div class="product-grid-detail">
-        
-        <div class="product-card-premium">
-            <div class="product-img-box" onclick="openSpecs('hp')">
-                <img src="https://www.intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg" alt="HP">
+    <section class="product-showcase">
+        <h2 class="section-title">EQUIPOS EN STOCK</h2>
+        <div id="product-grid" class="product-grid-detail">
             </div>
-            <div class="product-info">
-                <h3>HP Elite Book 15"</h3>
-                <span class="price">₡235,000</span>
-                <button class="btn-add" onclick="openSpecs('hp')">VER DETALLES</button>
-            </div>
-        </div>
-
-        <div class="product-card-premium">
-            <div class="product-img-box" onclick="openSpecs('msi')">
-                <img src="https://www.intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg" alt="MSI">
-            </div>
-            <div class="product-info">
-                <h3>MSI Cyborg Gaming Z</h3>
-                <span class="price">₡795,000</span>
-                <button class="btn-add" onclick="openSpecs('msi')">VER DETALLES</button>
-            </div>
-        </div>
-
-    </div>
-</section>
-
-<div id="specs-modal" class="modal-overlay">
-    <div class="modal-content">
-        <button class="close-modal" onclick="closeSpecs()">&times;</button>
-        <div id="modal-body"></div>
-    </div>
-</div>
-
-            <div class="product-card-premium">
-                <div class="product-img-box">
-                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/10/ASUS-X1404VA.jpg" alt="Asus">
-                </div>
-                <div class="product-info">
-                    <h3>ASUS Pro-Stream 14</h3>
-                    <p>Intel Core i7 | 12GB RAM | 512GB SSD NVMe</p>
-                    <span class="price">₡385,000</span>
-                    <button class="btn-add" onclick="addToCart('ASUS Pro-Stream 14', 385000)">AÑADIR AL CARRITO</button>
-                </div>
-            </div>
-
-            <div class="product-card-premium">
-                <div class="product-img-box">
-                    <img src="https://www.intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg" alt="MSI">
-                </div>
-                <div class="product-info">
-                    <h3>MSI Cyborg Gaming Z</h3>
-                    <p>RTX 4060 | Core i7 | 16GB RAM | 144Hz Screen</p>
-                    <span class="price">₡795,000</span>
-                    <button class="btn-add" onclick="addToCart('MSI Cyborg Gaming Z', 795000)">AÑADIR AL CARRITO</button>
-                </div>
-            </div>
-
-            <div class="product-card-premium">
-                <div class="product-img-box">
-                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/05/DELL-INSPIRON-3535.jpg" alt="Dell">
-                </div>
-                <div class="product-info">
-                    <h3>Dell Inspiron Ultra</h3>
-                    <p>Ryzen 5 | 8GB RAM | 512GB SSD | Office Ready</p>
-                    <span class="price">₡295,000</span>
-                    <button class="btn-add" onclick="addToCart('Dell Inspiron Ultra', 295000)">AÑADIR AL CARRITO</button>
-                </div>
-            </div>
-        </div>
     </section>
 
     <aside id="side-cart" class="cart-panel">
         <div class="cart-header">
             <h2>TU PEDIDO</h2>
-            <button class="close-btn" onclick="toggleCart()">CERRAR</button>
+            <button class="close-btn" onclick="toggleCart()">✕</button>
         </div>
-        <div id="cart-items" class="cart-content"></div>
+        <div id="cart-items" class="cart-content scrollable"></div>
         <div class="cart-footer">
             <div class="total-row">
-                <span>TOTAL ESTIMADO</span>
+                <span>TOTAL</span>
                 <span>₡<span id="cart-total">0</span></span>
             </div>
-            <button class="checkout-btn" onclick="sendOrder()">ENVIAR PEDIDO POR WHATSAPP</button>
+            <button class="checkout-btn" onclick="sendOrder()">COMPRAR POR WHATSAPP</button>
         </div>
     </aside>
+
+    <div id="specs-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeSpecs()">✕</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 
     <script src="js/main.js"></script>
 </body>
