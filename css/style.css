@@ -1,31 +1,36 @@
-:root { --accent: #00f2ff; --bg: #000; }
+:root { --accent: #00f2ff; --bg: #000; --card: #0a0a0a; }
 body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
 
 /* Navegación */
-.nav-minimal { display: flex; justify-content: space-between; padding: 20px 5%; align-items: center; position: fixed; width: 90%; z-index: 1000; background: rgba(0,0,0,0.9); }
-.logo { font-family: 'Syncopate'; font-weight: 700; letter-spacing: 5px; }
+.nav-minimal { display: flex; justify-content: space-between; padding: 20px 5%; align-items: center; position: fixed; width: 90%; z-index: 1000; background: rgba(0,0,0,0.9); border-bottom: 1px solid #111; }
+.logo { font-family: 'Syncopate'; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; }
 .logo span { color: var(--accent); }
+.cart-trigger { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; cursor: pointer; font-weight: 700; }
 
-/* Secciones Home */
-.main-container { height: 100vh; display: flex; flex-direction: column; }
-.store-section { position: relative; flex: 1; display: flex; align-items: center; padding: 0 10%; overflow: hidden; }
-.section-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; filter: brightness(0.3); z-index:1; }
-.content { position: relative; z-index: 2; }
+/* Header */
+.store-hero { height: 40vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(to bottom, #111, #000); padding-top: 80px; }
+.header-content h1 { font-family: 'Syncopate'; font-size: clamp(1.5rem, 5vw, 3rem); margin: 10px 0; }
+.tag { color: var(--accent); letter-spacing: 3px; font-size: 0.8rem; text-transform: uppercase; }
 
-/* Grid Tienda */
+/* Grid de Productos */
 .product-grid-detail { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 50px 5%; }
-.product-card-premium { background: #080808; border: 1px solid #1a1a1a; border-radius: 12px; padding: 20px; text-align: center; transition: 0.3s; }
-.product-card-premium:hover { border-color: var(--accent); transform: translateY(-5px); }
+.product-card-premium { background: var(--card); border: 1px solid #1a1a1a; border-radius: 12px; padding: 25px; text-align: center; transition: 0.3s; }
+.product-card-premium:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,242,255,0.1); }
 
-.product-img-box { height: 180px; display: flex; align-items: center; justify-content: center; background: #111; border-radius: 8px; margin-bottom: 15px; }
+.product-img-box { height: 180px; display: flex; align-items: center; justify-content: center; background: #111; border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
 .product-img-box img { max-width: 90%; max-height: 90%; object-fit: contain; }
 
-.price { color: var(--accent); font-size: 1.5rem; font-weight: 900; display: block; margin: 10px 0; }
-.btn-add { background: var(--accent); color: #000; border: none; width: 100%; padding: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+.price { color: var(--accent); font-size: 1.6rem; font-weight: 900; display: block; margin: 15px 0; }
+.btn-add { background: var(--accent); color: #000; border: none; width: 100%; padding: 14px; font-weight: 900; cursor: pointer; text-transform: uppercase; border-radius: 4px; transition: 0.2s; }
+.btn-add:hover { background: #fff; box-shadow: 0 0 15px var(--accent); }
 
-/* Modal y Carrito */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 9999; }
-.modal-content { background: #000; border: 1px solid var(--accent); padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; }
-.cart-panel { position: fixed; right: -400px; top: 0; width: 320px; height: 100%; background: #050505; transition: 0.4s; z-index: 5000; padding: 20px; }
+/* Carrito y Modal */
+.cart-panel { position: fixed; right: -400px; top: 0; width: 320px; height: 100%; background: #050505; transition: 0.4s; z-index: 5000; padding: 25px; border-left: 1px solid #1a1a1a; }
 .cart-panel.active { right: 0; }
-.checkout-btn { background: #fff; color: #000; width: 100%; padding: 15px; font-weight: 900; margin-top: 20px; border: none; cursor: pointer; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 9999; }
+.modal-content { background: #000; border: 1px solid var(--accent); padding: 35px; border-radius: 15px; width: 90%; max-width: 420px; text-align: center; position: relative; }
+.close-modal, .close-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+
+.specs-list { list-style: none; padding: 0; margin: 20px 0; text-align: left; }
+.specs-list li { border-bottom: 1px solid #1a1a1a; padding: 10px 0; display: flex; justify-content: space-between; font-size: 0.9rem; }
+.specs-list span { color: var(--accent); }

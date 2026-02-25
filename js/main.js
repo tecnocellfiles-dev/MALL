@@ -2,12 +2,14 @@ let cart = [];
 let total = 0;
 const allProducts = {};
 
-// URLs corregidas de Intelec
+// Imágenes reales de respaldo por si fallan las de Intelec
+const backupImg = 'https://images.unsplash.com/photo-1517336712468-07a5f2297838?q=80&w=400&auto=format&fit=crop';
+
 const baseModels = [
-    { brand: 'HP EliteBook Pro', price: 235000, img: 'https://intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg' },
-    { brand: 'ASUS Vivobook Ultra', price: 385000, img: 'https://intelec.co.cr/wp-content/uploads/2023/10/ASUS-X1404VA.jpg' },
-    { brand: 'MSI Cyborg Gamer', price: 795000, img: 'https://intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg' },
-    { brand: 'Dell Inspiron 3535', price: 295000, img: 'https://intelec.co.cr/wp-content/uploads/2023/05/DELL-INSPIRON-3535.jpg' }
+    { brand: 'HP EliteBook G9', price: 235000, img: 'https://intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg', cpu: 'i3-N305' },
+    { brand: 'ASUS Vivobook 15', price: 385000, img: 'https://intelec.co.cr/wp-content/uploads/2023/10/ASUS-X1404VA.jpg', cpu: 'i7-1355U' },
+    { brand: 'MSI Cyborg Gamer', price: 795000, img: 'https://intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg', cpu: 'RTX 4060' },
+    { brand: 'Dell Inspiron 3535', price: 295000, img: 'https://intelec.co.cr/wp-content/uploads/2023/05/DELL-INSPIRON-3535.jpg', cpu: 'Ryzen 5' }
 ];
 
 function initStore() {
@@ -18,19 +20,19 @@ function initStore() {
     for (let i = 1; i <= 59; i++) {
         const base = baseModels[i % baseModels.length];
         const id = `lap-${i}`;
-        const finalPrice = base.price + (i * 1200);
+        const finalPrice = base.price + (i * 1150);
         
         allProducts[id] = {
             title: `${base.brand} Ver. ${i + 200}`,
             img: base.img,
             price: finalPrice,
-            specs: [['RAM', '16GB DDR4'], ['SSD', '512GB'], ['Garantía', '12 Meses']]
+            specs: [['RAM', i % 2 === 0 ? '16GB' : '8GB'], ['SSD', '512GB NVMe'], ['CPU', base.cpu], ['Garantía', '12 Meses']]
         };
 
         grid.innerHTML += `
             <div class="product-card-premium">
                 <div class="product-img-box" onclick="openSpecs('${id}')">
-                    <img src="${base.img}" onerror="this.src='https://via.placeholder.com/300x200?text=Laptop+Premium'">
+                    <img src="${base.img}" onerror="this.src='${backupImg}'">
                 </div>
                 <h3>${allProducts[id].title}</h3>
                 <span class="price">₡${finalPrice.toLocaleString('es-CR')}</span>
@@ -44,14 +46,12 @@ function openSpecs(id) {
     const item = allProducts[id];
     const body = document.getElementById('modal-body');
     body.innerHTML = `
-        <img src="${item.img}" style="width:120px; margin-bottom:15px">
-        <h2 style="color:var(--accent)">${item.title}</h2>
-        <ul style="list-style:none; padding:0; text-align:left; margin:20px 0">
-            ${item.specs.map(s => `<li style="border-bottom:1px solid #222; padding:8px 0; display:flex; justify-content:space-between">
-                ${s[0]}: <span style="color:var(--accent)">${s[1]}</span>
-            </li>`).join('')}
+        <img src="${item.img}" style="width:130px; margin-bottom:15px" onerror="this.src='${backupImg}'">
+        <h2 style="color:var(--accent); font-family:Syncopate; font-size:1.1rem">${item.title}</h2>
+        <ul class="specs-list">
+            ${item.specs.map(s => `<li>${s[0]}: <span>${s[1]}</span></li>`).join('')}
         </ul>
-        <button class="btn-add" onclick="addToCart('${item.title}', ${item.price}); closeSpecs();">AÑADIR A LA BOLSA</button>
+        <button class="btn-add" onclick="addToCart('${item.title}', ${item.price}); closeSpecs();">AÑADIR A BOLSA</button>
     `;
     document.getElementById('specs-modal').style.display = 'flex';
 }
@@ -69,20 +69,19 @@ function addToCart(name, price) {
 function updateUI() {
     document.getElementById('cart-count').innerText = cart.length;
     document.getElementById('cart-total').innerText = total.toLocaleString('es-CR');
-    document.getElementById('cart-items').innerHTML = cart.map(i => `
-        <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #222">
-            <span style="font-size:0.8rem">${i.name}</span>
-            <span style="color:var(--accent)">₡${i.price.toLocaleString('es-CR')}</span>
+    document.getElementById('cart-items').innerHTML = cart.map((i, index) => `
+        <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #111; font-size:0.8rem">
+            <span>${i.name}</span><span style="color:var(--accent)">₡${i.price.toLocaleString('es-CR')}</span>
         </div>
     `).join('');
 }
 
 function sendOrder() {
-    if(cart.length === 0) return alert("Bolsa vacía");
-    let msg = "*PEDIDO LUXURY MALL*%0A";
-    cart.forEach(i => msg += `- ${i.name} (₡${i.price.toLocaleString()})%0A`);
-    msg += `%0A*TOTAL: ₡${total.toLocaleString()}*`;
-    window.open(`https://wa.me/506XXXXXXXX?text=${msg}`, '_blank'); // Pon tu número aquí
+    if(cart.length === 0) return alert("Tu bolsa está vacía");
+    let msg = "*NUEVO PEDIDO - LUXURY MALL*%0A%0A";
+    cart.forEach(i => msg += `- ${i.name} (₡${i.price.toLocaleString('es-CR')})%0A`);
+    msg += `%0A*TOTAL FINAL: ₡${total.toLocaleString('es-CR')}*`;
+    window.open(`https://wa.me/506XXXXXXXX?text=${msg}`, '_blank'); // Reemplaza X con tu número
 }
 
 window.onload = initStore;
