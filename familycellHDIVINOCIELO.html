@@ -1,63 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divino Cielo | Tech & Boutique</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body class="store-page">
-    <div class="grain"></div>
-    <div class="custom-cursor"></div>
+!DOCTYPE html
+html lang=es
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    titleDivino Cielo  Concept Storetitle
+    link rel=stylesheet href=cssstyle.css
+    link href=httpsfonts.googleapis.comcss2family=Interwght@200;400;700&family=Syncopatewght@400;700&display=swap rel=stylesheet
+head
+body
+    div class=graindiv
+    div class=cursor-dotdiv
+    div class=cursor-outlinediv
 
-    <nav class="nav-minimal">
-        <a href="index.html" class="logo" style="text-decoration:none; color:inherit">LUXURY<span>MALL</span></a>
-        <div class="nav-right">
-            <button class="cart-trigger" onclick="toggleCart()" style="background:none; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:10px 20px; font-family:Syncopate; font-size:0.6rem; letter-spacing:2px">
-                BAG [<span id="cart-count">0</span>]
-            </button>
-        </div>
-    </nav>
+    nav class=nav-minimal
+        a href=index.html class=logo style=text-decorationnone; color#fffLUXURYspanMALLspana
+        button onclick=toggleCart() style=backgroundnone; bordernone; color#fff; font-familySyncopate; font-size0.7remBOLSA [span id=cart-count0span]button
+    nav
 
-    <header class="store-hero-v2">
-        <div class="hero-titles">
-            <h1 class="reveal-text">DIVINO</h1>
-            <h1 class="reveal-text outline-text">CIELO</h1>
-        </div>
-        <p class="hero-description">LA UNIÓN PERFECTA ENTRE LA ALTA COSTURA Y EL HARDWARE DE ÉLITE.</p>
-    </header>
+    header style=padding 150px 5% 50px; text-aligncenter
+        h1 style=font-familySyncopate; font-size5rem; line-height0.8CONCEPTbrspan class=outline-thinSTOREspanh1
+        p style=margin-top30px; opacity0.5; letter-spacing5px; font-size0.7remTECH • FASHION • EXCLUSIVITYp
+    header
 
-    <section class="product-showcase">
-        <div class="inventory-header">
-            <span>DROP 01: TECH-WEAR & SYSTEMS</span>
-            <div class="h-line"></div>
-        </div>
-        <div id="product-grid" class="product-grid-detail"></div>
-    </section>
+    div id=product-grid class=product-grid-detaildiv
 
-    <aside id="side-cart" class="cart-panel">
-        <div class="cart-header">
-            <h3 style="font-family:Syncopate; letter-spacing:5px">BAG</h3>
-            <button onclick="toggleCart()" style="background:none; border:none; color:#fff; cursor:pointer">CLOSE</button>
-        </div>
-        <div id="cart-items"></div>
-        <div class="cart-footer" style="margin-top:40px; border-top:1px solid #111; padding-top:20px">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px">
-                <span style="opacity:0.5">TOTAL</span>
-                <span id="cart-total" style="color:var(--accent); font-weight:900">₡0</span>
-            </div>
-            <button class="checkout-btn" onclick="sendToWhatsApp()">RESERVAR VÍA WHATSAPP</button>
-        </div>
-    </aside>
+    aside id=side-cart class=cart-panel
+        h2 style=font-familySyncopate; margin-bottom30pxTU BOLSAh2
+        div id=cart-itemsdiv
+        div style=margin-top40px
+            h3TOTAL ₡span id=cart-total0spanh3
+            button class=btn-buy onclick=sendToWhatsApp()COMPRAR POR WHATSAPPbutton
+            button class=btn-buy style=backgroundnone; color#fff; border1px solid #333 onclick=toggleCart()CERRARbutton
+        div
+    aside
 
-    <div id="specs-modal" class="modal-blur">
-        <div class="modal-card">
-            <button onclick="closeSpecs()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer">✕</button>
-            <div id="modal-body"></div>
-        </div>
-    </div>
-
-    <script src="js/main.js"></script>
-</body>
-</html>
+    script src=jsmain.jsscript
+body
+html
