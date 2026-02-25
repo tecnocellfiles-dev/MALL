@@ -1,87 +1,74 @@
-const cart = [];
-
-// Base de datos mixta (Humana y variada)
 const inventory = [
-    { name: "Saco 'Cielo' Silk-Line", price: 245000, cat: "boutique", img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000" },
-    { name: "MacBook Pro M3 Divino Edition", price: 1850000, cat: "tech", img: "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg" },
-    { name: "Vestido Gala Nightfall", price: 320000, cat: "boutique", img: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=1000" },
-    { name: "RTX 4090 Liquid Core", price: 980000, cat: "tech", img: "https://m.media-amazon.com/images/I/71Y7p9+tX6L._AC_SL1500_.jpg" },
-    { name: "Reloj 'Cell' Minimalist", price: 125000, cat: "boutique", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000" }
+    // ROPA DIVINO CIELO
+    { id: 1, name: "Luxury Blazer 'Cielo'", price: 285000, img: "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800", cat: "BOUTIQUE" },
+    // TECH DIVINO CIELO
+    { id: 2, name: "MacBook Pro M3 Max", price: 1950000, img: "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg", cat: "SYSTEMS" },
+    // LABS FAMILYCELL
+    { id: 3, name: "NVIDIA RTX 4090 FE", price: 1200000, img: "https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg", cat: "COMPONENTS" },
+    { id: 4, name: "Reloj Minimal 'Cell'", price: 85000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800", cat: "ACCESSORIES" }
 ];
 
-// REPARACIÓN CURSOR FLUIDO
+let cart = [];
+
+// Cursor Reparado
 const dot = document.querySelector('.cursor-dot');
 const outline = document.querySelector('.cursor-outline');
 
 window.addEventListener('mousemove', (e) => {
-    const x = e.clientX;
-    const y = e.clientY;
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
     
-    dot.style.opacity = "1";
-    outline.style.opacity = "1";
-    
-    dot.style.transform = `translate(${x - 3}px, ${y - 3}px)`;
-    // El outline tiene un pequeño delay para efecto de fluidez
-    outline.animate({
-        transform: `translate(${x - 15}px, ${y - 15}px)`
-    }, { duration: 500, fill: "forwards" });
+    // El outline sigue al punto con suavidad
+    setTimeout(() => {
+        outline.style.left = e.clientX + 'px';
+        outline.style.top = e.clientY + 'px';
+    }, 50);
 });
 
-// BUILD STORE
-window.addEventListener('DOMContentLoaded', () => {
+// Construir Tienda
+function buildStore() {
     const grid = document.getElementById('product-grid');
-    if(grid) {
-        inventory.forEach((item, i) => {
-            grid.innerHTML += `
-                <div class="product-card-premium" style="animation: fadeInUp 0.8s ease ${i*0.1}s forwards; opacity:0">
-                    <div class="product-img-box" style="height:250px; overflow:hidden; margin-bottom:20px; border-radius:10px">
-                        <img src="${item.img}" style="width:100%; height:100%; object-fit:cover">
-                    </div>
-                    <span style="font-size:0.6rem; opacity:0.5; letter-spacing:2px">${item.cat.toUpperCase()}</span>
-                    <h3 style="font-family:Syncopate; font-size:0.9rem; margin:10px 0">${item.name}</h3>
-                    <p class="price-tag">₡${item.price.toLocaleString()}</p>
-                    <button class="btn-buy" onclick="addToCart('${item.name}', ${item.price})">AÑADIR A LA BOLSA</button>
-                </div>
-            `;
-        });
-    }
-    
-    // Quitar Loader
-    setTimeout(() => {
-        document.getElementById('loader').style.opacity = "0";
-        setTimeout(() => document.getElementById('loader').style.display = "none", 1000);
-    }, 1000);
-});
+    if(!grid) return;
+
+    inventory.forEach(p => {
+        grid.innerHTML += `
+            <div class="product-card">
+                <img src="${p.img}" class="product-img">
+                <span style="font-size:0.6rem; letter-spacing:3px; color:var(--accent)">${p.cat}</span>
+                <h3 style="font-family:Syncopate; margin:15px 0; font-size:0.9rem">${p.name}</h3>
+                <p style="font-size:1.5rem; font-weight:200">₡${p.price.toLocaleString()}</p>
+                <button onclick="addToCart('${p.name}', ${p.price})" style="margin-top:30px; background:var(--accent); color:#000; border:none; padding:15px; font-family:Syncopate; font-size:0.6rem; font-weight:700; cursor:pointer">
+                    RESERVAR PIEZA
+                </button>
+            </div>
+        `;
+    });
+}
 
 function addToCart(name, price) {
     cart.push({name, price});
-    const count = document.getElementById('cart-count');
-    if(count) count.innerText = cart.length;
-    updateCartUI();
+    updateUI();
     document.getElementById('side-cart').classList.add('active');
 }
 
-function updateCartUI() {
-    const itemsCont = document.getElementById('cart-items');
-    const totalCont = document.getElementById('cart-total');
-    let total = 0;
+function updateUI() {
+    const items = document.getElementById('cart-items');
+    const total = document.getElementById('cart-total');
+    let sum = 0;
     
-    itemsCont.innerHTML = cart.map(item => {
-        total += item.price;
-        return `<div style="margin-bottom:15px; border-bottom:1px solid #111; padding-bottom:10px">
-            <p style="font-size:0.8rem">${item.name}</p>
-            <p style="color:var(--accent)">₡${item.price.toLocaleString()}</p>
+    items.innerHTML = cart.map(i => {
+        sum += i.price;
+        return `<div style="padding:15px 0; border-bottom:1px solid #222">
+            <p style="font-size:0.8rem">${i.name}</p>
+            <p style="color:var(--accent)">₡${i.price.toLocaleString()}</p>
         </div>`;
     }).join('');
     
-    totalCont.innerText = total.toLocaleString();
+    total.innerText = sum.toLocaleString();
 }
 
 function toggleCart() {
     document.getElementById('side-cart').classList.toggle('active');
 }
 
-function sendToWhatsApp() {
-    const msg = `Hola Divino Cielo, deseo ordenar:\n${cart.map(i => `- ${i.name}`).join('\n')}\nTotal: ₡${document.getElementById('cart-total').innerText}`;
-    window.open(`https://wa.me/506XXXXXXXX?text=${encodeURIComponent(msg)}`);
-}
+document.addEventListener('DOMContentLoaded', buildStore);

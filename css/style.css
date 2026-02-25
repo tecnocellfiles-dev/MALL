@@ -12,76 +12,68 @@ body {
     color: var(--text); 
     font-family: 'Inter', sans-serif; 
     overflow-x: hidden; 
-    -webkit-font-smoothing: antialiased;
 }
 
-/* --- REPARACIÓN CURSOR --- */
-.cursor-dot, .cursor-outline {
-    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10000;
-    border-radius: 50%; opacity: 0; transition: opacity 0.3s ease;
-}
-.cursor-dot { width: 6px; height: 6px; background: var(--accent); }
-.cursor-outline {
-    width: 30px; height: 30px; border: 1px solid var(--accent);
-    transition: transform 0.15s ease-out, opacity 0.3s ease;
-}
-
-/* --- GRAIN EFECTO --- */
+/* EFECTO CINE (GRAIN) */
 .grain {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Noise_Texture.png');
-    opacity: 0.03; pointer-events: none; z-index: 999;
+    opacity: 0.02; pointer-events: none; z-index: 5000;
 }
 
-/* --- NAVEGACIÓN --- */
+/* REPARACIÓN CURSOR */
+.cursor-dot {
+    position: fixed; width: 6px; height: 6px; background: var(--accent);
+    border-radius: 50%; pointer-events: none; z-index: 10001; transform: translate(-50%, -50%);
+}
+.cursor-outline {
+    position: fixed; width: 30px; height: 30px; border: 1px solid var(--accent);
+    border-radius: 50%; pointer-events: none; z-index: 10000; 
+    transition: transform 0.1s ease-out; transform: translate(-50%, -50%);
+}
+
+/* NAVEGACIÓN */
 .nav-minimal {
-    padding: 30px 5%; display: flex; justify-content: space-between;
-    position: fixed; width: 100%; z-index: 2000;
+    padding: 40px 5%; display: flex; justify-content: space-between;
+    position: fixed; width: 100%; z-index: 2000; mix-blend-mode: difference;
 }
-.logo { font-family: 'Syncopate'; letter-spacing: 5px; font-weight: 700; font-size: 1rem; }
+.logo { font-family: 'Syncopate'; letter-spacing: 5px; font-weight: 700; text-transform: uppercase; }
 
-/* --- SECCIONES HOME --- */
-.main-container { height: 100vh; display: flex; flex-direction: row; }
+/* HOME ANIMADO */
+.main-container { height: 100vh; display: flex; }
 .store-section {
     flex: 1; position: relative; overflow: hidden; display: flex; align-items: flex-end;
-    padding: 100px 5%; transition: flex 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 80px 5%; transition: flex 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.store-section:hover { flex: 1.5; cursor: pointer; }
+.store-section:hover { flex: 1.4; }
 .section-bg {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-size: cover; background-position: center; filter: brightness(0.4) grayscale(100%);
-    transition: 1.2s ease; z-index: 0;
+    background-size: cover; background-position: center; filter: brightness(0.3) grayscale(100%);
+    transition: 1.5s ease; z-index: 0;
 }
 .store-section:hover .section-bg { filter: brightness(0.6) grayscale(0%); transform: scale(1.05); }
 
-.content { position: relative; z-index: 1; max-width: 400px; }
-.section-desc { font-size: 0.8rem; opacity: 0.6; margin: 15px 0 25px; line-height: 1.6; }
-h2 { font-family: 'Syncopate'; font-size: 3.5rem; line-height: 1; }
+.content { position: relative; z-index: 1; pointer-events: none; }
+h2 { font-family: 'Syncopate'; font-size: 4rem; line-height: 0.9; margin: 20px 0; }
 .outline-thin { -webkit-text-stroke: 1px #fff; color: transparent; }
 
-/* --- TIENDA --- */
+/* PRODUCTOS */
 .product-grid-detail {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 40px; padding: 50px 5%;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2px; background: var(--border); padding: 2px;
 }
-.product-card-premium {
-    background: #0a0a0a; border: 1px solid var(--border);
-    padding: 30px; transition: 0.5s; position: relative;
+.product-card {
+    background: #000; padding: 60px 40px; transition: 0.4s;
+    display: flex; flex-direction: column;
 }
-.product-card-premium:hover { border-color: var(--accent); transform: translateY(-5px); }
-.price-tag { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+.product-card:hover { background: #080808; }
+.product-img { height: 250px; object-fit: contain; margin-bottom: 30px; filter: grayscale(1); transition: 0.6s; }
+.product-card:hover .product-img { filter: grayscale(0%); transform: scale(1.05); }
 
-.btn-buy {
-    background: var(--accent); color: #000; border: none;
-    padding: 12px 25px; font-family: 'Syncopate'; font-size: 0.6rem;
-    font-weight: 700; margin-top: 20px; width: 100%; transition: 0.3s;
-}
-.btn-buy:hover { letter-spacing: 2px; background: #fff; }
-
-/* MODAL & CART REPARADOS */
+/* CARRITO */
 .cart-panel {
     position: fixed; right: -100%; top: 0; width: 400px; height: 100vh;
-    background: #000; border-left: 1px solid var(--border);
-    z-index: 3000; padding: 40px; transition: 0.5s ease;
+    background: #000; border-left: 1px solid var(--border); z-index: 3000;
+    padding: 50px; transition: 0.6s cubic-bezier(0.8, 0, 0.2, 1);
 }
 .cart-panel.active { right: 0; }
