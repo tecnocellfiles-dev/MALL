@@ -1,62 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FamilyCell | Elite Tech</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FamilyCell Labs — Luxury Mall</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root { --gold: #00e5ff; --gold-light: #80f4ff; }
+    .store-page-eyebrow { color: var(--cyan); }
+    .store-number { color: var(--cyan); }
+    .product-price { color: var(--cyan); }
+    .whatsapp-btn { background: var(--cyan); }
+    .whatsapp-btn:hover { background: #80f4ff; box-shadow: 0 0 30px rgba(0,229,255,0.35); }
+    .cart-total-val { color: var(--cyan); }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.04); }
+    .store-cta, .store-card-number { color: var(--cyan); }
+    .product-card::before { background: linear-gradient(to right, transparent, var(--cyan), transparent); }
+    .cart-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  </style>
 </head>
-<body class="store-page">
-    <div class="custom-cursor"></div>
+<body data-store="family">
+  <div class="grain"></div>
+  <div id="cursor-dot" class="cursor-dot"></div>
+  <div id="cursor-ring" class="cursor-ring"></div>
 
-    <nav class="nav-minimal">
-        <a href="index.html" class="logo" style="text-decoration:none; color:inherit">LUXURY<span>MALL</span></a>
-        <div class="nav-right">
-            <button class="cart-trigger" onclick="toggleCart()">
-                BAG <span id="cart-count">0</span>
-            </button>
-        </div>
-    </nav>
-
-    <header class="store-hero-v2">
-        <div class="hero-titles">
-            <h1 class="reveal-text">SISTEMAS</h1>
-            <h1 class="reveal-text outline-text">MAESTROS</h1>
-        </div>
-        <p class="hero-description">Curaduría de hardware de alto rendimiento para la élite digital.</p>
-    </header>
-
-    <section class="product-showcase">
-        <div class="inventory-header">
-            <span>DISPONIBILIDAD: 59 UNIDADES</span>
-            <div class="h-line"></div>
-        </div>
-        <div id="product-grid" class="product-grid-detail"></div>
-    </section>
-
-    <aside id="side-cart" class="cart-panel">
-        <div class="cart-header">
-            <h3>ORDEN</h3>
-            <button onclick="toggleCart()" class="close-btn">CLOSE</button>
-        </div>
-        <div id="cart-items"></div>
-        <div class="cart-footer">
-            <div class="total-box">
-                <span>TOTAL ESTIMADO</span>
-                <span id="cart-total">₡0</span>
-            </div>
-            <button class="checkout-btn" onclick="sendToWhatsApp()">RESERVAR POR WHATSAPP</button>
-        </div>
-    </aside>
-
-    <div id="specs-modal" class="modal-blur">
-        <div class="modal-card">
-            <button onclick="closeSpecs()" class="close-btn-modal">✕</button>
-            <div id="modal-body"></div>
-        </div>
+  <nav>
+    <a href="index.html" class="nav-logo">LUXURY<em>MALL</em></a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link">← Volver</a>
+      <button class="cart-btn" onclick="toggleCart()">
+        BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span>
+      </button>
     </div>
+  </nav>
 
-    <script src="js/main.js"></script>
+  <header class="store-page-hero">
+    <div class="store-page-bg" style="background-image:url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1600')"></div>
+    <div class="store-page-content">
+      <p class="store-page-eyebrow">Next Gen Technology · Nº 02</p>
+      <h1 class="store-page-title" style="font-family:'Bebas Neue',sans-serif; letter-spacing:4px;">FamilyCell Labs</h1>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-type="all" onclick="filterStore('all','family')">Todo</button>
+    <button class="filter-btn" data-type="tech" onclick="filterStore('tech','family')">Tech</button>
+  </div>
+
+  <div class="products-grid" id="product-grid"></div>
+
+  <footer>
+    <div class="footer-logo">LUXURY<em>MALL</em></div>
+    <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
+  </footer>
+
+  <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
+  <aside id="cart-panel" class="cart-panel">
+    <div class="cart-panel-head">
+      <div class="cart-panel-title">Tu Pedido</div>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items-wrap" id="cart-items-wrap"></div>
+    <div class="cart-panel-foot">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-val">₡<span id="cart-total">0</span></span>
+      </div>
+      <button class="whatsapp-btn" onclick="sendWhatsApp()" style="color:#000;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        FINALIZAR PEDIDO
+      </button>
+    </div>
+  </aside>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
