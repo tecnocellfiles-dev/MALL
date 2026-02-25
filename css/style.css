@@ -1,150 +1,129 @@
-/* VARIABLES DE DISEÑO PROFESIONAL */
 :root {
     --accent: #00f2ff;
-    --accent-dark: #00a8b3;
-    --bg-dark: #050505;
-    --card-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --neon-glow: 0 0 15px rgba(0, 242, 255, 0.3);
+    --bg: #050505;
+    --text: #ffffff;
+    --glass: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; } /* Cursor personalizado */
 
 body {
-    background-color: var(--bg-dark);
-    color: #fff;
+    background: var(--bg);
+    color: var(--text);
     font-family: 'Inter', sans-serif;
-    line-height: 1.6;
     overflow-x: hidden;
 }
 
-/* NAVEGACIÓN LUXURY */
+/* --- LOADER --- */
+#loader {
+    position: fixed;
+    top:0; left:0; width:100%; height:100vh;
+    background: #000;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 1s cubic-bezier(1, 0, 0, 1);
+}
+.loader-line {
+    width: 100px; height: 1px;
+    background: var(--accent);
+    margin-top: 20px;
+    animation: grow 2s infinite;
+}
+@keyframes grow { 0% { width:0 } 100% { width:150px; opacity:0 } }
+
+/* --- CURSOR --- */
+.custom-cursor {
+    width: 20px; height: 20px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s, background 0.3s;
+}
+
+/* --- NAV --- */
 .nav-minimal {
+    padding: 40px 5%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 30px 8%;
     position: fixed;
     width: 100%;
-    z-index: 1000;
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid var(--glass-border);
+    z-index: 900;
+    mix-blend-mode: difference;
 }
+.logo { font-family: 'Syncopate'; font-weight: 700; letter-spacing: 8px; font-size: 1.2rem; }
+.logo span { color: var(--accent); }
 
-.logo {
-    font-family: 'Syncopate', sans-serif;
-    font-weight: 700;
-    letter-spacing: 10px;
-    text-transform: uppercase;
-    font-size: 1.4rem;
-}
-
-.logo span { color: var(--accent); text-shadow: var(--neon-glow); }
-
-/* HOME: SECCIONES DIVIDIDAS (ESTILO APPLE/TESLA) */
-.main-container { height: 100vh; display: flex; flex-direction: column; }
-
+/* --- HERO INDEX --- */
+.main-container { height: 100vh; display: flex; }
 .store-section {
-    position: relative;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0 10%;
-    overflow: hidden;
-    transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    flex: 1; position: relative; overflow: hidden;
+    display: flex; align-items: center; padding: 0 5%;
+    transition: flex 0.8s cubic-bezier(0.2, 1, 0.3, 1);
 }
-
-.store-section:hover { flex: 1.5; }
-
+.store-section:hover { flex: 1.4; }
 .section-bg {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-size: cover;
-    background-position: center;
-    filter: brightness(0.4) grayscale(20%);
-    z-index: 1;
-    transition: transform 1.2s ease;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    filter: brightness(0.3) grayscale(100%);
+    transition: 1s ease; z-index: 1;
 }
+.store-section:hover .section-bg { filter: brightness(0.5) grayscale(0%); transform: scale(1.05); }
 
-.store-section:hover .section-bg { transform: scale(1.1); filter: brightness(0.6); }
+.content { position: relative; z-index: 2; }
+.category-tag { font-size: 0.7rem; letter-spacing: 5px; color: var(--accent); }
+h2 { font-family: 'Syncopate'; font-size: 4rem; line-height: 0.9; margin: 20px 0; }
+.outline-thin { -webkit-text-stroke: 1px #fff; color: transparent; font-weight: 100; }
 
-.content { position: relative; z-index: 2; max-width: 600px; }
-.content h2 { font-family: 'Syncopate'; font-size: 3.5rem; line-height: 1; margin: 15px 0; }
-.content p { font-size: 1.1rem; color: #ccc; margin-bottom: 25px; }
-
-.btn-premium {
-    display: inline-block;
-    padding: 15px 40px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: 0.4s;
+.modern-link {
+    text-decoration: none; color: #fff; font-family: 'Syncopate';
+    font-size: 0.7rem; letter-spacing: 3px; display: flex; align-items: center; gap: 10px;
 }
+.modern-link:hover .arrow { transform: translateX(10px); color: var(--accent); }
 
-.btn-premium:hover { background: var(--accent); color: #000; box-shadow: var(--neon-glow); }
-
-/* TIENDA: GRID DE PRODUCTOS PROFESIONAL */
-.product-showcase { padding: 120px 8% 60px; }
-.section-title { font-family: 'Syncopate'; text-align: center; margin-bottom: 50px; font-size: 2rem; letter-spacing: 5px; }
-
-.product-grid-detail {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 40px;
+/* --- STORE PAGE --- */
+.store-hero-v2 {
+    height: 70vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
 }
+.outline-text { -webkit-text-stroke: 1px rgba(255,255,255,0.2); color: transparent; }
+.hero-titles h1 { font-family: 'Syncopate'; font-size: 6rem; line-height: 0.8; }
+.hero-description { max-width: 400px; margin-top: 30px; font-size: 0.8rem; opacity: 0.5; letter-spacing: 2px; }
 
+.inventory-header { display: flex; align-items: center; gap: 20px; padding: 0 5% 50px; font-size: 0.7rem; opacity: 0.4; }
+.h-line { height: 1px; flex: 1; background: var(--border); }
+
+/* --- GRID & CARDS --- */
+.product-grid-detail { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2px; background: var(--border); padding: 2px; }
 .product-card-premium {
-    background: var(--card-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 30px;
-    transition: 0.4s ease;
-    backdrop-filter: blur(5px);
+    background: var(--bg); padding: 40px;
+    transition: 0.5s; position: relative;
 }
+.product-card-premium:hover { background: #0a0a0a; }
+.product-img-box img { width: 100%; height: 250px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(0,0,0,0.5)); }
 
-.product-card-premium:hover {
-    border-color: var(--accent);
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
+.price-tag { display: block; margin-top: 20px; font-size: 1.5rem; font-weight: 200; color: var(--accent); }
 
-.product-img-box {
-    height: 220px;
-    background: rgba(255,255,255,0.02);
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 25px;
-}
-
-.product-img-box img { max-width: 85%; max-height: 85%; object-fit: contain; }
-
-.price-tag {
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--accent);
-    display: block;
-    margin: 20px 0;
-}
-
-/* CARRITO LATERAL DISEÑO MODERNO */
+/* --- CARRITO --- */
 .cart-panel {
-    position: fixed;
-    right: -450px;
-    top: 0;
-    width: 400px;
-    height: 100%;
-    background: rgba(5, 5, 5, 0.98);
-    backdrop-filter: blur(20px);
-    z-index: 2000;
-    padding: 40px;
-    border-left: 1px solid var(--glass-border);
-    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed; right: -100%; top: 0; width: 400px; height: 100%;
+    background: #000; border-left: 1px solid var(--border);
+    z-index: 1000; padding: 50px; transition: 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+}
+.cart-panel.active { right: 0; }
+.checkout-btn {
+    width: 100%; padding: 20px; background: var(--accent); color: #000;
+    border: none; font-family: 'Syncopate'; font-weight: 700; margin-top: 30px;
 }
 
-.cart-panel.active { right: 0; }
+/* --- MODAL --- */
+.modal-blur {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
+    display: none; justify-content: center; align-items: center; z-index: 2000;
+}
+.modal-card { background: #000; border: 1px solid var(--border); padding: 60px; max-width: 600px; width: 90%; }

@@ -3,33 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUXURY MALL | Home</title>
+    <title>LUXURY MALL | The Collection</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="loader">
+        <div class="loader-content">
+            <div class="logo">LUXURY<span>MALL</span></div>
+            <div class="loader-line"></div>
+        </div>
+    </div>
+
+    <div class="custom-cursor"></div>
+
     <nav class="nav-minimal">
         <div class="logo">LUXURY<span>MALL</span></div>
     </nav>
 
     <main class="main-container">
         <section class="store-section tech">
-            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1000');"></div>
+            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1611186871348-b1ec696e52c9?q=80&w=2000');"></div>
             <div class="content">
-                <span class="category">Next Gen Technology</span>
-                <h2>FamilyCell<br>And More</h2>
-                <a href="familycell.html" class="btn-explore">EXPLORAR COLECCIÓN</a>
+                <span class="category-tag">HIGH PERFORMANCE</span>
+                <h2>FamilyCell<br><span class="outline-thin">MASTERS</span></h2>
+                <a href="familycell.html" class="modern-link">
+                    EXPLORAR COLECCIÓN 
+                    <span class="arrow">→</span>
+                </a>
             </div>
         </section>
 
         <section class="store-section fashion">
-            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000');"></div>
+            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000');"></div>
             <div class="content">
-                <span class="category">Fashion Boutique</span>
-                <h2>Divino<br>Cielo</h2>
-                <a href="#" class="btn-explore">VER CATÁLOGO</a>
+                <span class="category-tag">ATELIER</span>
+                <h2>Divino<br><span class="outline-thin">CIELO</span></h2>
+                <a href="#" class="modern-link">
+                    VER CATÁLOGO 
+                    <span class="arrow">→</span>
+                </a>
             </div>
         </section>
     </main>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
