@@ -25,21 +25,41 @@
         </div>
     </header>
 
-    <section class="product-showcase">
-        <h2 class="section-title">EQUIPOS DISPONIBLES</h2>
+<section class="product-showcase">
+    <h2 class="section-title">EQUIPOS DISPONIBLES</h2>
+    <div class="product-grid-detail">
         
-        <div class="product-grid-detail">
-            <div class="product-card-premium">
-                <div class="product-img-box">
-                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg" alt="HP">
-                </div>
-                <div class="product-info">
-                    <h3>HP Elite Book 15"</h3>
-                    <p>Core i3 Gen-N | 8GB RAM | 256GB SSD | Touch</p>
-                    <span class="price">₡235,000</span>
-                    <button class="btn-add" onclick="addToCart('HP Elite Book 15', 235000)">AÑADIR AL CARRITO</button>
-                </div>
+        <div class="product-card-premium">
+            <div class="product-img-box" onclick="openSpecs('hp')">
+                <img src="https://www.intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg" alt="HP">
             </div>
+            <div class="product-info">
+                <h3>HP Elite Book 15"</h3>
+                <span class="price">₡235,000</span>
+                <button class="btn-add" onclick="openSpecs('hp')">VER DETALLES</button>
+            </div>
+        </div>
+
+        <div class="product-card-premium">
+            <div class="product-img-box" onclick="openSpecs('msi')">
+                <img src="https://www.intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg" alt="MSI">
+            </div>
+            <div class="product-info">
+                <h3>MSI Cyborg Gaming Z</h3>
+                <span class="price">₡795,000</span>
+                <button class="btn-add" onclick="openSpecs('msi')">VER DETALLES</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<div id="specs-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeSpecs()">&times;</button>
+        <div id="modal-body"></div>
+    </div>
+</div>
 
             <div class="product-card-premium">
                 <div class="product-img-box">
