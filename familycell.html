@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FamilyCell | Technology & Innovation</title>
+    <title>FamilyCell | Distribuidor Autorizado</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 </head>
@@ -19,49 +19,61 @@
     <header class="store-hero tech-header">
         <div class="overlay"></div>
         <div class="header-content">
-            <span class="tag">FamilyCell And More</span>
-            <h1>EL FUTURO EN <br>TUS MANOS</h1>
-            <p>Especialistas en dispositivos de alta gama y servicio técnico certificado.</p>
+            <span class="tag">FamilyCell Technology</span>
+            <h1>PREMIUM <br>LAPTOPS</h1>
+            <p>Hardware seleccionado con garantía extendida y soporte técnico profesional.</p>
         </div>
     </header>
 
     <section class="product-showcase">
-        <h2 class="section-title">PRODUCTOS DESTACADOS</h2>
+        <h2 class="section-title">EQUIPOS DISPONIBLES</h2>
         
         <div class="product-grid-detail">
             <div class="product-card-premium">
                 <div class="product-img-box">
-                    <img src="https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=800" alt="iPhone 15">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg" alt="HP">
                 </div>
                 <div class="product-info">
-                    <h3>iPhone 15 Pro Max</h3>
-                    <p>Titanio natural. El chip más potente.</p>
-                    <span class="price">$1,199.00</span>
-                    <button class="btn-add" onclick="addToCart('iPhone 15 Pro Max', 1199)">AÑADIR A LA BOLSA</button>
+                    <h3>HP Elite Book 15"</h3>
+                    <p>Core i3 Gen-N | 8GB RAM | 256GB SSD | Touch</p>
+                    <span class="price">₡235,000</span>
+                    <button class="btn-add" onclick="addToCart('HP Elite Book 15', 235000)">AÑADIR AL CARRITO</button>
                 </div>
             </div>
 
             <div class="product-card-premium">
                 <div class="product-img-box">
-                    <img src="https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=800" alt="Watch">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/10/ASUS-X1404VA.jpg" alt="Asus">
                 </div>
                 <div class="product-info">
-                    <h3>Apple Watch Ultra 2</h3>
-                    <p>La aventura te espera. GPS de precisión.</p>
-                    <span class="price">$799.00</span>
-                    <button class="btn-add" onclick="addToCart('Apple Watch Ultra 2', 799)">AÑADIR A LA BOLSA</button>
+                    <h3>ASUS Pro-Stream 14</h3>
+                    <p>Intel Core i7 | 12GB RAM | 512GB SSD NVMe</p>
+                    <span class="price">₡385,000</span>
+                    <button class="btn-add" onclick="addToCart('ASUS Pro-Stream 14', 385000)">AÑADIR AL CARRITO</button>
                 </div>
             </div>
 
             <div class="product-card-premium">
                 <div class="product-img-box">
-                    <img src="https://images.unsplash.com/photo-1583573636246-18cb2246697f?q=80&w=800" alt="Samsung">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg" alt="MSI">
                 </div>
                 <div class="product-info">
-                    <h3>Samsung S24 Ultra</h3>
-                    <p>Inteligencia Artificial integrada.</p>
-                    <span class="price">$1,299.00</span>
-                    <button class="btn-add" onclick="addToCart('Samsung S24 Ultra', 1299)">AÑADIR A LA BOLSA</button>
+                    <h3>MSI Cyborg Gaming Z</h3>
+                    <p>RTX 4060 | Core i7 | 16GB RAM | 144Hz Screen</p>
+                    <span class="price">₡795,000</span>
+                    <button class="btn-add" onclick="addToCart('MSI Cyborg Gaming Z', 795000)">AÑADIR AL CARRITO</button>
+                </div>
+            </div>
+
+            <div class="product-card-premium">
+                <div class="product-img-box">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/05/DELL-INSPIRON-3535.jpg" alt="Dell">
+                </div>
+                <div class="product-info">
+                    <h3>Dell Inspiron Ultra</h3>
+                    <p>Ryzen 5 | 8GB RAM | 512GB SSD | Office Ready</p>
+                    <span class="price">₡295,000</span>
+                    <button class="btn-add" onclick="addToCart('Dell Inspiron Ultra', 295000)">AÑADIR AL CARRITO</button>
                 </div>
             </div>
         </div>
@@ -69,13 +81,16 @@
 
     <aside id="side-cart" class="cart-panel">
         <div class="cart-header">
-            <h2>YOUR BAG</h2>
-            <button class="close-btn" onclick="toggleCart()">CLOSE</button>
+            <h2>TU PEDIDO</h2>
+            <button class="close-btn" onclick="toggleCart()">CERRAR</button>
         </div>
         <div id="cart-items" class="cart-content"></div>
         <div class="cart-footer">
-            <div class="total-row"><span>TOTAL</span><span>$<span id="cart-total">0</span></span></div>
-            <button class="checkout-btn">PAGAR AHORA</button>
+            <div class="total-row">
+                <span>TOTAL ESTIMADO</span>
+                <span>₡<span id="cart-total">0</span></span>
+            </div>
+            <button class="checkout-btn" onclick="sendOrder()">ENVIAR PEDIDO POR WHATSAPP</button>
         </div>
     </aside>
 
