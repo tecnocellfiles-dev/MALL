@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divino Cielo | Tech & Boutique</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="store-page">
+    <div class="grain"></div>
+    <div class="custom-cursor"></div>
+
+    <nav class="nav-minimal">
+        <a href="index.html" class="logo" style="text-decoration:none; color:inherit">LUXURY<span>MALL</span></a>
+        <div class="nav-right">
+            <button class="cart-trigger" onclick="toggleCart()" style="background:none; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:10px 20px; font-family:Syncopate; font-size:0.6rem; letter-spacing:2px">
+                BAG [<span id="cart-count">0</span>]
+            </button>
+        </div>
+    </nav>
+
+    <header class="store-hero-v2">
+        <div class="hero-titles">
+            <h1 class="reveal-text">DIVINO</h1>
+            <h1 class="reveal-text outline-text">CIELO</h1>
+        </div>
+        <p class="hero-description">LA UNIÓN PERFECTA ENTRE LA ALTA COSTURA Y EL HARDWARE DE ÉLITE.</p>
+    </header>
+
+    <section class="product-showcase">
+        <div class="inventory-header">
+            <span>DROP 01: TECH-WEAR & SYSTEMS</span>
+            <div class="h-line"></div>
+        </div>
+        <div id="product-grid" class="product-grid-detail"></div>
+    </section>
+
+    <aside id="side-cart" class="cart-panel">
+        <div class="cart-header">
+            <h3 style="font-family:Syncopate; letter-spacing:5px">BAG</h3>
+            <button onclick="toggleCart()" style="background:none; border:none; color:#fff; cursor:pointer">CLOSE</button>
+        </div>
+        <div id="cart-items"></div>
+        <div class="cart-footer" style="margin-top:40px; border-top:1px solid #111; padding-top:20px">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px">
+                <span style="opacity:0.5">TOTAL</span>
+                <span id="cart-total" style="color:var(--accent); font-weight:900">₡0</span>
+            </div>
+            <button class="checkout-btn" onclick="sendToWhatsApp()">RESERVAR VÍA WHATSAPP</button>
+        </div>
+    </aside>
+
+    <div id="specs-modal" class="modal-blur">
+        <div class="modal-card">
+            <button onclick="closeSpecs()" style="position:absolute; top:20px; right:20px; background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer">✕</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
