@@ -1,39 +1,46 @@
-!DOCTYPE html
-html lang=es
-head
-    meta charset=UTF-8
-    meta name=viewport content=width=device-width, initial-scale=1.0
-    titleDivino Cielo  Concept Storetitle
-    link rel=stylesheet href=cssstyle.css
-    link href=httpsfonts.googleapis.comcss2family=Interwght@200;400;700&family=Syncopatewght@400;700&display=swap rel=stylesheet
-head
-body
-    div class=graindiv
-    div class=cursor-dotdiv
-    div class=cursor-outlinediv
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Mall | Store</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="store-page">
+    <div class="grain"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
-    nav class=nav-minimal
-        a href=index.html class=logo style=text-decorationnone; color#fffLUXURYspanMALLspana
-        button onclick=toggleCart() style=backgroundnone; bordernone; color#fff; font-familySyncopate; font-size0.7remBOLSA [span id=cart-count0span]button
-    nav
+    <nav class="nav-minimal">
+        <a href="index.html" class="logo" style="text-decoration:none; color:#fff">LUXURY<span>MALL</span></a>
+        <div class="nav-right">
+            <button class="btn-premium" onclick="toggleCart()" style="padding: 8px 20px;">BOLSA (<span id="cart-count">0</span>)</button>
+        </div>
+    </nav>
 
-    header style=padding 150px 5% 50px; text-aligncenter
-        h1 style=font-familySyncopate; font-size5rem; line-height0.8CONCEPTbrspan class=outline-thinSTOREspanh1
-        p style=margin-top30px; opacity0.5; letter-spacing5px; font-size0.7remTECH • FASHION • EXCLUSIVITYp
-    header
+    <header class="store-hero" style="height: 40vh; display:flex; align-items:center; justify-content:center; text-align:center;">
+        <h1 id="store-title" style="font-family:Syncopate; font-size:3rem; text-transform:uppercase;">COLECCIÓN ELITE</h1>
+    </header>
 
-    div id=product-grid class=product-grid-detaildiv
+    <section class="product-showcase">
+        <div id="product-grid" class="product-grid-detail"></div>
+    </section>
 
-    aside id=side-cart class=cart-panel
-        h2 style=font-familySyncopate; margin-bottom30pxTU BOLSAh2
-        div id=cart-itemsdiv
-        div style=margin-top40px
-            h3TOTAL ₡span id=cart-total0spanh3
-            button class=btn-buy onclick=sendToWhatsApp()COMPRAR POR WHATSAPPbutton
-            button class=btn-buy style=backgroundnone; color#fff; border1px solid #333 onclick=toggleCart()CERRARbutton
-        div
-    aside
+    <aside id="side-cart" class="cart-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px">
+            <h2 style="font-family:Syncopate">TU ORDEN</h2>
+            <button onclick="toggleCart()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer">✕</button>
+        </div>
+        <div id="cart-items"></div>
+        <div style="margin-top:auto; padding-top:40px; border-top:1px solid #222">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px">
+                <span>TOTAL</span><span>₡<span id="cart-total">0</span></span>
+            </div>
+            <button class="btn-premium" style="width:100%; background:var(--accent); color:#000" onclick="sendToWhatsApp()">WHATSAPP</button>
+        </div>
+    </aside>
 
-    script src=jsmain.jsscript
-body
-html
+    <script src="js/main.js"></script>
+</body>
+</html>

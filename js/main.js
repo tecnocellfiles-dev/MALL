@@ -1,47 +1,49 @@
+// Inventario Unificado (Humano y Real)
 const inventory = [
-    // ROPA DIVINO CIELO
-    { id: 1, name: "Luxury Blazer 'Cielo'", price: 285000, img: "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800", cat: "BOUTIQUE" },
-    // TECH DIVINO CIELO
-    { id: 2, name: "MacBook Pro M3 Max", price: 1950000, img: "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg", cat: "SYSTEMS" },
-    // LABS FAMILYCELL
-    { id: 3, name: "NVIDIA RTX 4090 FE", price: 1200000, img: "https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg", cat: "COMPONENTS" },
-    { id: 4, name: "Reloj Minimal 'Cell'", price: 85000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800", cat: "ACCESSORIES" }
+    { name: "Saco 'Cielo' Silk-Line", price: 285000, cat: "divino", type: "moda", img: "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800" },
+    { name: "MacBook Pro M3 Max Elite", price: 1850000, cat: "divino", type: "tech", img: "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg" },
+    { name: "Vestido Gala Nightfall", price: 320000, cat: "divino", type: "moda", img: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800" },
+    { name: "NVIDIA RTX 4090 Lab Edition", price: 1100000, cat: "family", type: "tech", img: "https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg" },
+    { name: "Teclado Custom 'Cell'", price: 145000, cat: "family", type: "tech", img: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800" }
 ];
 
 let cart = [];
 
-// Cursor Reparado
-const dot = document.querySelector('.cursor-dot');
-const outline = document.querySelector('.cursor-outline');
-
-window.addEventListener('mousemove', (e) => {
-    dot.style.left = e.clientX + 'px';
-    dot.style.top = e.clientY + 'px';
-    
-    // El outline sigue al punto con suavidad
-    setTimeout(() => {
-        outline.style.left = e.clientX + 'px';
-        outline.style.top = e.clientY + 'px';
-    }, 50);
+// Cursor Fluido Reparado
+document.addEventListener('mousemove', (e) => {
+    const dot = document.querySelector('.cursor-dot');
+    const outline = document.querySelector('.cursor-outline');
+    if(dot && outline) {
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+        outline.animate({ left: e.clientX + 'px', top: e.clientY + 'px' }, { duration: 500, fill: "forwards" });
+    }
 });
 
-// Construir Tienda
 function buildStore() {
     const grid = document.getElementById('product-grid');
+    const title = document.getElementById('store-title');
     if(!grid) return;
 
-    inventory.forEach(p => {
-        grid.innerHTML += `
-            <div class="product-card">
-                <img src="${p.img}" class="product-img">
-                <span style="font-size:0.6rem; letter-spacing:3px; color:var(--accent)">${p.cat}</span>
-                <h3 style="font-family:Syncopate; margin:15px 0; font-size:0.9rem">${p.name}</h3>
-                <p style="font-size:1.5rem; font-weight:200">₡${p.price.toLocaleString()}</p>
-                <button onclick="addToCart('${p.name}', ${p.price})" style="margin-top:30px; background:var(--accent); color:#000; border:none; padding:15px; font-family:Syncopate; font-size:0.6rem; font-weight:700; cursor:pointer">
-                    RESERVAR PIEZA
-                </button>
-            </div>
-        `;
+    const params = new URLSearchParams(window.location.search);
+    const filter = params.get('filter'); // 'divino' o 'family'
+
+    if(filter === 'divino') title.innerText = "Divino Cielo Boutique";
+    if(filter === 'family') title.innerText = "FamilyCell Labs";
+
+    grid.innerHTML = "";
+    inventory.forEach(item => {
+        if(!filter || item.cat === filter) {
+            grid.innerHTML += `
+                <div class="product-card-premium">
+                    <img src="${item.img}" style="width:100%; height:200px; object-fit:contain; margin-bottom:20px">
+                    <span style="color:var(--accent); font-size:0.7rem; letter-spacing:2px">${item.type.toUpperCase()}</span>
+                    <h3 style="font-family:Syncopate; margin:10px 0; font-size:0.9rem">${item.name}</h3>
+                    <p style="font-size:1.5rem; font-weight:900; color:var(--accent)">₡${item.price.toLocaleString()}</p>
+                    <button class="btn-premium" style="width:100%; margin-top:20px" onclick="addToCart('${item.name}', ${item.price})">RESERVAR</button>
+                </div>
+            `;
+        }
     });
 }
 
@@ -52,23 +54,20 @@ function addToCart(name, price) {
 }
 
 function updateUI() {
-    const items = document.getElementById('cart-items');
-    const total = document.getElementById('cart-total');
-    let sum = 0;
-    
-    items.innerHTML = cart.map(i => {
-        sum += i.price;
-        return `<div style="padding:15px 0; border-bottom:1px solid #222">
-            <p style="font-size:0.8rem">${i.name}</p>
-            <p style="color:var(--accent)">₡${i.price.toLocaleString()}</p>
-        </div>`;
+    document.getElementById('cart-count').innerText = cart.length;
+    let total = 0;
+    document.getElementById('cart-items').innerHTML = cart.map(i => {
+        total += i.price;
+        return `<div style="padding:15px 0; border-bottom:1px solid #222"><p>${i.name}</p><p style="color:var(--accent)">₡${i.price.toLocaleString()}</p></div>`;
     }).join('');
-    
-    total.innerText = sum.toLocaleString();
+    document.getElementById('cart-total').innerText = total.toLocaleString();
 }
 
-function toggleCart() {
-    document.getElementById('side-cart').classList.toggle('active');
+function toggleCart() { document.getElementById('side-cart').classList.toggle('active'); }
+
+function sendToWhatsApp() {
+    const msg = `PEDIDO LUXURY MALL:\n${cart.map(i => `- ${i.name}`).join('\n')}\nTOTAL: ₡${document.getElementById('cart-total').innerText}`;
+    window.open(`https://wa.me/506XXXXXXXX?text=${encodeURIComponent(msg)}`);
 }
 
-document.addEventListener('DOMContentLoaded', buildStore);
+window.onload = buildStore;

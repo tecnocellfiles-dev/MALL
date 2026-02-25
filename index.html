@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUXURY MALL | Concept Store</title>
+    <title>LUXURY MALL | Home</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="grain"></div>
-    <div id="loader">
-        <div class="logo">LUXURY<span>MALL</span></div>
-    </div>
-
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
@@ -21,27 +17,24 @@
     </nav>
 
     <main class="main-container">
-        <section class="store-section section-divino" onclick="location.href='familycell.html'">
-            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1441984908796-9039c052e191?q=80&w=2000');"></div>
+        <section class="store-section fashion">
+            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000');"></div>
             <div class="content">
-                <span class="category-tag">BOUTIQUE & PERFORMANCE</span>
-                <h2>Divino<br><span class="outline-thin">CIELO</span></h2>
-                <p>Donde la alta costura se encuentra con el silicio de élite.</p>
-                <div class="modern-btn">EXPLORAR UNIVERSO <span class="arrow">→</span></div>
+                <span class="category">High Fashion & Performance</span>
+                <h2>Divino<br>Cielo</h2>
+                <a href="familycell.html?filter=divino" class="btn-premium">EXPLORAR BOUTIQUE</a>
             </div>
         </section>
 
-        <section class="store-section section-family" onclick="location.href='familycell.html?mode=labs'">
-            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000');"></div>
+        <section class="store-section tech">
+            <div class="section-bg" style="background-image: url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1000');"></div>
             <div class="content">
-                <span class="category-tag">ENGINEERING LABS</span>
-                <h2>Family<br><span class="outline-thin">CELL</span></h2>
-                <p>Componentes exóticos y servicios de ingeniería avanzada.</p>
-                <div class="modern-btn">ENTRAR AL LABORATORIO <span class="arrow">→</span></div>
+                <span class="category">Next Gen Engineering</span>
+                <h2>FamilyCell<br>LABS</h2>
+                <a href="familycell.html?filter=family" class="btn-premium">ENTRAR AL LAB</a>
             </div>
         </section>
     </main>
-
     <script src="js/main.js"></script>
 </body>
 </html>
