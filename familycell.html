@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FamilyCell | Technology & Innovation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="store-page">
+
+    <nav class="nav-minimal">
+        <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">LUXURY<span>MALL</span></a></div>
+        <div class="nav-right">
+            <button class="cart-trigger" onclick="toggleCart()">BAG (<span id="cart-count">0</span>)</button>
+        </div>
+    </nav>
+
+    <header class="store-hero tech-header">
+        <div class="overlay"></div>
+        <div class="header-content">
+            <span class="tag">FamilyCell And More</span>
+            <h1>EL FUTURO EN <br>TUS MANOS</h1>
+            <p>Especialistas en dispositivos de alta gama y servicio técnico certificado.</p>
+        </div>
+    </header>
+
+    <section class="product-showcase">
+        <h2 class="section-title">PRODUCTOS DESTACADOS</h2>
+        
+        <div class="product-grid-detail">
+            <div class="product-card-premium">
+                <div class="product-img-box">
+                    <img src="https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=800" alt="iPhone 15">
+                </div>
+                <div class="product-info">
+                    <h3>iPhone 15 Pro Max</h3>
+                    <p>Titanio natural. El chip más potente.</p>
+                    <span class="price">$1,199.00</span>
+                    <button class="btn-add" onclick="addToCart('iPhone 15 Pro Max', 1199)">AÑADIR A LA BOLSA</button>
+                </div>
+            </div>
+
+            <div class="product-card-premium">
+                <div class="product-img-box">
+                    <img src="https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=800" alt="Watch">
+                </div>
+                <div class="product-info">
+                    <h3>Apple Watch Ultra 2</h3>
+                    <p>La aventura te espera. GPS de precisión.</p>
+                    <span class="price">$799.00</span>
+                    <button class="btn-add" onclick="addToCart('Apple Watch Ultra 2', 799)">AÑADIR A LA BOLSA</button>
+                </div>
+            </div>
+
+            <div class="product-card-premium">
+                <div class="product-img-box">
+                    <img src="https://images.unsplash.com/photo-1583573636246-18cb2246697f?q=80&w=800" alt="Samsung">
+                </div>
+                <div class="product-info">
+                    <h3>Samsung S24 Ultra</h3>
+                    <p>Inteligencia Artificial integrada.</p>
+                    <span class="price">$1,299.00</span>
+                    <button class="btn-add" onclick="addToCart('Samsung S24 Ultra', 1299)">AÑADIR A LA BOLSA</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside id="side-cart" class="cart-panel">
+        <div class="cart-header">
+            <h2>YOUR BAG</h2>
+            <button class="close-btn" onclick="toggleCart()">CLOSE</button>
+        </div>
+        <div id="cart-items" class="cart-content"></div>
+        <div class="cart-footer">
+            <div class="total-row"><span>TOTAL</span><span>$<span id="cart-total">0</span></span></div>
+            <button class="checkout-btn">PAGAR AHORA</button>
+        </div>
+    </aside>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

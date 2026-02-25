@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXURY MALL | Premium Experience</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="nav-minimal">
+        <div class="logo">LUXURY<span>MALL</span></div>
+        <div class="nav-right">
+            <button class="cart-trigger" onclick="toggleCart()">BAG (<span id="cart-count">0</span>)</button>
+        </div>
+    </nav>
+
+    <section class="experience-section" id="family">
+        <div class="bg-image tech-bg"></div>
+        <div class="overlay"></div>
+        <div class="main-content">
+            <span class="category-tag">Next Gen Technology</span>
+            <h1>FamilyCell <br>And More</h1>
+            <p>Donde la potencia se encuentra con el diseño de vanguardia.</p>
+            <div class="action-area">
+              <a href="familycell.html" style="text-decoration: none;">
+    <button class="btn-premium">
+        <span class="btn-text">EXPLORAR COLECCIÓN</span>
+        <span class="btn-sub">ENTRA AQUÍ</span>
+    </button>
+</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="experience-section" id="divino">
+        <div class="bg-image fashion-bg"></div>
+        <div class="overlay"></div>
+        <div class="main-content">
+            <span class="category-tag">Fashion Boutique</span>
+            <h1>Divino <br>Cielo</h1>
+            <p>Elegancia celestial para quienes definen su propio camino.</p>
+            <div class="action-area">
+                <button class="btn-premium" onclick="addToCart('Colección Gala', 250)">
+                    <span class="btn-text">VER CATÁLOGO</span>
+                    <span class="btn-sub">DESCUBRE MÁS</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="experience-section" id="elegance">
+        <div class="bg-image beauty-bg"></div>
+        <div class="overlay"></div>
+        <div class="main-content">
+            <span class="category-tag">Beauty Esthetic</span>
+            <h1>Elegance <br>Beauty</h1>
+            <p>El ritual definitivo para tu cuidado personal de lujo.</p>
+            <div class="action-area">
+                <button class="btn-premium" onclick
