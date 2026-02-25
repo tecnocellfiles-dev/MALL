@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FamilyCell | Luxury Mall</title>
+    <title>FamilyCell | Premium Tech</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 </head>
@@ -12,21 +12,67 @@
     <nav class="nav-minimal">
         <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">LUXURY<span>MALL</span></a></div>
         <div class="nav-right">
-            <button class="cart-trigger" onclick="toggleCart()">BOLSA (<span id="cart-count">0</span>)</button>
+            <button class="cart-trigger" onclick="toggleCart()">BAG (<span id="cart-count">0</span>)</button>
         </div>
     </nav>
 
-    <header class="store-hero">
+    <header class="store-hero tech-header">
+        <div class="overlay"></div>
         <div class="header-content">
-            <span class="tag">FamilyCell Premium Technology</span>
-            <h1>SISTEMAS <br>AVANZADOS</h1>
+            <span class="tag">FamilyCell Selection</span>
+            <h1>EXPERT <br>HARDWARE</h1>
         </div>
     </header>
 
     <section class="product-showcase">
-        <h2 class="section-title">EQUIPOS EN STOCK</h2>
-        <div id="product-grid" class="product-grid-detail">
+        <h2 class="section-title">EQUIPOS DISPONIBLES</h2>
+        <div class="product-grid-detail">
+            
+            <div class="product-card-premium">
+                <div class="product-img-box" onclick="openSpecs('hp')">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg" alt="HP">
+                </div>
+                <div class="product-info">
+                    <h3>HP Elite Book 15"</h3>
+                    <span class="price">₡235,000</span>
+                    <button class="btn-add" onclick="openSpecs('hp')">VER DETALLES</button>
+                </div>
             </div>
+
+            <div class="product-card-premium">
+                <div class="product-img-box" onclick="openSpecs('asus')">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/10/ASUS-X1404VA.jpg" alt="Asus">
+                </div>
+                <div class="product-info">
+                    <h3>ASUS Pro-Stream 14</h3>
+                    <span class="price">₡385,000</span>
+                    <button class="btn-add" onclick="openSpecs('asus')">VER DETALLES</button>
+                </div>
+            </div>
+
+            <div class="product-card-premium">
+                <div class="product-img-box" onclick="openSpecs('msi')">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg" alt="MSI">
+                </div>
+                <div class="product-info">
+                    <h3>MSI Cyborg Gaming Z</h3>
+                    <span class="price">₡795,000</span>
+                    <button class="btn-add" onclick="openSpecs('msi')">VER DETALLES</button>
+                </div>
+            </div>
+
+            <div class="product-card-premium">
+                <div class="product-img-box" onclick="openSpecs('dell')">
+                    <img src="https://www.intelec.co.cr/wp-content/uploads/2023/05/DELL-INSPIRON-3535.jpg" alt="Dell">
+                </div>
+                <div class="product-info">
+                    <h3>Dell Inspiron Ultra</h3>
+                    <span class="price">₡295,000</span>
+                    <button class="btn-add" onclick="openSpecs('dell')">VER DETALLES</button>
+                </div>
+            </div>
+
+        </div>
     </section>
 
     <aside id="side-cart" class="cart-panel">
@@ -40,7 +86,7 @@
                 <span>TOTAL</span>
                 <span>₡<span id="cart-total">0</span></span>
             </div>
-            <button class="checkout-btn" onclick="sendOrder()">PEDIR POR WHATSAPP</button>
+            <button class="checkout-btn" onclick="sendOrder()">COMPRAR POR WHATSAPP</button>
         </div>
     </aside>
 
