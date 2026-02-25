@@ -62,3 +62,40 @@ function sendOrder() {
     
     window.open(whatsappURL, '_blank');
 }
+
+// BASE DE DATOS DE ESPECIFICACIONES
+const productSpecs = {
+    'hp': {
+        title: 'HP Elite Book 15"',
+        img: 'https://www.intelec.co.cr/wp-content/uploads/2023/07/HP-15-FD0230WM.jpg',
+        price: 235000,
+        desc: [['Procesador', 'i3-N305'], ['RAM', '8GB'], ['Disco', '256GB SSD']]
+    },
+    'msi': {
+        title: 'MSI Cyborg Gaming Z',
+        img: 'https://www.intelec.co.cr/wp-content/uploads/2024/01/MSI-CYBORG-15.jpg',
+        price: 795000,
+        desc: [['Gráfica', 'RTX 4060'], ['RAM', '16GB'], ['Pantalla', '144Hz']]
+    }
+};
+
+function openSpecs(id) {
+    const item = productSpecs[id];
+    const body = document.getElementById('modal-body');
+    
+    body.innerHTML = `
+        <h2 style="color:#00f2ff; font-family:Syncopate">${item.title}</h2>
+        <img src="${item.img}" style="width:200px; margin: 20px 0;">
+        <ul class="specs-list">
+            ${item.desc.map(d => `<li>${d[0]}: <span>${d[1]}</span></li>`).join('')}
+        </ul>
+        <button class="checkout-btn" onclick="addToCart('${item.title}', ${item.price}); closeSpecs();">
+            AÑADIR A LA BOLSA - ₡${item.price.toLocaleString('es-CR')}
+        </button>
+    `;
+    document.getElementById('specs-modal').style.display = 'flex';
+}
+
+function closeSpecs() {
+    document.getElementById('specs-modal').style.display = 'none';
+}
