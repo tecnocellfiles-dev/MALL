@@ -1,15 +1,17 @@
-// Inventario Unificado (Humano y Real)
 const inventory = [
+    // PRODUCTOS DIVINO CIELO
     { name: "Saco 'Cielo' Silk-Line", price: 285000, cat: "divino", type: "moda", img: "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800" },
-    { name: "MacBook Pro M3 Max Elite", price: 1850000, cat: "divino", type: "tech", img: "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg" },
     { name: "Vestido Gala Nightfall", price: 320000, cat: "divino", type: "moda", img: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800" },
+    { name: "MacBook Pro M3 Elite", price: 1850000, cat: "divino", type: "tech", img: "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg" },
+    
+    // PRODUCTOS FAMILYCELL
     { name: "NVIDIA RTX 4090 Lab Edition", price: 1100000, cat: "family", type: "tech", img: "https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg" },
     { name: "Teclado Custom 'Cell'", price: 145000, cat: "family", type: "tech", img: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800" }
 ];
 
 let cart = [];
 
-// Cursor Fluido Reparado
+// Reparación de Cursor: Ahora sigue el mouse con suavidad sin bloquear elementos
 document.addEventListener('mousemove', (e) => {
     const dot = document.querySelector('.cursor-dot');
     const outline = document.querySelector('.cursor-outline');
@@ -22,14 +24,10 @@ document.addEventListener('mousemove', (e) => {
 
 function buildStore() {
     const grid = document.getElementById('product-grid');
-    const title = document.getElementById('store-title');
     if(!grid) return;
 
     const params = new URLSearchParams(window.location.search);
-    const filter = params.get('filter'); // 'divino' o 'family'
-
-    if(filter === 'divino') title.innerText = "Divino Cielo Boutique";
-    if(filter === 'family') title.innerText = "FamilyCell Labs";
+    const filter = params.get('filter'); // Detecta 'divino' o 'family'
 
     grid.innerHTML = "";
     inventory.forEach(item => {

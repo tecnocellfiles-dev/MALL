@@ -4,11 +4,12 @@
     --glass-border: rgba(255, 255, 255, 0.1);
 }
 
+/* IMPORTANTE: cursor: none !important para que el cursor personalizado brille */
 * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
 
 body { background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-/* REPARACIÓN CURSOR (Ahora visual y funcional) */
+/* CURSOR REPARADO */
 .cursor-dot {
     position: fixed; width: 6px; height: 6px; background: var(--accent);
     border-radius: 50%; pointer-events: none; z-index: 10000;
@@ -33,7 +34,7 @@ body { background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif
 .logo span { color: var(--accent); }
 
 /* SECCIONES HOME */
-.main-container { height: 100vh; display: flex; flex-direction: row; }
+.main-container { height: 100vh; display: flex; }
 .store-section {
     flex: 1; position: relative; overflow: hidden; display: flex; align-items: center;
     padding: 0 8%; transition: flex 0.6s ease;
@@ -45,8 +46,6 @@ body { background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif
     transition: transform 1.2s ease; z-index: 0;
 }
 .store-section:hover .section-bg { transform: scale(1.1); filter: brightness(0.5); }
-.content { position: relative; z-index: 2; }
-.content h2 { font-family: 'Syncopate'; font-size: 3.5rem; line-height: 1; margin: 20px 0; }
 
 .btn-premium {
     padding: 15px 30px; border: 1px solid var(--accent); color: var(--accent);
@@ -61,12 +60,11 @@ body { background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif
     background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
     padding: 30px; border-radius: 15px; transition: 0.4s;
 }
-.product-card-premium:hover { border-color: var(--accent); transform: translateY(-10px); }
 
-/* CARRITO */
+/* CARRITO LATERAL */
 .cart-panel {
     position: fixed; right: -450px; top: 0; width: 400px; height: 100%;
     background: #050505; z-index: 2000; padding: 40px; border-left: 1px solid var(--glass-border);
-    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column;
+    transition: 0.5s ease; display: flex; flex-direction: column;
 }
 .cart-panel.active { right: 0; }
