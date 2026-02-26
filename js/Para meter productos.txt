@@ -1,0 +1,9 @@
+{ 
+    id: 16, 
+    name: "Nombre del Producto", 
+    price: 150000, 
+    store: "divino", 
+    type: "moda", 
+    img: "https://enlace-de-la-imagen.jpg", 
+    desc: "Descripción elegante que aparecerá bajo el precio." 
+  },
