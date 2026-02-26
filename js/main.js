@@ -123,8 +123,8 @@ function sendWhatsApp() {
   if (cart.length === 0) return;
   const total = cart.reduce((s,i) => s+i.price, 0);
   const lines = cart.map(i => `• ${i.name} - ₡${i.price.toLocaleString()}`).join('\n');
-  const msg = `¡Hola! Quiero hacer un pedido en *LUXURY MALL* 🛍️\n\n${lines}\n\n*TOTAL: ₡${total.toLocaleString()}*`;
-  window.open(`https://wa.me/50688888888?text=${encodeURIComponent(msg)}`, '_blank');
+  const msg = `¡Hola! Quiero hacer un pedido en *FaltaNombreWEB* 🛍️\n\n${lines}\n\n*TOTAL: ₡${total.toLocaleString()}*`;
+  window.open(`https://wa.me/50687443315?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 // ─── TOAST ───────────────────────────────────────────────────────────────────
