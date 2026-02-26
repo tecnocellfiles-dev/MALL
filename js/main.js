@@ -16,6 +16,15 @@ const inventory = [
   { id:5, name:"Bolso Cuero Artesanal", price:210000, store:"divino", type:"moda",
     img:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800",
     desc:"Cuero genuino, costura a mano, edición limitada." },
+{ 
+    id: 6, 
+    name: "Victoria's Secret Amber Romance", 
+    price:10000
+    store: "divino", 
+    type: "moda", 
+    img: "https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg", 
+    desc: "Ámbar resinoso y crema de vainilla. Un aroma cálido, denso y sofisticadamente dulce." 
+  },
 
   // FAMILYCELL
   { id:6, name:"NVIDIA RTX 4090 Lab", price:1100000, store:"family", type:"tech",
