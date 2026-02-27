@@ -455,7 +455,7 @@
 
       <div class="form-group">
         <label class="form-label">Tienda</label>
-        <select class="form-select" id="f-store">
+        <select class="form-select" id="f-store" onchange="onStoreChange()">
           <option value="divino">Divino Cielo</option>
           <option value="family">FamilyCell And More</option>
           <option value="elegance">Elegance Beauty Esthetic</option>
@@ -474,12 +474,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Categoría</label>
-          <select class="form-select" id="f-type">
-            <option value="moda">Moda</option>
-            <option value="tech">Tech</option>
-            <option value="joyería">Joyería</option>
-            <option value="fragancias">Fragancias</option>
-          </select>
+          <select class="form-select" id="f-type"></select>
         </div>
       </div>
 
@@ -503,9 +498,31 @@
       <button class="btn-secondary" id="cancel-edit-btn" onclick="cancelEdit()" style="display:none;">CANCELAR EDICIÓN</button>
 
       <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
+        <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">
+          CATEGORÍAS DE: <span id="cat-store-label" style="color:var(--gold);">DIVINO CIELO</span>
+        </div>
+
+        <div id="cat-list" style="margin-bottom:12px;"></div>
+
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" type="text" id="new-cat-input"
+            placeholder="Nueva categoría..."
+            style="flex:1;padding:10px 12px;font-size:0.8rem;"
+            onkeydown="if(event.key==='Enter') addCategory()">
+          <button onclick="addCategory()"
+            style="padding:10px 16px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.75rem;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:background 0.2s;"
+            onmouseover="this.style.background='rgba(201,168,76,0.25)'"
+            onmouseout="this.style.background='var(--gold-dim)'">+ AÑADIR</button>
+        </div>
+        <p style="font-size:0.68rem;color:var(--muted);margin-top:10px;line-height:1.5;">
+          Cambia la tienda arriba para gestionar sus categorías.
+        </p>
+      </div>
+
+      <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
         <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">EXPORTAR JS</div>
         <button class="btn-secondary" onclick="exportJS()" style="margin-top:0;">DESCARGAR main.js</button>
-        <p style="font-size:0.7rem;color:var(--muted);margin-top:10px;line-height:1.6;">Descarga el archivo JS actualizado y súbelo a tu sitio.</p>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:10px;line-height:1.6;">Descarga el JS actualizado y súbelo a tu sitio.</p>
       </div>
     </div>
 
@@ -586,6 +603,101 @@ let nextId = Math.max(...inventory.map(i => i.id)) + 1;
 let editingId = null;
 let currentTab = 'all';
 
+// ── CATEGORIES PER STORE ─────────────────────────────────────────────────────
+const DEFAULT_CATEGORIES = {
+  divino:   ['moda', 'fragancias', 'tech', 'cosméticos'],
+  family:   ['tech', 'celulares', 'accesorios'],
+  elegance: ['joyería', 'fragancias', 'belleza']
+};
+const STORE_NAMES = {
+  divino: 'Divino Cielo',
+  family: 'FamilyCell And More',
+  elegance: 'Elegance Beauty Esthetic'
+};
+
+function loadCategories() {
+  const saved = localStorage.getItem('admin-categories');
+  return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+}
+function saveCats(cats) {
+  localStorage.setItem('admin-categories', JSON.stringify(cats));
+}
+
+let storeCategories = loadCategories();
+
+function getCatsForStore(store) {
+  return storeCategories[store] || [];
+}
+
+function onStoreChange() {
+  renderCategorySelect();
+  renderCategoryList();
+  const store = document.getElementById('f-store').value;
+  document.getElementById('cat-store-label').textContent = STORE_NAMES[store] || store;
+}
+
+function renderCategorySelect(keepVal) {
+  const store = document.getElementById('f-store').value;
+  const sel = document.getElementById('f-type');
+  const prev = keepVal || sel.value;
+  const cats = getCatsForStore(store);
+  sel.innerHTML = cats.length
+    ? cats.map(c => '<option value="' + c + '"' + (c === prev ? ' selected' : '') + '>' + c.charAt(0).toUpperCase() + c.slice(1) + '</option>').join('')
+    : '<option value="">Sin categorías</option>';
+}
+
+function renderCategoryList() {
+  const store = document.getElementById('f-store').value;
+  const cats = getCatsForStore(store);
+  const list = document.getElementById('cat-list');
+  if (!list) return;
+
+  if (cats.length === 0) {
+    list.innerHTML = '<div style="font-size:0.7rem;color:var(--muted);padding:8px 0;">Sin categorías — agrega una</div>';
+    return;
+  }
+
+  list.innerHTML = cats.map((cat, idx) => {
+    const inUse = inventory.some(i => i.store === store && i.type === cat);
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);margin-bottom:4px;">' +
+      '<span style="font-size:0.8rem;">' + cat.charAt(0).toUpperCase() + cat.slice(1) + '</span>' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
+        (inUse ? '<span style="font-size:0.6rem;letter-spacing:2px;color:var(--muted);">EN USO</span>' : '') +
+        '<button onclick="deleteCategory(\'' + store + '\',' + idx + ')" ' +
+          'style="background:none;border:none;color:rgba(224,80,80,' + (inUse ? '0.2' : '0.5') + ');cursor:' + (inUse ? 'not-allowed' : 'pointer') + ';font-size:0.85rem;padding:2px 6px;transition:color 0.2s;"' +
+          (inUse ? '' : ' onmouseover="this.style.color=\'#e05050\'" onmouseout="this.style.color=\'rgba(224,80,80,0.5)\'"') +
+          ' title="' + (inUse ? 'No se puede eliminar, tiene productos' : 'Eliminar') + '">✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function addCategory() {
+  const store = document.getElementById('f-store').value;
+  const input = document.getElementById('new-cat-input');
+  const val = input.value.trim().toLowerCase();
+  if (!val) return;
+  if (!storeCategories[store]) storeCategories[store] = [];
+  if (storeCategories[store].includes(val)) { showToast('Ya existe en esta tienda', 'error'); return; }
+  storeCategories[store].push(val);
+  saveCats(storeCategories);
+  input.value = '';
+  renderCategoryList();
+  renderCategorySelect();
+  showToast('"' + val + '" añadida a ' + STORE_NAMES[store], 'success');
+}
+
+function deleteCategory(store, idx) {
+  const cat = storeCategories[store][idx];
+  const inUse = inventory.some(i => i.store === store && i.type === cat);
+  if (inUse) { showToast('Tiene productos — no se puede eliminar', 'error'); return; }
+  storeCategories[store].splice(idx, 1);
+  saveCats(storeCategories);
+  renderCategoryList();
+  renderCategorySelect();
+  showToast('Categoría eliminada', 'error');
+}
+
 // ── STATS ───────────────────────────────────────────────────────────────────
 function renderStats() {
   const total = inventory.length;
@@ -654,7 +766,9 @@ function clearForm() {
   document.getElementById('f-desc').value = '';
   document.getElementById('f-img').value = '';
   document.getElementById('f-store').value = 'divino';
-  document.getElementById('f-type').value = 'moda';
+  renderCategorySelect();
+  renderCategoryList();
+  document.getElementById('cat-store-label').textContent = 'DIVINO CIELO';
   previewImg('');
 }
 
@@ -698,6 +812,9 @@ function editProduct(id) {
   document.getElementById('f-desc').value  = item.desc;
   document.getElementById('f-img').value   = item.img;
   document.getElementById('f-store').value = item.store;
+  document.getElementById('cat-store-label').textContent = STORE_NAMES[item.store] || item.store;
+  renderCategorySelect(item.type);
+  renderCategoryList();
   document.getElementById('f-type').value  = item.type;
   previewImg(item.img);
 
@@ -905,6 +1022,8 @@ function showToast(msg, type) {
 function renderAll() {
   renderStats();
   renderTable();
+  renderCategorySelect();
+  renderCategoryList();
 }
 </script>
 </body>
