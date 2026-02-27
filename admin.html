@@ -875,11 +875,16 @@ El stock por defecto es 10 si no se menciona.`;
 // ══════════════════════════════════════════════════════════════
 
 function clearInventoryCache() {
-  if (!confirm('¿Limpiar el caché de inventario?\nLos productos volverán al inventario por defecto hasta el próximo commit.')) return;
+  if (!confirm('¿Limpiar el caché de inventario?\n\nEsto borrará el inventario guardado y cargará los productos por defecto.')) return;
+  // Borrar TODAS las claves relacionadas con inventario
   localStorage.removeItem('lm-inventory');
   localStorage.removeItem('admin-inventory');
-  showToast('Caché de inventario limpiado ✓', 'success');
-  setTimeout(() => location.reload(), 800);
+  localStorage.removeItem('admin-categories');
+  // Forzar recarga limpia sin caché del browser
+  showAdminToast('✓ Caché limpiado — recargando...', 'success');
+  setTimeout(function() {
+    window.location.href = window.location.pathname + '?nocache=' + Date.now();
+  }, 900);
 }
 
 function clearAllCache() {
@@ -1336,15 +1341,33 @@ function sendWhatsApp() {
   window.open('https://wa.me/50687443315?text=' + encodeURIComponent(msg), '_blank');
 }
 
-function showToast(msg) {
-  let t = document.getElementById('toast');
-  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 2200);
+function showToast(msg, type) {
+  // Unified toast — works in admin and store pages
+  type = type || 'success';
+  var wrap = document.getElementById('toast-wrap');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'toast-wrap';
+    wrap.style.cssText = 'position:fixed;bottom:32px;right:32px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
+    document.body.appendChild(wrap);
+  }
+  var t = document.createElement('div');
+  var colors = {success:'rgba(76,175,125,0.95)',error:'rgba(224,48,48,0.95)',info:'rgba(20,20,20,0.97)'};
+  var icons  = {success:'✓',error:'✕',info:'◈'};
+  t.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 20px;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#fff;opacity:0;transform:translateX(20px);transition:opacity 0.3s,transform 0.3s;min-width:220px;background:' + (colors[type]||colors.info) + ';' + (type==='info'?'border:1px solid rgba(245,240,232,0.12);':'');
+  t.innerHTML = '<span style="font-size:0.95rem">' + (icons[type]||'◈') + '</span><span>' + msg + '</span>';
+  wrap.appendChild(t);
+  requestAnimationFrame(function(){ t.style.opacity='1'; t.style.transform='translateX(0)'; });
+  setTimeout(function(){
+    t.style.opacity='0'; t.style.transform='translateX(20px)';
+    setTimeout(function(){ if(t.parentNode) t.remove(); }, 400);
+  }, 2800);
 }
 
 function initCursor() {
+  // Guard: solo un RAF loop, nunca duplicado
+  if (window.__cursorInit) return;
+  window.__cursorInit = true;
   const dot = document.getElementById('cursor-dot');
   const ring = document.getElementById('cursor-ring');
   if (!dot || !ring) return;
@@ -1419,12 +1442,7 @@ window.addEventListener('DOMContentLoaded', function() {
 }
 
 // ── TOAST ───────────────────────────────────────────────────────────────────
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + (type || 'success') + ' show';
-  setTimeout(function() { t.classList.remove('show'); }, 2500);
-}
+// showToast handled above
 
 // ── RENDER ALL ──────────────────────────────────────────────────────────────
 function renderAll() {
@@ -1564,9 +1582,14 @@ ${items}
 function getInventory() {
   try {
     var saved = localStorage.getItem('lm-inventory');
-    var parsed = saved ? JSON.parse(saved) : null;
-    return (parsed && parsed.length) ? parsed : DEFAULT_INVENTORY;
-  } catch(e) { return DEFAULT_INVENTORY; }
+    if (!saved) return DEFAULT_INVENTORY;
+    var parsed = JSON.parse(saved);
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    return DEFAULT_INVENTORY;
+  } catch(e) {
+    try { localStorage.removeItem('lm-inventory'); } catch(_) {}
+    return DEFAULT_INVENTORY;
+  }
 }
 
 var inventory = getInventory();
@@ -1651,6 +1674,7 @@ function showToast(msg,type){
 window.showToast=showToast;
 
 function initCursor(){
+  if(window.__cursorInit)return; window.__cursorInit=true;
   var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
   if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){if(dot)dot.style.display='none';if(ring)ring.style.display='none';return;}
   var rx=0,ry=0,mx=0,my=0;
