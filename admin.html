@@ -413,6 +413,78 @@
       .topbar { padding: 16px 20px; }
       .main-content { padding: 24px 20px; }
     }
+
+    /* ── AI ASSISTANT ──────────────────────────────────────────── */
+    .ai-section {
+      background: rgba(0,229,255,0.03);
+      border: 1px solid rgba(0,229,255,0.15);
+      padding: 16px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .ai-section-title {
+      font-size: 0.58rem; letter-spacing: 4px; text-transform: uppercase;
+      color: #00e5ff; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ai-section-title::before {
+      content: '◈'; font-size: 0.75rem; animation: ai-pulse 2s infinite;
+    }
+    @keyframes ai-pulse {
+      0%,100% { opacity:1; } 50% { opacity:0.3; }
+    }
+    .ai-prompt-input {
+      width: 100%; background: rgba(0,229,255,0.04);
+      border: 1px solid rgba(0,229,255,0.2);
+      color: var(--white); padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+      outline: none; transition: border-color 0.2s; resize: vertical;
+      min-height: 70px;
+    }
+    .ai-prompt-input:focus { border-color: rgba(0,229,255,0.5); }
+    .ai-prompt-input::placeholder { color: rgba(245,240,232,0.2); }
+    .ai-run-btn {
+      width: 100%; margin-top: 8px; padding: 11px;
+      background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.3);
+      color: #00e5ff; font-size: 0.62rem; letter-spacing: 3px;
+      text-transform: uppercase; cursor: pointer; transition: 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .ai-run-btn:hover { background: rgba(0,229,255,0.18); }
+    .ai-run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .ai-status {
+      font-size: 0.68rem; color: rgba(0,229,255,0.6);
+      margin-top: 8px; min-height: 18px; letter-spacing: 1px;
+    }
+    .ai-tabs {
+      display: flex; gap: 0; margin-bottom: 12px; border-bottom: 1px solid rgba(0,229,255,0.1);
+    }
+    .ai-tab {
+      flex: 1; padding: 8px; background: none; border: none;
+      font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(0,229,255,0.35); cursor: pointer; transition: 0.2s;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    .ai-tab.active { color: #00e5ff; border-bottom-color: #00e5ff; }
+
+    /* ── ANTI-CACHÉ ─────────────────────────────────────────────── */
+    .danger-zone {
+      background: rgba(224,80,80,0.04);
+      border: 1px solid rgba(224,80,80,0.15);
+      padding: 14px; margin-top: 16px;
+    }
+    .danger-zone-title {
+      font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase;
+      color: rgba(224,80,80,0.6); margin-bottom: 10px;
+    }
+    .btn-danger {
+      width: 100%; padding: 10px; background: none;
+      border: 1px solid rgba(224,80,80,0.3); color: rgba(224,80,80,0.7);
+      font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase;
+      cursor: pointer; transition: 0.2s; margin-bottom: 6px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-danger:hover { background: rgba(224,80,80,0.08); color: #e05050; border-color: #e05050; }
   </style>
 </head>
 <body>
@@ -451,6 +523,31 @@
     <div class="sidebar">
       <div class="sidebar-title">
         <span id="form-mode-label">NUEVO PRODUCTO</span>
+      </div>
+
+      <!-- ◈ ASISTENTE IA -->
+      <div class="ai-section">
+        <div class="ai-section-title">ASISTENTE IA</div>
+        <div class="ai-tabs">
+          <button class="ai-tab active" onclick="aiSwitchTab('text',this)">DESCRIPCIÓN</button>
+          <button class="ai-tab" onclick="aiSwitchTab('image',this)">IMAGEN URL</button>
+        </div>
+
+        <div id="ai-tab-text">
+          <textarea class="ai-prompt-input" id="ai-text-input"
+            placeholder="Ej: camisa de lino azul cielo, talla M, precio 85000, tienda Divino, material lino premium, corte regular fit..."></textarea>
+        </div>
+        <div id="ai-tab-image" style="display:none;">
+          <input class="ai-prompt-input" type="text" id="ai-img-url"
+            placeholder="https://... (pega la URL de la imagen del producto)"
+            style="min-height:auto;resize:none;padding:10px 14px;">
+          <p style="font-size:0.65rem;color:rgba(245,240,232,0.2);margin-top:6px;line-height:1.5;">La IA analizará la imagen e intentará detectar el producto.</p>
+        </div>
+
+        <button class="ai-run-btn" id="ai-run-btn" onclick="runAI()">
+          ◈ GENERAR CON IA
+        </button>
+        <div class="ai-status" id="ai-status"></div>
       </div>
 
       <div class="form-group">
@@ -569,6 +666,22 @@
 
         <button class="btn-secondary" onclick="exportJS()" style="margin-top:8px;">&#8595; DESCARGAR main.js (local)</button>
       </div>
+
+      <!-- ZONA DE EMERGENCIA -->
+      <div style="margin-top:20px;">
+        <div class="danger-zone">
+          <div class="danger-zone-title">⚠ ZONA DE EMERGENCIA</div>
+          <button class="btn-danger" onclick="clearInventoryCache()">
+            🗑 LIMPIAR CACHÉ DE INVENTARIO
+          </button>
+          <button class="btn-danger" onclick="clearAllCache()">
+            ⚡ REINICIO COMPLETO (BORRA TODO)
+          </button>
+          <p style="font-size:0.62rem;color:rgba(224,80,80,0.4);margin-top:8px;line-height:1.5;">
+            Si los productos no cargan en la tienda, usa "Limpiar Caché". Solo en emergencias.
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- MAIN: TABLA DE PRODUCTOS -->
@@ -592,6 +705,194 @@
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────────────
+
+// ══════════════════════════════════════════════════════════════
+// ◈ ASISTENTE IA — Claude API integrada
+// ══════════════════════════════════════════════════════════════
+
+let aiCurrentTab = 'text';
+
+function aiSwitchTab(tab, btn) {
+  aiCurrentTab = tab;
+  document.querySelectorAll('.ai-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ai-tab-text').style.display  = tab === 'text'  ? 'block' : 'none';
+  document.getElementById('ai-tab-image').style.display = tab === 'image' ? 'block' : 'none';
+}
+
+async function runAI() {
+  const btn    = document.getElementById('ai-run-btn');
+  const status = document.getElementById('ai-status');
+
+  // Get current store + categories context
+  const storeEl = document.getElementById('f-store');
+  const storeName = storeEl ? storeEl.options[storeEl.selectedIndex].text : 'la tienda';
+  const typeEl = document.getElementById('f-type');
+  const categories = typeEl ? Array.from(typeEl.options).map(o => o.value).join(', ') : '';
+
+  let userPrompt = '';
+  let imageData  = null;
+
+  if (aiCurrentTab === 'text') {
+    userPrompt = (document.getElementById('ai-text-input').value || '').trim();
+    if (!userPrompt) { status.textContent = 'Escribe una descripción primero.'; return; }
+  } else {
+    const imgUrl = (document.getElementById('ai-img-url').value || '').trim();
+    if (!imgUrl) { status.textContent = 'Pega una URL de imagen primero.'; return; }
+    // Pre-fill img field immediately
+    document.getElementById('f-img').value = imgUrl;
+    previewImg(imgUrl);
+    userPrompt = 'Analiza esta imagen de producto y rellena todos los campos.';
+    imageData = imgUrl;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '◈ PENSANDO...';
+  status.textContent = 'La IA está analizando...';
+
+  const systemPrompt = `Eres un asistente especializado en productos de lujo para un mall en Costa Rica.
+Tu tarea es analizar la descripción o imagen de un producto y devolver un JSON con los campos del formulario.
+
+Tienda actual: "${storeName}"
+Categorías disponibles: ${categories || 'moda, tech, fragancias, joyería, accesorios, celulares, belleza'}
+
+Devuelve ÚNICAMENTE un JSON válido con esta estructura exacta (sin markdown, sin texto extra):
+{
+  "name": "Nombre del producto (conciso y elegante)",
+  "price": 123456,
+  "stock": 10,
+  "type": "categoría que mejor encaje de las disponibles",
+  "desc": "Descripción breve y atractiva (máximo 120 caracteres)",
+  "specs": {
+    "Clave1": "Valor1",
+    "Clave2": "Valor2"
+  }
+}
+
+Para specs genera entre 3 y 6 especificaciones relevantes según el tipo de producto:
+- Ropa/moda: Material, Tallas, Corte, Origen
+- Tech: Procesador/Chip, RAM/Almacenamiento, Conectividad, Garantía
+- Fragancias: Familia, Notas base, Notas corazón, Presentación
+- Joyería: Material, Peso, Dimensiones, Certificado
+- Celulares: Chip, Cámara, Almacenamiento, Pantalla
+
+Si no se da precio, estima uno razonable en colones costarricenses (₡).
+El stock por defecto es 10 si no se menciona.`;
+
+  try {
+    const messages = [];
+
+    if (imageData) {
+      messages.push({
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'url', url: imageData } },
+          { type: 'text', text: userPrompt }
+        ]
+      });
+    } else {
+      messages.push({ role: 'user', content: userPrompt });
+    }
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || 'Error de API');
+    }
+
+    const data = await res.json();
+    const raw  = data.content.map(b => b.text || '').join('');
+
+    // Parse JSON - remove any accidental markdown fences
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    // Fill the form fields
+    if (parsed.name)  document.getElementById('f-name').value  = parsed.name;
+    if (parsed.price) document.getElementById('f-price').value = parsed.price;
+    if (parsed.stock) document.getElementById('f-stock').value = parsed.stock;
+    if (parsed.desc)  document.getElementById('f-desc').value  = parsed.desc;
+
+    // Set type/category
+    if (parsed.type) {
+      const typeSelect = document.getElementById('f-type');
+      let matched = false;
+      for (let opt of typeSelect.options) {
+        if (opt.value.toLowerCase() === parsed.type.toLowerCase()) {
+          typeSelect.value = opt.value;
+          matched = true; break;
+        }
+      }
+      // If no match, just set the value anyway
+      if (!matched) typeSelect.value = parsed.type;
+    }
+
+    // Fill specs
+    if (parsed.specs && typeof parsed.specs === 'object') {
+      currentSpecs = {};
+      Object.entries(parsed.specs).forEach(([k, v]) => { currentSpecs[k] = String(v); });
+      renderSpecsList();
+    }
+
+    // If image tab and img was already set, keep it
+    if (aiCurrentTab === 'text' && !document.getElementById('f-img').value && parsed.img) {
+      document.getElementById('f-img').value = parsed.img;
+      previewImg(parsed.img);
+    }
+
+    status.textContent = '✓ Formulario listo — revisa y ajusta si necesitas.';
+    status.style.color = '#c9a84c';
+    showToast('¡IA completó el formulario!', 'success');
+
+    // Animate fields
+    ['f-name','f-price','f-stock','f-desc'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.borderColor = 'rgba(0,229,255,0.5)'; setTimeout(() => el.style.borderColor = '', 1500); }
+    });
+
+  } catch(err) {
+    status.textContent = 'Error: ' + err.message;
+    status.style.color = '#e05050';
+    showToast('Error de IA: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '◈ GENERAR CON IA';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ⚠ ZONA DE EMERGENCIA — Anti-caché
+// ══════════════════════════════════════════════════════════════
+
+function clearInventoryCache() {
+  if (!confirm('¿Limpiar el caché de inventario?\nLos productos volverán al inventario por defecto hasta el próximo commit.')) return;
+  localStorage.removeItem('lm-inventory');
+  localStorage.removeItem('admin-inventory');
+  showToast('Caché de inventario limpiado ✓', 'success');
+  setTimeout(() => location.reload(), 800);
+}
+
+function clearAllCache() {
+  if (!confirm('⚠ REINICIO COMPLETO\nSe borrarán: inventario, carrito, favoritos, sesiones de usuarios.\n¿Continuar?')) return;
+  const keysToKeep = ['lm-users', 'lm-session', 'admin-gh-config'];
+  const allKeys = Object.keys(localStorage);
+  allKeys.forEach(k => {
+    if (!keysToKeep.includes(k)) localStorage.removeItem(k);
+  });
+  showToast('Reinicio completo ✓ — recarga la tienda', 'success');
+  setTimeout(() => location.reload(), 800);
+}
+
 const ADMIN_PASSWORD = 'admin1234'; // Cambia esta contraseña
 
 // ── AUTH ────────────────────────────────────────────────────────────────────
