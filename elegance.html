@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elegance Studio — nombrePAG</title>
+  <title>Elegance Beauty Esthetic — NOMBREPAG</title>
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     :root { --gold: #d4a574; --gold-light: #f0c89a; }
-    .tag-joyería { color: #d4a574; border-color: rgba(212,165,116,0.3); }
-    .tag-fragancias { color: #a896b0; border-color: rgba(168,150,176,0.3); }
+    .product-price,.cart-total-val { color:var(--gold); }
+    .whatsapp-btn { background:var(--gold); }
+    .whatsapp-btn:hover { background:var(--gold-light); box-shadow:0 0 30px rgba(212,165,116,0.35); }
+    .add-btn::after,.btn-modal-add::after { background:var(--gold); }
+    #progress-bar { background:linear-gradient(to right,var(--gold),var(--gold-light)); }
   </style>
 </head>
 <body data-store="elegance">
+  <div id="progress-bar"></div>
   <div class="grain"></div>
   <div id="cursor-dot" class="cursor-dot"></div>
   <div id="cursor-ring" class="cursor-ring"></div>
@@ -21,41 +25,66 @@
     <a href="index.html" class="nav-logo">NOMBRE<em>PAG</em></a>
     <div class="nav-right">
       <a href="index.html" class="nav-link">← Volver</a>
-      <button class="cart-btn" onclick="toggleCart()">
-        BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span>
-      </button>
+      <button class="cart-btn" onclick="toggleCart()">BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span></button>
     </div>
   </nav>
 
   <header class="store-page-hero">
     <div class="store-page-bg" style="background-image:url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1600')"></div>
     <div class="store-page-content">
-      <p class="store-page-eyebrow">NO SE Q PONER · Nº 03</p>
-      <h1 class="store-page-title" style="font-family:'Playfair Display',serif; font-style:italic;">Elegance Beauty Esthetic</h1>
+      <p class="store-page-eyebrow">Belleza & Estética · Nº 03</p>
+      <h1 class="store-page-title" style="font-family:'Playfair Display',serif;font-style:italic;">Elegance Beauty Esthetic</h1>
     </div>
   </header>
 
   <div class="filter-bar">
     <button class="filter-btn active" data-type="all" onclick="filterStore('all','elegance')">Todo</button>
-    <button class="filter-btn" data-type="joyería" onclick="filterStore('joyería','elegance')">CATALOGO</button>
-    <button class="filter-btn" data-type="fragancias" onclick="filterStore('PRODUCTOS','elegance')">Fragancias</button>
+    <button class="filter-btn" data-type="joyería" onclick="filterStore('joyería','elegance')">Joyería</button>
+    <button class="filter-btn" data-type="fragancias" onclick="filterStore('fragancias','elegance')">Fragancias</button>
+    <button class="filter-btn" data-type="belleza" onclick="filterStore('belleza','elegance')">Belleza</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <input id="search-input" type="text" placeholder="Buscar productos..." oninput="onSearch(this.value,'elegance')">
+    </div>
+    <select class="sort-select" onchange="sortProducts(this.value,'elegance')">
+      <option value="">Ordenar por</option>
+      <option value="price-asc">Precio: menor a mayor</option>
+      <option value="price-desc">Precio: mayor a menor</option>
+      <option value="name">Nombre A–Z</option>
+      <option value="newest">Más recientes</option>
+    </select>
   </div>
 
   <div class="products-grid" id="product-grid"></div>
 
+  <section id="recent-views-section" style="display:none;">
+    <div class="recent-label">VISTOS RECIENTEMENTE</div>
+    <div class="recent-grid"></div>
+  </section>
+
   <footer>
     <div class="footer-logo">NOMBRE<em>PAG</em></div>
-    <div class="footer-copy">© 2025 NOMBREPAG · San José, Costa Rica</div>
+    <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
   </footer>
 
+  <div id="product-modal"></div>
   <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
   <aside id="cart-panel" class="cart-panel">
     <div class="cart-panel-head">
       <div class="cart-panel-title">Tu Selección</div>
-      <button class="cart-close" onclick="closeCart()">✕</button>
+      <div class="cart-head-right">
+        <button class="cart-clear-btn" onclick="clearCart()">VACIAR</button>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </div>
     </div>
     <div class="cart-items-wrap" id="cart-items-wrap"></div>
     <div class="cart-panel-foot">
+      <div id="cart-subtotal-row" style="display:none;">
+        <span class="cart-total-label">Subtotal</span>
+        <span style="font-size:0.85rem;color:rgba(245,240,232,0.5);font-family:'Bebas Neue';letter-spacing:2px;">₡<span id="cart-total">0</span></span>
+      </div>
       <div class="cart-total-row">
         <span class="cart-total-label">Total</span>
         <span class="cart-total-val">₡<span id="cart-total">0</span></span>
@@ -67,6 +96,7 @@
     </div>
   </aside>
 
+  <button id="back-to-top">↑</button>
   <script src="js/main.js"></script>
 </body>
 </html>

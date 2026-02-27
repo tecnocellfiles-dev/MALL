@@ -3,29 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Divino Cielo — NoNBREdpaGINA</title>
+  <title>Divino Cielo — NOMBREPAG</title>
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 <body data-store="divino">
+  <div id="progress-bar"></div>
   <div class="grain"></div>
   <div id="cursor-dot" class="cursor-dot"></div>
   <div id="cursor-ring" class="cursor-ring"></div>
 
   <nav>
-    <a href="index.html" class="nav-logo">nombrepag<em>blalbalbal</em></a>
+    <a href="index.html" class="nav-logo">NOMBRE<em>PAG</em></a>
     <div class="nav-right">
       <a href="index.html" class="nav-link">← Volver</a>
-      <button class="cart-btn" onclick="toggleCart()">
-        BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span>
-      </button>
+      <button class="cart-btn" onclick="toggleCart()">BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span></button>
     </div>
   </nav>
 
   <header class="store-page-hero">
     <div class="store-page-bg" style="background-image:url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600')"></div>
     <div class="store-page-content">
-      <p class="store-page-eyebrow">TIENDA DE ROPA · Nº 01</p>
+      <p class="store-page-eyebrow">TIENDA DE MODA · Nº 01</p>
       <h1 class="store-page-title" style="font-family:'Playfair Display',serif;">Divino Cielo</h1>
     </div>
   </header>
@@ -33,24 +32,51 @@
   <div class="filter-bar">
     <button class="filter-btn active" data-type="all" onclick="filterStore('all','divino')">Todo</button>
     <button class="filter-btn" data-type="moda" onclick="filterStore('moda','divino')">Moda</button>
+    <button class="filter-btn" data-type="fragancias" onclick="filterStore('fragancias','divino')">Fragancias</button>
     <button class="filter-btn" data-type="tech" onclick="filterStore('tech','divino')">Tech</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <input id="search-input" type="text" placeholder="Buscar productos..." oninput="onSearch(this.value,'divino')">
+    </div>
+    <select class="sort-select" onchange="sortProducts(this.value,'divino')">
+      <option value="">Ordenar por</option>
+      <option value="price-asc">Precio: menor a mayor</option>
+      <option value="price-desc">Precio: mayor a menor</option>
+      <option value="name">Nombre A–Z</option>
+      <option value="newest">Más recientes</option>
+    </select>
   </div>
 
   <div class="products-grid" id="product-grid"></div>
 
+  <section id="recent-views-section" style="display:none;">
+    <div class="recent-label">VISTOS RECIENTEMENTE</div>
+    <div class="recent-grid"></div>
+  </section>
+
   <footer>
-    <div class="footer-logo">LUXURY<em>MALL</em></div>
+    <div class="footer-logo">NOMBRE<em>PAG</em></div>
     <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
   </footer>
 
+  <div id="product-modal"></div>
   <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
   <aside id="cart-panel" class="cart-panel">
     <div class="cart-panel-head">
       <div class="cart-panel-title">Tu Selección</div>
-      <button class="cart-close" onclick="closeCart()">✕</button>
+      <div class="cart-head-right">
+        <button class="cart-clear-btn" onclick="clearCart()">VACIAR</button>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </div>
     </div>
     <div class="cart-items-wrap" id="cart-items-wrap"></div>
     <div class="cart-panel-foot">
+      <div id="cart-subtotal-row" style="display:none;">
+        <span class="cart-total-label">Subtotal</span>
+        <span style="font-size:0.85rem;color:rgba(245,240,232,0.5);font-family:'Bebas Neue';letter-spacing:2px;">₡<span id="cart-total">0</span></span>
+      </div>
       <div class="cart-total-row">
         <span class="cart-total-label">Total</span>
         <span class="cart-total-val">₡<span id="cart-total">0</span></span>
@@ -62,6 +88,7 @@
     </div>
   </aside>
 
+  <button id="back-to-top">↑</button>
   <script src="js/main.js"></script>
 </body>
 </html>

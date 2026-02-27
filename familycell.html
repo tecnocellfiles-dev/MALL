@@ -8,30 +8,30 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     :root { --gold: #00e5ff; --gold-light: #80f4ff; }
-    .store-page-eyebrow { color: var(--cyan); }
-    .store-number { color: var(--cyan); }
-    .product-price { color: var(--cyan); }
-    .whatsapp-btn { background: var(--cyan); }
-    .whatsapp-btn:hover { background: #80f4ff; box-shadow: 0 0 30px rgba(0,229,255,0.35); }
-    .cart-total-val { color: var(--cyan); }
-    .filter-btn:hover, .filter-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.04); }
-    .store-cta, .store-card-number { color: var(--cyan); }
-    .product-card::before { background: linear-gradient(to right, transparent, var(--cyan), transparent); }
-    .cart-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .store-page-eyebrow,.store-number,.product-price,.cart-total-val,.store-cta { color:var(--cyan); }
+    .whatsapp-btn { background:var(--cyan); }
+    .whatsapp-btn:hover { background:#80f4ff; box-shadow:0 0 30px rgba(0,229,255,0.35); }
+    .filter-btn:hover,.filter-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,229,255,0.04); }
+    .product-card::before { background:linear-gradient(to right,transparent,var(--cyan),transparent); }
+    .cart-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+    .add-btn::after { background:var(--cyan); }
+    .add-btn:hover span { color:#000; }
+    .btn-modal-add::after { background:var(--cyan); }
+    .btn-modal-add:hover span { color:#000; }
+    #progress-bar { background:linear-gradient(to right,var(--cyan),#80f4ff); }
   </style>
 </head>
 <body data-store="family">
+  <div id="progress-bar"></div>
   <div class="grain"></div>
   <div id="cursor-dot" class="cursor-dot"></div>
   <div id="cursor-ring" class="cursor-ring"></div>
 
   <nav>
-    <a href="index.html" class="nav-logo">nombrepagina<em>aqui</em></a>
+    <a href="index.html" class="nav-logo">NOMBRE<em>PAG</em></a>
     <div class="nav-right">
       <a href="index.html" class="nav-link">← Volver</a>
-      <button class="cart-btn" onclick="toggleCart()">
-        BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span>
-      </button>
+      <button class="cart-btn" onclick="toggleCart()">BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span></button>
     </div>
   </nav>
 
@@ -39,30 +39,58 @@
     <div class="store-page-bg" style="background-image:url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1600')"></div>
     <div class="store-page-content">
       <p class="store-page-eyebrow">Next Gen Technology · Nº 02</p>
-      <h1 class="store-page-title" style="font-family:'Bebas Neue',sans-serif; letter-spacing:4px;">FamilyCell Labs</h1>
+      <h1 class="store-page-title" style="font-family:'Bebas Neue',sans-serif;letter-spacing:4px;">FamilyCell And More</h1>
     </div>
   </header>
 
   <div class="filter-bar">
     <button class="filter-btn active" data-type="all" onclick="filterStore('all','family')">Todo</button>
     <button class="filter-btn" data-type="tech" onclick="filterStore('tech','family')">Tech</button>
+    <button class="filter-btn" data-type="celulares" onclick="filterStore('celulares','family')">Celulares</button>
+    <button class="filter-btn" data-type="accesorios" onclick="filterStore('accesorios','family')">Accesorios</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <input id="search-input" type="text" placeholder="Buscar productos..." oninput="onSearch(this.value,'family')">
+    </div>
+    <select class="sort-select" onchange="sortProducts(this.value,'family')">
+      <option value="">Ordenar por</option>
+      <option value="price-asc">Precio: menor a mayor</option>
+      <option value="price-desc">Precio: mayor a menor</option>
+      <option value="name">Nombre A–Z</option>
+      <option value="newest">Más recientes</option>
+    </select>
   </div>
 
   <div class="products-grid" id="product-grid"></div>
 
+  <section id="recent-views-section" style="display:none;">
+    <div class="recent-label">VISTOS RECIENTEMENTE</div>
+    <div class="recent-grid"></div>
+  </section>
+
   <footer>
-    <div class="footer-logo">FALTAQ<em>PONER</em></div>
-    <div class="footer-copy">© 2025 NOMBRE DE LA PG · San José, Costa Rica</div>
+    <div class="footer-logo">NOMBRE<em>PAG</em></div>
+    <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
   </footer>
 
+  <div id="product-modal"></div>
   <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
   <aside id="cart-panel" class="cart-panel">
     <div class="cart-panel-head">
       <div class="cart-panel-title">Tu Pedido</div>
-      <button class="cart-close" onclick="closeCart()">✕</button>
+      <div class="cart-head-right">
+        <button class="cart-clear-btn" onclick="clearCart()">VACIAR</button>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </div>
     </div>
     <div class="cart-items-wrap" id="cart-items-wrap"></div>
     <div class="cart-panel-foot">
+      <div id="cart-subtotal-row" style="display:none;">
+        <span class="cart-total-label">Subtotal</span>
+        <span style="font-size:0.85rem;color:rgba(245,240,232,0.5);font-family:'Bebas Neue';letter-spacing:2px;">₡<span id="cart-total">0</span></span>
+      </div>
       <div class="cart-total-row">
         <span class="cart-total-label">Total</span>
         <span class="cart-total-val">₡<span id="cart-total">0</span></span>
@@ -74,6 +102,7 @@
     </div>
   </aside>
 
+  <button id="back-to-top">↑</button>
   <script src="js/main.js"></script>
 </body>
 </html>

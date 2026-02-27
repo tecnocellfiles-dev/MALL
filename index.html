@@ -3,41 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FALTAQPONER — FALTAQPONER</title>
+  <title>NOMBREPAG — Luxury Mall</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div id="progress-bar"></div>
   <div class="grain"></div>
   <div id="cursor-dot" class="cursor-dot"></div>
   <div id="cursor-ring" class="cursor-ring"></div>
 
-  <!-- NAV -->
   <nav>
-    <a href="index.html" class="nav-logo">FALTA<em>QPONER</em></a>
+    <a href="index.html" class="nav-logo">NOMBRE<em>PAG</em></a>
     <div class="nav-right">
       <a href="divino.html" class="nav-link">Divino Cielo</a>
       <a href="familycell.html" class="nav-link">FamilyCell</a>
       <a href="elegance.html" class="nav-link">Elegance</a>
-      <button class="cart-btn" onclick="toggleCart()">
-        SACO&nbsp;<span class="cart-count cart-count-badge">0</span>
-      </button>
+      <button class="cart-btn" onclick="toggleCart()">BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span></button>
     </div>
   </nav>
 
-  <!-- HERO -->
   <section class="home-hero">
-    <p class="hero-eyebrow">Costa Rica · FALTAQPONER</p>
-    <h1 class="hero-title">nOmBrE<br><em>PagJ</em></h1>
-    <p class="hero-subtitle">Tres tiendas. BLABLABLABLABLALBALBAL.</p>
+    <p class="hero-eyebrow">Costa Rica · San José</p>
+    <h1 class="hero-title">NOMBRE<br><em>PAG</em></h1>
+    <p class="hero-subtitle">Tres tiendas. Una experiencia única.</p>
     <div class="hero-scroll">
-      <span>baje pa abajo</span>
+      <span>Explorar</span>
       <div class="scroll-line"></div>
     </div>
   </section>
 
-  <!-- STORES -->
   <section class="stores-section">
     <p class="stores-label">Nuestros Locales</p>
     <div class="stores-grid">
@@ -47,7 +43,7 @@
         <div class="store-card-overlay"></div>
         <div class="store-card-content">
           <div class="store-number">01</div>
-          <div class="store-tagline">Ropa Colombiana • Cosméticos • Perfumería • Hogar • Y más</div>
+          <div class="store-tagline">Ropa Colombiana • Cosméticos • Perfumería • Hogar</div>
           <div class="store-name">Tienda<br>Divino<br>Cielo</div>
           <div class="store-cta">Explorar Catálogo</div>
         </div>
@@ -69,7 +65,7 @@
         <div class="store-card-overlay"></div>
         <div class="store-card-content">
           <div class="store-number">03</div>
-          <div class="store-tagline">Especialista profesional en técnicas de belleza y estética.</div>
+          <div class="store-tagline">Especialista profesional en belleza y estética</div>
           <div class="store-name">Elegance<br>Beauty<br>Esthetic</div>
           <div class="store-cta">Descubrir</div>
         </div>
@@ -78,21 +74,23 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
-    <div class="footer-logo">NOMBRE<em>DLAPAGINAQFALTA</em></div>
-    <div class="footer-copy">© 2025 FALTAQPONER · San José, Costa Rica</div>
+    <div class="footer-logo">NOMBRE<em>PAG</em></div>
+    <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
   </footer>
 
-  <!-- CART -->
   <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
   <aside id="cart-panel" class="cart-panel">
     <div class="cart-panel-head">
       <div class="cart-panel-title">Tu Selección</div>
-      <button class="cart-close" onclick="closeCart()">✕</button>
+      <div class="cart-head-right">
+        <button class="cart-clear-btn" onclick="clearCart()">VACIAR</button>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </div>
     </div>
     <div class="cart-items-wrap" id="cart-items-wrap"></div>
     <div class="cart-panel-foot">
+      <div id="cart-subtotal-row" style="display:none;"></div>
       <div class="cart-total-row">
         <span class="cart-total-label">Total</span>
         <span class="cart-total-val">₡<span id="cart-total">0</span></span>
@@ -104,6 +102,7 @@
     </div>
   </aside>
 
+  <button id="back-to-top">↑</button>
   <script src="js/main.js"></script>
 </body>
 </html>
