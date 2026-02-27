@@ -473,9 +473,14 @@
           <input class="form-input" type="number" id="f-price" placeholder="150000">
         </div>
         <div class="form-group">
-          <label class="form-label">Categoría</label>
-          <select class="form-select" id="f-type"></select>
+          <label class="form-label">Stock (unidades)</label>
+          <input class="form-input" type="number" id="f-stock" placeholder="10" min="0">
         </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Categoría</label>
+        <select class="form-select" id="f-type"></select>
       </div>
 
       <div class="form-group">
@@ -486,6 +491,20 @@
       <div class="form-group">
         <label class="form-label">URL de Imagen</label>
         <input class="form-input" type="text" id="f-img" placeholder="https://..." oninput="previewImg(this.value)">
+      </div>
+
+      <!-- DETALLES / ESPECIFICACIONES DINÁMICAS -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);">
+          DETALLES DEL PRODUCTO <span style="color:rgba(255,255,255,0.2);font-size:0.55rem;">(opcional)</span>
+        </div>
+        <div id="specs-list" style="margin-bottom:8px;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;">
+          <input class="form-input" type="text" id="spec-key" placeholder="Ej: Material" style="padding:8px 10px;font-size:0.8rem;">
+          <input class="form-input" type="text" id="spec-val" placeholder="Ej: Seda fría" style="padding:8px 10px;font-size:0.8rem;" onkeydown="if(event.key==='Enter') addSpec()">
+          <button onclick="addSpec()" style="padding:8px 12px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.8rem;letter-spacing:1px;cursor:pointer;white-space:nowrap;transition:background 0.2s;height:100%;" onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='var(--gold-dim)'">+</button>
+        </div>
+        <p style="font-size:0.65rem;color:var(--muted);margin-top:8px;line-height:1.5;">Agrega pares de nombre / valor. Se mostrarán como tabla en el modal del producto.</p>
       </div>
 
       <div class="img-preview" id="img-preview">
@@ -570,22 +589,24 @@ function doLogout() {
 
 // ── INVENTORY (loaded from localStorage or defaults) ────────────────────────
 const DEFAULT_INVENTORY = [
-  { id:1, name:"Saco 'Cielo' Silk-Line", price:285000, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800", desc:"Saco de seda fría, corte estructurado, forro de lujo." },
-  { id:2, name:"Vestido Gala Nightfall", price:320000, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800", desc:"Vestido de noche, caída perfecta, exclusivo." },
-  { id:3, name:"MacBook Pro M3 Elite", price:1850000, store:"divino", type:"tech", img:"https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg", desc:"Chip M3, 18 GB RAM, pantalla Liquid Retina XDR." },
-  { id:4, name:"Camisa Lino 'Nube'", price:95000, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800", desc:"Lino premium, bordado artesanal." },
-  { id:5, name:"Bolso Cuero Artesanal", price:210000, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800", desc:"Cuero genuino, costura a mano, edición limitada." },
-  { id:6, name:"Victoria's Secret Amber Romance", price:10000, store:"divino", type:"moda", img:"https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg", desc:"Ámbar resinoso y crema de vainilla. Un aroma cálido, denso y sofisticadamente dulce." },
-  { id:7, name:"NVIDIA RTX 4090 Lab", price:1100000, store:"family", type:"tech", img:"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg", desc:"24 GB GDDR6X, máxima potencia gráfica." },
-  { id:8, name:"Teclado Custom 'Cell'", price:145000, store:"family", type:"tech", img:"https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800", desc:"Switches mecánicos Cherry MX, aluminio CNC." },
-  { id:9, name:"iPhone 15 Pro Max", price:980000, store:"family", type:"tech", img:"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800", desc:"Titanio, cámara 48MP, chip A17 Pro." },
-  { id:10, name:"AirPods Pro 2 Gen", price:210000, store:"family", type:"tech", img:"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800", desc:"Cancelación activa de ruido, audio espacial." },
-  { id:11, name:'Monitor 4K OLED 32"', price:620000, store:"family", type:"tech", img:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800", desc:"OLED, 120Hz, HDR True Black 400." },
-  { id:12, name:"Reloj Cronógrafo Noir", price:890000, store:"elegance", type:"joyería", img:"https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=800", desc:"Acero inoxidable, movimiento suizo, edición limitada." },
-  { id:13, name:"Collar Perlas Barrocas", price:350000, store:"elegance", type:"joyería", img:"https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800", desc:"Perlas de agua dulce, cierre de oro 18k." },
-  { id:14, name:"Perfume 'Ámbar Nuit'", price:145000, store:"elegance", type:"fragancias", img:"https://images.unsplash.com/photo-1541643600914-78b084683702?q=80&w=800", desc:"Ámbar, oud y rosa. Fragancia exclusiva 50ml." },
-  { id:15, name:"Aretes Diamante Micro", price:420000, store:"elegance", type:"joyería", img:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800", desc:"0.5ct VVS2, montura de platino." },
-  { id:16, name:"Perfume 'Blanche Iris'", price:130000, store:"elegance", type:"fragancias", img:"https://images.unsplash.com/photo-1563170351-be82bc888aa4?q=80&w=800", desc:"Iris, musgo blanco y sándalo. 30ml." },
+  { id:1, name:"Saco 'Cielo' Silk-Line", price:285000, stock:8, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800", desc:"Saco de seda fría, corte estructurado, forro de lujo.", specs:{"Material":"Seda fría premium","Corte":"Estructurado","Forro":"Lujo","Origen":"Colombia"} },
+  { id:2, name:"Vestido Gala Nightfall", price:320000, stock:3, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800", desc:"Vestido de noche, caída perfecta, exclusivo.", specs:{"Silueta":"A-line","Tela":"Chifón","Largo":"Maxi","Ocasión":"Gala / Noche"} },
+  { id:3, name:"MacBook Pro M3 Elite", price:1850000, stock:5, store:"divino", type:"tech", img:"https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg", desc:"Chip M3, 18 GB RAM, pantalla Liquid Retina XDR.", specs:{"Chip":"Apple M3","RAM":"18 GB","Almacenamiento":"512 GB SSD","Pantalla":"Liquid Retina XDR 14\""} },
+  { id:4, name:"Camisa Lino 'Nube'", price:95000, stock:12, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800", desc:"Lino premium, bordado artesanal.", specs:{"Material":"Lino premium","Bordado":"Artesanal","Cuello":"Clásico","Tallas":"XS–XL"} },
+  { id:5, name:"Bolso Cuero Artesanal", price:210000, stock:2, store:"divino", type:"moda", img:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800", desc:"Cuero genuino, costura a mano, edición limitada.", specs:{"Material":"Cuero genuino","Costura":"A mano","Edición":"Limitada","Dimensiones":"32 × 24 × 10 cm"} },
+  { id:6, name:"Victoria's Secret Amber Romance", price:10000, stock:20, store:"divino", type:"fragancias", img:"https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg", desc:"Ámbar resinoso y crema de vainilla.", specs:{"Familia":"Oriental","Notas base":"Ámbar, Vainilla","Notas corazón":"Gardenia","Presentación":"Loción 250 ml"} },
+  { id:7, name:"NVIDIA RTX 4090 Lab", price:1100000, stock:4, store:"family", type:"tech", img:"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg", desc:"24 GB GDDR6X, máxima potencia gráfica.", specs:{"VRAM":"24 GB GDDR6X","Núcleos CUDA":"16384","TDP":"450 W","Interfaz":"PCIe 4.0 x16"} },
+  { id:8, name:"Teclado Custom 'Cell'", price:145000, stock:7, store:"family", type:"tech", img:"https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800", desc:"Switches mecánicos Cherry MX, aluminio CNC.", specs:{"Switches":"Cherry MX Red","Cuerpo":"Aluminio CNC","Conectividad":"USB-C","Retroiluminación":"RGB"} },
+  { id:9, name:"iPhone 15 Pro Max", price:980000, stock:6, store:"family", type:"celulares", img:"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800", desc:"Titanio, cámara 48MP, chip A17 Pro.", specs:{"Chip":"A17 Pro","Cámara":"48 MP triple","Almacenamiento":"256 GB","Material":"Titanio grado 5"} },
+  { id:10, name:"AirPods Pro 2 Gen", price:210000, stock:11, store:"family", type:"accesorios", img:"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800", desc:"Cancelación activa de ruido, audio espacial.", specs:{"ANC":"Activa adaptativa","Audio":"Espacial personalizado","Batería":"6h + 24h estuche","Chip":"H2"} },
+  { id:11, name:'Monitor 4K OLED 32"', price:620000, stock:3, store:"family", type:"tech", img:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800", desc:"OLED, 120Hz, HDR True Black 400.", specs:{"Panel":"OLED","Resolución":"3840×2160","Tasa de refresco":"120 Hz","HDR":"True Black 400"} },
+  { id:12, name:"Reloj Cronógrafo Noir", price:890000, stock:2, store:"elegance", type:"joyería", img:"https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=800", desc:"Acero inoxidable, movimiento suizo, edición limitada.", specs:{"Movimiento":"Suizo automático","Caja":"Acero 316L","Cristal":"Zafiro antirreflejo","Resistencia al agua":"100m"} },
+  { id:13, name:"Collar Perlas Barrocas", price:350000, stock:5, store:"elegance", type:"joyería", img:"https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800", desc:"Perlas de agua dulce, cierre de oro 18k.", specs:{"Perlas":"Agua dulce barrocas","Cierre":"Oro 18k","Largo":"45 cm","Certificado":"Incluido"} },
+  { id:14, name:"Perfume 'Ámbar Nuit'", price:145000, stock:9, store:"elegance", type:"fragancias", img:"https://images.unsplash.com/photo-1541643600914-78b084683702?q=80&w=800", desc:"Ámbar, oud y rosa. Fragancia exclusiva 50ml.", specs:{"Familia":"Oriental","Notas base":"Oud, Ámbar","Notas corazón":"Rosa búlgara","Volumen":"50 ml"} },
+  { id:15, name:"Aretes Diamante Micro", price:420000, stock:4, store:"elegance", type:"joyería", img:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800", desc:"0.5ct VVS2, montura de platino.", specs:{"Diamantes":"0.5 ct VVS2","Montura":"Platino 950","Corte":"Brillante","Certificado":"GIA"} },
+  { id:16, name:"Victoria's Secret Romance", price:10000, stock:15, store:"divino", type:"fragancias", img:"https://victoriassecretbeautycr.vtexassets.com/arquivos/ids/172845-1200-1600?v=638030941474070000&width=1200&height=1600&aspect=true", desc:"Pétalos de rosa. Almizcle puro. Enamorándome de ti.", specs:{"Familia":"Floral","Notas base":"Almizcle blanco","Notas corazón":"Rosa, Lila","Presentación":"Loción 250 ml"} },
+  { id:17, name:"Victoria's Secret Romantic", price:10000, stock:18, store:"divino", type:"fragancias", img:"https://cdnx.jumpseller.com/la-perfumeria-cl/image/69524237/resize/540/540?1762793584", desc:"Floral – clásico, femenino y delicado.", specs:{"Familia":"Floral","Notas base":"Sándalo","Notas corazón":"Jazmín, Rosa","Presentación":"Loción 250 ml"} },
+  { id:18, name:"Perfume 'Blanche Iris'", price:130000, stock:7, store:"elegance", type:"fragancias", img:"https://images.unsplash.com/photo-1563170351-be82bc888aa4?q=80&w=800", desc:"Iris, musgo blanco y sándalo. 30ml.", specs:{"Familia":"Floral-verde","Notas base":"Sándalo","Notas corazón":"Iris","Volumen":"30 ml"} },
 ];
 
 function loadInventory() {
@@ -602,6 +623,7 @@ let inventory = loadInventory();
 let nextId = Math.max(...inventory.map(i => i.id)) + 1;
 let editingId = null;
 let currentTab = 'all';
+let currentSpecs = {};
 
 // ── CATEGORIES PER STORE ─────────────────────────────────────────────────────
 const DEFAULT_CATEGORIES = {
@@ -728,17 +750,26 @@ function renderTable() {
 
   const storeNames = { divino: 'Divino Cielo', family: 'FamilyCell', elegance: 'Elegance' };
 
+  function stockCell(stock) {
+    if (stock === undefined || stock === null) return '<span style="color:var(--muted);font-size:0.75rem;">—</span>';
+    if (stock <= 0)  return '<span style="color:var(--red);font-size:0.72rem;letter-spacing:1px;">AGOTADO</span>';
+    if (stock <= 2)  return '<span style="color:var(--red);font-family:\'DM Mono\',monospace;font-size:0.8rem;">' + stock + ' ⚠</span>';
+    if (stock <= 5)  return '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.8rem;">' + stock + '</span>';
+    return '<span style="color:var(--green);font-family:\'DM Mono\',monospace;font-size:0.8rem;">' + stock + '</span>';
+  }
+
   container.innerHTML = '<table class="products-table">' +
     '<thead><tr>' +
-    '<th>Imagen</th><th>Nombre</th><th>Precio</th><th>Tipo</th>' +
+    '<th>Imagen</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Tipo</th>' +
     (currentTab === 'all' ? '<th>Tienda</th>' : '') +
     '<th>Acciones</th>' +
     '</tr></thead><tbody>' +
     filtered.map(item =>
       '<tr class="product-row">' +
       '<td><img class="prod-img" src="' + item.img + '" alt="" onerror="this.style.opacity=0.2"></td>' +
-      '<td class="prod-name">' + item.name + '</td>' +
+      '<td class="prod-name">' + item.name + (item.specs && Object.keys(item.specs).length > 0 ? ' <span style="font-size:0.6rem;letter-spacing:1px;color:var(--cyan);margin-left:6px;">SPECS</span>' : '') + '</td>' +
       '<td class="prod-price">₡' + item.price.toLocaleString() + '</td>' +
+      '<td>' + stockCell(item.stock) + '</td>' +
       '<td><span class="prod-type type-' + item.type + '">' + item.type + '</span></td>' +
       (currentTab === 'all' ? '<td style="font-size:0.75rem;color:var(--muted);">' + (storeNames[item.store] || item.store) + '</td>' : '') +
       '<td>' +
@@ -763,6 +794,7 @@ function previewImg(url) {
 function clearForm() {
   document.getElementById('f-name').value = '';
   document.getElementById('f-price').value = '';
+  document.getElementById('f-stock').value = '';
   document.getElementById('f-desc').value = '';
   document.getElementById('f-img').value = '';
   document.getElementById('f-store').value = 'divino';
@@ -770,11 +802,48 @@ function clearForm() {
   renderCategoryList();
   document.getElementById('cat-store-label').textContent = 'DIVINO CIELO';
   previewImg('');
+  currentSpecs = {};
+  renderSpecsList();
+}
+
+// ── SPECS ───────────────────────────────────────────────────────────────────
+let currentSpecs = {};
+
+function renderSpecsList() {
+  const list = document.getElementById('specs-list');
+  if (!list) return;
+  const entries = Object.entries(currentSpecs);
+  if (entries.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = entries.map(function(pair, idx) {
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);margin-bottom:4px;">' +
+      '<span style="font-size:0.75rem;color:var(--muted);">' + pair[0] + '</span>' +
+      '<span style="font-size:0.8rem;flex:1;margin:0 12px;">' + pair[1] + '</span>' +
+      '<button onclick="removeSpec(\'' + pair[0].replace(/'/g,"\\'") + '\')" style="background:none;border:none;color:rgba(224,80,80,0.5);cursor:pointer;font-size:0.8rem;padding:2px 6px;transition:color 0.2s;" onmouseover="this.style.color=\'#e05050\'" onmouseout="this.style.color=\'rgba(224,80,80,0.5)\'">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+function addSpec() {
+  const keyEl = document.getElementById('spec-key');
+  const valEl = document.getElementById('spec-val');
+  const k = keyEl.value.trim();
+  const v = valEl.value.trim();
+  if (!k || !v) { showToast('Completa nombre y valor del detalle', 'error'); return; }
+  currentSpecs[k] = v;
+  keyEl.value = ''; valEl.value = '';
+  renderSpecsList();
+  keyEl.focus();
+}
+
+function removeSpec(key) {
+  delete currentSpecs[key];
+  renderSpecsList();
 }
 
 function saveProduct() {
   const name  = document.getElementById('f-name').value.trim();
   const price = parseInt(document.getElementById('f-price').value);
+  const stock = parseInt(document.getElementById('f-stock').value) || 0;
   const desc  = document.getElementById('f-desc').value.trim();
   const img   = document.getElementById('f-img').value.trim();
   const store = document.getElementById('f-store').value;
@@ -785,15 +854,17 @@ function saveProduct() {
     return;
   }
 
+  const specs = Object.keys(currentSpecs).length > 0 ? { ...currentSpecs } : {};
+
   if (editingId !== null) {
     const idx = inventory.findIndex(i => i.id === editingId);
     if (idx !== -1) {
-      inventory[idx] = { id: editingId, name, price, store, type, img, desc };
+      inventory[idx] = { id: editingId, name, price, stock, store, type, img, desc, specs };
       showToast('Producto actualizado ✓', 'success');
     }
     cancelEdit();
   } else {
-    inventory.push({ id: nextId++, name, price, store, type, img, desc });
+    inventory.push({ id: nextId++, name, price, stock, store, type, img, desc, specs });
     showToast('Producto agregado ✓', 'success');
     clearForm();
   }
@@ -809,6 +880,7 @@ function editProduct(id) {
 
   document.getElementById('f-name').value  = item.name;
   document.getElementById('f-price').value = item.price;
+  document.getElementById('f-stock').value = item.stock || 0;
   document.getElementById('f-desc').value  = item.desc;
   document.getElementById('f-img').value   = item.img;
   document.getElementById('f-store').value = item.store;
@@ -817,6 +889,10 @@ function editProduct(id) {
   renderCategoryList();
   document.getElementById('f-type').value  = item.type;
   previewImg(item.img);
+
+  // Cargar specs existentes
+  currentSpecs = item.specs ? { ...item.specs } : {};
+  renderSpecsList();
 
   document.getElementById('form-mode-label').textContent = 'EDITANDO PRODUCTO';
   document.getElementById('save-btn-label').textContent  = 'GUARDAR CAMBIOS';
@@ -827,6 +903,7 @@ function editProduct(id) {
 
 function cancelEdit() {
   editingId = null;
+  currentSpecs = {};
   clearForm();
   document.getElementById('form-mode-label').textContent = 'NUEVO PRODUCTO';
   document.getElementById('save-btn-label').textContent  = 'AGREGAR PRODUCTO';
@@ -843,15 +920,20 @@ function deleteProduct(id) {
 
 // ── EXPORT JS ───────────────────────────────────────────────────────────────
 function exportJS() {
-  const items = inventory.map(item =>
-    '  { id:' + item.id +
-    ', name:' + JSON.stringify(item.name) +
-    ', price:' + item.price +
-    ', store:' + JSON.stringify(item.store) +
-    ', type:' + JSON.stringify(item.type) +
-    ',\n    img:' + JSON.stringify(item.img) +
-    ',\n    desc:' + JSON.stringify(item.desc) + ' }'
-  ).join(',\n');
+  const items = inventory.map(item => {
+    const specsStr = item.specs && Object.keys(item.specs).length > 0
+      ? ', specs:' + JSON.stringify(item.specs)
+      : ', specs:{}';
+    return '  { id:' + item.id +
+      ', name:' + JSON.stringify(item.name) +
+      ', price:' + item.price +
+      ', stock:' + (item.stock || 0) +
+      ', store:' + JSON.stringify(item.store) +
+      ', type:' + JSON.stringify(item.type) +
+      ',\n    img:' + JSON.stringify(item.img) +
+      ',\n    desc:' + JSON.stringify(item.desc) +
+      specsStr + ' }';
+  }).join(',\n');
 
   const js = `// ─── INVENTORY ───────────────────────────────────────────────────────────────
 const inventory = [
