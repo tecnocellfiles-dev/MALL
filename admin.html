@@ -527,7 +527,7 @@
 
       <!-- ◈ ASISTENTE IA -->
       <div class="ai-section">
-        <div class="ai-section-title">ASISTENTE IA</div>
+        <div class="ai-section-title" style="display:flex;justify-content:space-between;align-items:center;">ASISTENTE IA <button onclick="document.getElementById('proxy-config').style.display=document.getElementById('proxy-config').style.display==='none'?'block':'none'" style="background:none;border:1px solid rgba(0,229,255,0.2);color:#00e5ff;font-size:0.55rem;letter-spacing:2px;padding:3px 8px;cursor:pointer;" title="Configurar proxy">⚙ CONFIG</button></div>
         <div class="ai-tabs">
           <button class="ai-tab active" onclick="aiSwitchTab('text',this)">DESCRIPCIÓN</button>
           <button class="ai-tab" onclick="aiSwitchTab('image',this)">IMAGEN URL</button>
@@ -548,6 +548,28 @@
           ◈ GENERAR CON IA
         </button>
         <div class="ai-status" id="ai-status"></div>
+
+        <!-- PROXY CONFIG -->
+        <div id="proxy-config" style="display:none;margin-top:14px;padding:14px;background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.15);">
+          <div style="font-size:0.6rem;letter-spacing:3px;color:#00e5ff;margin-bottom:10px;">⚙ CONFIGURAR PROXY DE IA</div>
+          <div style="font-size:0.7rem;color:rgba(245,240,232,0.45);margin-bottom:10px;line-height:1.6;">
+            Para usar la IA necesitás un proxy gratuito.<br>
+            <strong style="color:rgba(245,240,232,0.7);">Pasos (5 min):</strong><br>
+            1. Abrí <a href="https://script.google.com" target="_blank" style="color:#00e5ff;">script.google.com</a><br>
+            2. Nuevo proyecto → pegá el código del archivo <code style="color:#c9a84c;">proxy.gs</code><br>
+            3. Poné tu API key de Anthropic en la línea 1<br>
+            4. Implementar → App web → Cualquiera puede acceder<br>
+            5. Pegá la URL aquí ↓
+          </div>
+          <input type="text" id="proxy-url-input"
+            placeholder="https://script.google.com/macros/s/AKfy.../exec"
+            style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(0,229,255,0.2);color:#fff;padding:9px 12px;font-size:0.75rem;margin-bottom:8px;outline:none;"
+            value="">
+          <button onclick="saveProxyUrl(document.getElementById('proxy-url-input').value)"
+            style="width:100%;padding:9px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.3);color:#00e5ff;font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;">
+            GUARDAR URL DEL PROXY
+          </button>
+        </div>
       </div>
 
       <div class="form-group">
@@ -720,203 +742,173 @@ function aiSwitchTab(tab, btn) {
   document.getElementById('ai-tab-image').style.display = tab === 'image' ? 'block' : 'none';
 }
 
-// ─── HELPER: URL → BASE64 (resuelve CORS y NetworkError) ──────────────────────
-async function urlToBase64(url) {
-  // Estrategia 1: fetch directo (funciona con URLs del mismo dominio o CORS abierto)
-  try {
-    const response = await fetch(url, { mode: 'cors' });
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    const blob = await response.blob();
-    return await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload  = () => {
-        const dataUrl = reader.result;
-        const [header, base64] = dataUrl.split(',');
-        const mediaType = header.match(/:(.*?);/)[1];
-        resolve({ base64, mediaType });
-      };
-      reader.onerror = () => reject(new Error('FileReader falló'));
-      reader.readAsDataURL(blob);
-    });
-  } catch(e1) {
-    // Estrategia 2: cargar como <img> en canvas (funciona con más URLs pero sin datos)
-    // Si falla fetch, intentar con un proxy CORS público
-    try {
-      const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-      const response = await fetch(proxyUrl);
-      if (!response.ok) throw new Error('Proxy HTTP ' + response.status);
-      const blob = await response.blob();
-      return await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload  = () => {
-          const dataUrl = reader.result;
-          const [header, base64] = dataUrl.split(',');
-          const mediaType = (header.match(/:(.*?);/) || [,'image/jpeg'])[1];
-          resolve({ base64, mediaType });
-        };
-        reader.onerror = () => reject(new Error('FileReader falló'));
-        reader.readAsDataURL(blob);
-      });
-    } catch(e2) {
-      throw new Error('No se pudo acceder a la imagen (CORS bloqueado). Intenta copiar y pegar la imagen directamente.');
-    }
-  }
+// ═══════════════════════════════════════════════════════════════════════════
+// ASISTENTE IA — via Google Apps Script proxy (API key segura en servidor)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── CONFIGURACIÓN ────────────────────────────────────────────────────────────
+// Pega aquí la URL de tu Google Apps Script después de desplegarlo:
+const AI_PROXY_URL = localStorage.getItem('lm-ai-proxy') || '';
+
+function saveProxyUrl(url) {
+  localStorage.setItem('lm-ai-proxy', url.trim());
+  showToast('✓ Proxy guardado', 'success');
 }
 
+// ─── HELPER: URL → BASE64 ─────────────────────────────────────────────────────
+async function urlToBase64(url) {
+  // Intento 1: fetch directo
+  try {
+    const r = await fetch(url, { mode: 'cors' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const blob = await r.blob();
+    return await blobToBase64(blob);
+  } catch(_) {}
+  // Intento 2: proxy CORS público
+  try {
+    const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
+    if (!r.ok) throw new Error('proxy HTTP ' + r.status);
+    const blob = await r.blob();
+    return await blobToBase64(blob);
+  } catch(e) {
+    throw new Error('No se pudo cargar la imagen. Usa una URL pública.');
+  }
+}
+function blobToBase64(blob) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload  = () => {
+      const [header, b64] = reader.result.split(',');
+      const mime = header.match(/:(.*?);/)[1];
+      res({ base64: b64, mediaType: mime });
+    };
+    reader.onerror = () => rej(new Error('FileReader falló'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+// ─── FUNCIÓN PRINCIPAL ────────────────────────────────────────────────────────
 async function runAI() {
   const btn    = document.getElementById('ai-run-btn');
   const status = document.getElementById('ai-status');
 
-  // Get current store + categories context
-  const storeEl = document.getElementById('f-store');
-  const storeName = storeEl ? storeEl.options[storeEl.selectedIndex].text : 'la tienda';
-  const typeEl = document.getElementById('f-type');
-  const categories = typeEl ? Array.from(typeEl.options).map(o => o.value).join(', ') : '';
+  // Verificar proxy configurado
+  const proxyUrl = localStorage.getItem('lm-ai-proxy') || '';
+  if (!proxyUrl) {
+    status.innerHTML = '⚠ Configura el proxy primero. <a href="#" onclick="document.getElementById(\'proxy-config\').style.display=\'block\';return false;" style="color:#00e5ff;text-decoration:underline;">Ver instrucciones ↓</a>';
+    status.style.color = '#e05050';
+    document.getElementById('proxy-config').style.display = 'block';
+    return;
+  }
 
-  let userPrompt = '';
-  let imageData  = null;
+  const storeEl   = document.getElementById('f-store');
+  const storeName = storeEl ? storeEl.options[storeEl.selectedIndex].text : 'la tienda';
+  const typeEl    = document.getElementById('f-type');
+  const cats      = typeEl ? Array.from(typeEl.options).map(o=>o.value).filter(v=>v).join(', ') : '';
+
+  const systemPrompt = `Eres un asistente para productos de lujo de un mall en Costa Rica.
+Tienda: "${storeName}" | Categorías disponibles: ${cats}
+Devuelve ÚNICAMENTE JSON válido (sin markdown, sin texto extra):
+{
+  "name": "Nombre elegante y conciso",
+  "price": 123456,
+  "stock": 10,
+  "type": "categoría de las disponibles",
+  "desc": "Descripción atractiva máx 120 caracteres",
+  "specs": { "Clave": "Valor" }
+}
+Genera 3–5 specs relevantes. Precio en colones costarricenses. Si no se menciona precio, estima uno razonable.`;
+
+  let messages = [];
+  let imgUrl = '';
 
   if (aiCurrentTab === 'text') {
-    userPrompt = (document.getElementById('ai-text-input').value || '').trim();
-    if (!userPrompt) { status.textContent = 'Escribe una descripción primero.'; return; }
+    const text = (document.getElementById('ai-text-input').value || '').trim();
+    if (!text) { status.textContent = 'Escribe una descripción primero.'; return; }
+    messages = [{ role: 'user', content: text }];
   } else {
-    const imgUrl = (document.getElementById('ai-img-url').value || '').trim();
+    imgUrl = (document.getElementById('ai-img-url').value || '').trim();
     if (!imgUrl) { status.textContent = 'Pega una URL de imagen primero.'; return; }
-    // Pre-fill img field immediately
     document.getElementById('f-img').value = imgUrl;
     previewImg(imgUrl);
-    userPrompt = 'Analiza esta imagen de producto y rellena todos los campos.';
 
-    // Convertir a base64 — soluciona NetworkError con URLs privadas/CORS
     btn.disabled = true;
     btn.textContent = '◈ CARGANDO IMAGEN...';
     status.textContent = 'Descargando imagen...';
     status.style.color = '';
+
     try {
-      imageData = await urlToBase64(imgUrl);
+      const imgData = await urlToBase64(imgUrl);
+      messages = [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: imgData.mediaType, data: imgData.base64 } },
+          { type: 'text', text: 'Analiza esta imagen de producto y rellena todos los campos del JSON.' }
+        ]
+      }];
     } catch(imgErr) {
-      status.textContent = 'No se pudo cargar la imagen. Verifica que la URL sea pública y accesible.';
-      status.style.color = '#e05050';
-      btn.disabled = false;
-      btn.textContent = '◈ GENERAR CON IA';
-      return;
+      // Si no se puede cargar la imagen, analizar solo por URL
+      messages = [{ role: 'user', content: 'Producto con imagen: ' + imgUrl + '. Deduce el tipo de producto de la URL y rellena el JSON.' }];
+      status.textContent = 'No se pudo cargar imagen, analizando URL...';
     }
   }
 
   btn.disabled = true;
   btn.textContent = '◈ PENSANDO...';
   status.textContent = 'La IA está analizando...';
-
-  const systemPrompt = `Eres un asistente especializado en productos de lujo para un mall en Costa Rica.
-Tu tarea es analizar la descripción o imagen de un producto y devolver un JSON con los campos del formulario.
-
-Tienda actual: "${storeName}"
-Categorías disponibles: ${categories || 'moda, tech, fragancias, joyería, accesorios, celulares, belleza'}
-
-Devuelve ÚNICAMENTE un JSON válido con esta estructura exacta (sin markdown, sin texto extra):
-{
-  "name": "Nombre del producto (conciso y elegante)",
-  "price": 123456,
-  "stock": 10,
-  "type": "categoría que mejor encaje de las disponibles",
-  "desc": "Descripción breve y atractiva (máximo 120 caracteres)",
-  "specs": {
-    "Clave1": "Valor1",
-    "Clave2": "Valor2"
-  }
-}
-
-Para specs genera entre 3 y 6 especificaciones relevantes según el tipo de producto:
-- Ropa/moda: Material, Tallas, Corte, Origen
-- Tech: Procesador/Chip, RAM/Almacenamiento, Conectividad, Garantía
-- Fragancias: Familia, Notas base, Notas corazón, Presentación
-- Joyería: Material, Peso, Dimensiones, Certificado
-- Celulares: Chip, Cámara, Almacenamiento, Pantalla
-
-Si no se da precio, estima uno razonable en colones costarricenses (₡).
-El stock por defecto es 10 si no se menciona.`;
+  status.style.color = '';
 
   try {
-    const messages = [];
-
-    if (imageData) {
-      // imageData es ahora { base64, mediaType } — siempre base64 para evitar CORS
-      messages.push({
-        role: 'user',
-        content: [
-          { type: 'image', source: { type: 'base64', media_type: imageData.mediaType, data: imageData.base64 } },
-          { type: 'text', text: userPrompt }
-        ]
-      });
-    } else {
-      messages.push({ role: 'user', content: userPrompt });
-    }
-
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(proxyUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages
-      })
+      body: JSON.stringify({ system: systemPrompt, messages })
     });
 
     if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error?.message || 'Error de API');
+      const errText = await res.text();
+      throw new Error('Proxy respondió ' + res.status + ': ' + errText.slice(0,100));
     }
 
-    const data = await res.json();
-    const raw  = data.content.map(b => b.text || '').join('');
+    const data   = await res.json();
+    const raw    = (data.content || []).map(b => b.text || '').join('') || data.text || data.result || '';
+    if (!raw) throw new Error('Respuesta vacía del proxy');
 
-    // Parse JSON - remove any accidental markdown fences
-    const clean = raw.replace(/```json|```/g, '').trim();
+    const clean  = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
 
-    // Fill the form fields
-    if (parsed.name)  document.getElementById('f-name').value  = parsed.name;
-    if (parsed.price) document.getElementById('f-price').value = parsed.price;
-    if (parsed.stock) document.getElementById('f-stock').value = parsed.stock;
-    if (parsed.desc)  document.getElementById('f-desc').value  = parsed.desc;
+    // Rellenar formulario
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined && val !== '') {
+        el.value = val;
+        el.style.borderColor = 'rgba(0,229,255,0.5)';
+        setTimeout(() => { el.style.borderColor = ''; }, 1800);
+      }
+    };
+    set('f-name',  parsed.name);
+    set('f-price', parsed.price);
+    set('f-stock', parsed.stock || 10);
+    set('f-desc',  parsed.desc);
 
-    // Set type/category
     if (parsed.type) {
-      const typeSelect = document.getElementById('f-type');
-      let matched = false;
-      for (let opt of typeSelect.options) {
-        if (opt.value.toLowerCase() === parsed.type.toLowerCase()) {
-          typeSelect.value = opt.value;
-          matched = true; break;
+      const sel = document.getElementById('f-type');
+      if (sel) {
+        for (let o of sel.options) {
+          if (o.value.toLowerCase() === parsed.type.toLowerCase()) { sel.value = o.value; break; }
         }
       }
-      // If no match, just set the value anyway
-      if (!matched) typeSelect.value = parsed.type;
     }
 
-    // Fill specs
-    if (parsed.specs && typeof parsed.specs === 'object') {
+    if (parsed.specs && typeof currentSpecs !== 'undefined') {
       currentSpecs = {};
-      Object.entries(parsed.specs).forEach(([k, v]) => { currentSpecs[k] = String(v); });
-      renderSpecsList();
-    }
-
-    // If image tab and img was already set, keep it
-    if (aiCurrentTab === 'text' && !document.getElementById('f-img').value && parsed.img) {
-      document.getElementById('f-img').value = parsed.img;
-      previewImg(parsed.img);
+      Object.entries(parsed.specs).forEach(([k,v]) => { currentSpecs[k] = String(v); });
+      if (typeof renderSpecsList === 'function') renderSpecsList();
     }
 
     status.textContent = '✓ Formulario listo — revisa y ajusta si necesitas.';
     status.style.color = '#c9a84c';
     showToast('¡IA completó el formulario!', 'success');
-
-    // Animate fields
-    ['f-name','f-price','f-stock','f-desc'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.style.borderColor = 'rgba(0,229,255,0.5)'; setTimeout(() => el.style.borderColor = '', 1500); }
-    });
 
   } catch(err) {
     status.textContent = 'Error: ' + err.message;
@@ -933,7 +925,7 @@ El stock por defecto es 10 si no se menciona.`;
 // ══════════════════════════════════════════════════════════════
 
 function clearInventoryCache() {
-  if (!confirm('¿Limpiar el caché de inventario?\n\nEsto borrará el inventario guardado y cargará los productos por defecto.')) return;
+  if (!confirm('¿Limpiar el caché de inventario?')) return;
   localStorage.removeItem('lm-inventory');
   localStorage.removeItem('admin-inventory');
   localStorage.removeItem('admin-categories');
