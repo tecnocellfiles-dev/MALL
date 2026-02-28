@@ -720,6 +720,49 @@ function aiSwitchTab(tab, btn) {
   document.getElementById('ai-tab-image').style.display = tab === 'image' ? 'block' : 'none';
 }
 
+// ─── HELPER: URL → BASE64 (resuelve CORS y NetworkError) ──────────────────────
+async function urlToBase64(url) {
+  // Estrategia 1: fetch directo (funciona con URLs del mismo dominio o CORS abierto)
+  try {
+    const response = await fetch(url, { mode: 'cors' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const blob = await response.blob();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload  = () => {
+        const dataUrl = reader.result;
+        const [header, base64] = dataUrl.split(',');
+        const mediaType = header.match(/:(.*?);/)[1];
+        resolve({ base64, mediaType });
+      };
+      reader.onerror = () => reject(new Error('FileReader falló'));
+      reader.readAsDataURL(blob);
+    });
+  } catch(e1) {
+    // Estrategia 2: cargar como <img> en canvas (funciona con más URLs pero sin datos)
+    // Si falla fetch, intentar con un proxy CORS público
+    try {
+      const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error('Proxy HTTP ' + response.status);
+      const blob = await response.blob();
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = () => {
+          const dataUrl = reader.result;
+          const [header, base64] = dataUrl.split(',');
+          const mediaType = (header.match(/:(.*?);/) || [,'image/jpeg'])[1];
+          resolve({ base64, mediaType });
+        };
+        reader.onerror = () => reject(new Error('FileReader falló'));
+        reader.readAsDataURL(blob);
+      });
+    } catch(e2) {
+      throw new Error('No se pudo acceder a la imagen (CORS bloqueado). Intenta copiar y pegar la imagen directamente.');
+    }
+  }
+}
+
 async function runAI() {
   const btn    = document.getElementById('ai-run-btn');
   const status = document.getElementById('ai-status');
@@ -743,7 +786,21 @@ async function runAI() {
     document.getElementById('f-img').value = imgUrl;
     previewImg(imgUrl);
     userPrompt = 'Analiza esta imagen de producto y rellena todos los campos.';
-    imageData = imgUrl;
+
+    // Convertir a base64 — soluciona NetworkError con URLs privadas/CORS
+    btn.disabled = true;
+    btn.textContent = '◈ CARGANDO IMAGEN...';
+    status.textContent = 'Descargando imagen...';
+    status.style.color = '';
+    try {
+      imageData = await urlToBase64(imgUrl);
+    } catch(imgErr) {
+      status.textContent = 'No se pudo cargar la imagen. Verifica que la URL sea pública y accesible.';
+      status.style.color = '#e05050';
+      btn.disabled = false;
+      btn.textContent = '◈ GENERAR CON IA';
+      return;
+    }
   }
 
   btn.disabled = true;
@@ -783,10 +840,11 @@ El stock por defecto es 10 si no se menciona.`;
     const messages = [];
 
     if (imageData) {
+      // imageData es ahora { base64, mediaType } — siempre base64 para evitar CORS
       messages.push({
         role: 'user',
         content: [
-          { type: 'image', source: { type: 'url', url: imageData } },
+          { type: 'image', source: { type: 'base64', media_type: imageData.mediaType, data: imageData.base64 } },
           { type: 'text', text: userPrompt }
         ]
       });
@@ -876,12 +934,10 @@ El stock por defecto es 10 si no se menciona.`;
 
 function clearInventoryCache() {
   if (!confirm('¿Limpiar el caché de inventario?\n\nEsto borrará el inventario guardado y cargará los productos por defecto.')) return;
-  // Borrar TODAS las claves relacionadas con inventario
   localStorage.removeItem('lm-inventory');
   localStorage.removeItem('admin-inventory');
   localStorage.removeItem('admin-categories');
-  // Forzar recarga limpia sin caché del browser
-  showAdminToast('✓ Caché limpiado — recargando...', 'success');
+  showToast('✓ Caché limpiado — recargando...', 'success');
   setTimeout(function() {
     window.location.href = window.location.pathname + '?nocache=' + Date.now();
   }, 900);
@@ -1341,33 +1397,16 @@ function sendWhatsApp() {
   window.open('https://wa.me/50687443315?text=' + encodeURIComponent(msg), '_blank');
 }
 
-function showToast(msg, type) {
-  // Unified toast — works in admin and store pages
-  type = type || 'success';
-  var wrap = document.getElementById('toast-wrap');
-  if (!wrap) {
-    wrap = document.createElement('div');
-    wrap.id = 'toast-wrap';
-    wrap.style.cssText = 'position:fixed;bottom:32px;right:32px;z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
-    document.body.appendChild(wrap);
-  }
-  var t = document.createElement('div');
-  var colors = {success:'rgba(76,175,125,0.95)',error:'rgba(224,48,48,0.95)',info:'rgba(20,20,20,0.97)'};
-  var icons  = {success:'✓',error:'✕',info:'◈'};
-  t.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 20px;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#fff;opacity:0;transform:translateX(20px);transition:opacity 0.3s,transform 0.3s;min-width:220px;background:' + (colors[type]||colors.info) + ';' + (type==='info'?'border:1px solid rgba(245,240,232,0.12);':'');
-  t.innerHTML = '<span style="font-size:0.95rem">' + (icons[type]||'◈') + '</span><span>' + msg + '</span>';
-  wrap.appendChild(t);
-  requestAnimationFrame(function(){ t.style.opacity='1'; t.style.transform='translateX(0)'; });
-  setTimeout(function(){
-    t.style.opacity='0'; t.style.transform='translateX(20px)';
-    setTimeout(function(){ if(t.parentNode) t.remove(); }, 400);
-  }, 2800);
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2200);
 }
 
 function initCursor() {
-  // Guard: solo un RAF loop, nunca duplicado
-  if (window.__cursorInit) return;
-  window.__cursorInit = true;
+  if (window.__cursorInit) return; window.__cursorInit = true;
   const dot = document.getElementById('cursor-dot');
   const ring = document.getElementById('cursor-ring');
   if (!dot || !ring) return;
@@ -1442,7 +1481,12 @@ window.addEventListener('DOMContentLoaded', function() {
 }
 
 // ── TOAST ───────────────────────────────────────────────────────────────────
-// showToast handled above
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || 'success') + ' show';
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
 
 // ── RENDER ALL ──────────────────────────────────────────────────────────────
 function renderAll() {
