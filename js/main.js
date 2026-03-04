@@ -451,7 +451,7 @@ function renderGrid(items) {
     var inWish=favs.includes(item.id);
     var hasSpecs=item.specs&&Object.keys(item.specs).length>0;
     return '<div class="product-card reveal-card">'+
-      getStockBadge(item.stock)+
+      getStockBadge(item.stock, item.store)+
       '<button class="wish-btn '+(inWish?'wishlisted':'')+'" data-wish="'+item.id+'" onclick="cardWish('+item.id+',this)" title="Guardar">♡</button>'+
       '<div class="product-img-wrap">'+
         '<img src="'+item.img+'" alt="'+item.name+'" loading="lazy">'+
@@ -461,8 +461,11 @@ function renderGrid(items) {
       '<div class="product-name">'+item.name+'</div>'+
       '<div class="product-price">₡'+item.price.toLocaleString()+'</div>'+
       '<p class="product-desc">'+item.desc+'</p>'+
-      (hasSpecs?'<button class="add-btn" style="margin-bottom:10px;border-color:rgba(245,240,232,0.1);" onclick="openModal('+item.id+')"><span>VER ESPECIFICACIONES</span></button>':'')+
-      '<button class="add-btn" onclick="addToCart('+item.id+')"><span>AGREGAR A LA BOLSA</span></button>'+
+      (item.store==='elegance'
+        ? '<a href="https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0&utm_source=ig" target="_blank" class="add-btn" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;border-color:rgba(200,149,108,0.4);color:#c8956c;"><span>AGENDAR CITA</span></a>'
+        : (hasSpecs?'<button class="add-btn" style="margin-bottom:10px;border-color:rgba(245,240,232,0.1);" onclick="openModal('+item.id+')"><span>VER ESPECIFICACIONES</span></button>':'')+
+          '<button class="add-btn" onclick="addToCart('+item.id+')"><span>AGREGAR A LA BOLSA</span></button>'
+      )+
     '</div>';
   }).join('');
 

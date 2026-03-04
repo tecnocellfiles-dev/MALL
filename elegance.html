@@ -186,9 +186,14 @@
 
   function getServices() {
     try {
-      var raw = localStorage.getItem('elegance-services');
-      var parsed = raw ? JSON.parse(raw) : null;
-      return (parsed && parsed.length) ? parsed : DEFAULT_SERVICES;
+      // Read from unified lm-inventory (same source as admin)
+      var raw = localStorage.getItem('lm-inventory');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        var eleganceItems = parsed.filter(function(i){ return i.store === 'elegance'; });
+        if (eleganceItems.length > 0) return eleganceItems;
+      }
+      return DEFAULT_SERVICES;
     } catch(e) { return DEFAULT_SERVICES; }
   }
 
@@ -201,8 +206,13 @@
   }
 
   function catLabel(cat) {
-    var map = { 'unas':'Unas', 'cejas-pestanas':'Cejas & Pestanas', 'facial':'Facial', 'corporal':'Corporal' };
-    return map[cat] || cat;
+    var map = {
+      'unas':'Uñas', 'cejas-pestanas':'Cejas & Pestañas',
+      'facial':'Facial', 'corporal':'Corporal',
+      // legacy fallback names
+      'joyeria':'Joyería', 'fragancias':'Fragancias', 'belleza':'Belleza'
+    };
+    return map[cat] || (cat ? cat.charAt(0).toUpperCase()+cat.slice(1) : 'Servicio');
   }
 
   function buildWALink(s) {
@@ -214,7 +224,7 @@
     var grid = document.getElementById('services-grid');
     if (!grid) return;
     var all = getServices();
-    var filtered = activeCategory === 'all' ? all : all.filter(function(s) { return s.cat === activeCategory; });
+    var filtered = activeCategory === 'all' ? all : all.filter(function(s) { return (s.cat||s.type) === activeCategory; });
 
     if (filtered.length === 0) {
       grid.innerHTML = '<div class="no-services">Sin servicios en esta categoria</div>';
@@ -225,12 +235,12 @@
 
     grid.innerHTML = filtered.map(function(s) {
       return '<div class="service-card reveal-card">' +
-        '<div class="service-category-tag">' + catLabel(s.cat) + '</div>' +
+        '<div class="service-category-tag">' + catLabel(s.cat || s.type) + '</div>' +
         '<div class="service-name">' + s.name + '</div>' +
         '<div class="service-desc">' + s.desc + '</div>' +
         '<div class="service-meta">' +
           '<div class="service-price">&#8353;' + Number(s.price).toLocaleString() + '</div>' +
-          '<div class="service-duration">' + (s.duration || '60 min') + '</div>' +
+          '<div class="service-duration">' + (s.duration || s.specs && s.specs.Duracion || '60 min') + '</div>' +
         '</div>' +
         '<a href="' + buildWALink(s) + '" target="_blank" class="btn-agendar">' +
           waIcon + ' AGENDAR CITA' +
