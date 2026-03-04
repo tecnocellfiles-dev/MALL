@@ -402,6 +402,24 @@ function renderRecentViews(storeKey) {
 }
 
 // ─── MODAL ───────────────────────────────────────────────────────────────────
+// ─── GALERÍA ──────────────────────────────────────────────────────────────────
+function getGalleryUrls(item) {
+  // gallery array takes priority; fallback to single img
+  if (item.gallery && item.gallery.length > 0) {
+    return item.gallery.map(function(g){ return g.url; }).filter(Boolean);
+  }
+  return item.img ? [item.img] : [];
+}
+
+function getMainImg(item) {
+  if (item.gallery && item.gallery.length > 0) {
+    var main = item.gallery.find(function(g){ return g.isMain; });
+    return (main ? main.url : item.gallery[0].url) || item.img || '';
+  }
+  return item.img || '';
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
 function openModal(id) {
   inventory = getInventory(); window._inventory = inventory;
   var item = inventory.find(function(i){return i.id===id;});
@@ -409,60 +427,139 @@ function openModal(id) {
   addRecentView(item);
   if(window._currentStore) renderRecentViews(window._currentStore);
 
-  var favs = window.getFavorites ? window.getFavorites() : JSON.parse(localStorage.getItem('lm-wishlist')||'[]');
+  var favs   = window.getFavorites ? window.getFavorites() : JSON.parse(localStorage.getItem('lm-wishlist')||'[]');
   var inWish = favs.includes(item.id);
   var related = inventory.filter(function(i){return i.store===item.store&&i.type===item.type&&i.id!==item.id;}).slice(0,3);
+  var urls   = getGalleryUrls(item);
+  var mainImg = urls.length > 0 ? urls[0] : '';
 
-  var specsHTML='';
-  if(item.specs && Object.keys(item.specs).length>0){
-    specsHTML='<div class="modal-specs"><div class="modal-specs-title">ESPECIFICACIONES</div>'+
+  // ── Galería HTML ──────────────────────────────────────────────────────────
+  var hasMultiple = urls.length > 1;
+  var galleryHTML =
+    '<div class="mg-main-wrap" id="mg-main-wrap">'+
+      (hasMultiple ? '<button class="mg-arrow mg-prev" onclick="mgSwitch(-1)">&#8249;</button>' : '')+
+      '<div class="modal-img-wrap" id="mg-main-img-wrap" onclick="var i=document.getElementById(\'mg-main-img\');if(i)zoomImg(i.src)">'+
+        '<img id="mg-main-img" src="'+mainImg+'" alt="'+item.name+'">'+
+        '<div class="modal-zoom-hint">CLICK PARA AMPLIAR</div>'+
+      '</div>'+
+      (hasMultiple ? '<button class="mg-arrow mg-next" onclick="mgSwitch(1)">&#8250;</button>' : '')+
+    '</div>'+
+    (hasMultiple
+      ? '<div class="mg-thumbs" id="mg-thumbs">'+
+          urls.map(function(u, i){
+            return '<div class="mg-thumb'+(i===0?' active':'')+'" onclick="mgGoto('+i+')">'+
+              '<img src="'+u+'" alt="foto '+(i+1)+'" loading="lazy">'+
+            '</div>';
+          }).join('')+
+        '</div>'
+      : '');
+
+  // ── Specs HTML ────────────────────────────────────────────────────────────
+  var specsHTML = '';
+  if(item.specs && Object.keys(item.specs).length > 0){
+    specsHTML = '<div class="modal-specs"><div class="modal-specs-title">ESPECIFICACIONES</div>'+
       Object.entries(item.specs).map(function(p){
         return '<div class="modal-spec-row"><span class="spec-key">'+p[0]+'</span><span class="spec-val">'+p[1]+'</span></div>';
       }).join('')+'</div>';
   }
 
-  var relatedHTML = related.length>0
+  // ── Duration badge for elegance ───────────────────────────────────────────
+  var durationBadge = (item.store === 'elegance' && item.duration)
+    ? '<div style="font-size:0.65rem;letter-spacing:3px;color:#c8956c;margin-bottom:12px;">&#9719; '+item.duration+'</div>'
+    : '';
+
+  // ── Action buttons ────────────────────────────────────────────────────────
+  var actionsHTML = item.store === 'elegance'
+    ? '<a href="https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0&utm_source=ig" target="_blank" class="btn-modal-add" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;border-color:rgba(200,149,108,0.5);color:#c8956c;"><span>AGENDAR CITA</span></a>'
+    : '<button class="btn-modal-add" onclick="addToCart('+item.id+');closeModal()"><span>AGREGAR A LA BOLSA</span></button>';
+
+  // ── Related ───────────────────────────────────────────────────────────────
+  var relatedHTML = related.length > 0
     ? '<div class="modal-related"><div class="modal-related-title">TAMBIÉN TE PUEDE GUSTAR</div><div class="related-grid">'+
       related.map(function(r){
-        return '<div class="related-card" onclick="openModal('+r.id+')">' +
-          '<img src="'+r.img+'" alt="'+r.name+'" loading="lazy">' +
-          '<div class="related-name">'+r.name+'</div>' +
+        return '<div class="related-card" onclick="openModal('+r.id+')">'+
+          '<img src="'+getMainImg(r)+'" alt="'+r.name+'" loading="lazy">'+
+          '<div class="related-name">'+r.name+'</div>'+
           '<div class="related-price">₡'+r.price.toLocaleString()+'</div></div>';
-      }).join('')+'</div></div>' : '';
+      }).join('')+'</div></div>'
+    : '';
 
   var modal = document.getElementById('product-modal');
   modal.innerHTML =
     '<div class="modal-backdrop" onclick="closeModal()"></div>'+
     '<div class="modal-box">'+
-      '<button class="modal-close" onclick="closeModal()">✕</button>'+
+      '<button class="modal-close" onclick="closeModal()">&#215;</button>'+
       '<div class="modal-inner">'+
         '<div class="modal-left">'+
-          '<div class="modal-img-wrap" onclick="zoomImg(\''+item.img+'\')">'+
-            '<img src="'+item.img+'" alt="'+item.name+'">'+
-            '<div class="modal-zoom-hint">CLICK PARA AMPLIAR</div>'+
-          '</div>'+
+          galleryHTML+
         '</div>'+
         '<div class="modal-right">'+
           '<div class="modal-meta">'+
             '<span class="modal-tag tag-'+item.type+'">'+item.type.toUpperCase()+'</span>'+
-            '<button class="modal-share-btn" onclick="shareProduct('+item.id+')">COMPARTIR ↗</button>'+
+            '<button class="modal-share-btn" onclick="shareProduct('+item.id+')">COMPARTIR &#8599;</button>'+
           '</div>'+
           '<div class="modal-name">'+item.name+'</div>'+
-          '<div class="modal-price">₡'+item.price.toLocaleString()+'</div>'+
-          '<div class="modal-stock '+getStockClass(item.stock)+'">'+getStockLabel(item.stock)+'</div>'+
+          '<div class="modal-price">&#8353;'+item.price.toLocaleString()+'</div>'+
+          durationBadge+
+          (item.store !== 'elegance' ? '<div class="modal-stock '+getStockClass(item.stock)+'">'+getStockLabel(item.stock)+'</div>' : '')+
           '<div class="modal-desc">'+item.desc+'</div>'+
           specsHTML+
           '<div class="modal-actions">'+
-            '<button class="btn-modal-add" onclick="addToCart('+item.id+');closeModal()"><span>AGREGAR A LA BOLSA</span></button>'+
-            '<button class="btn-modal-wish '+(inWish?'wishlisted':'')+'" data-wish="'+item.id+'" onclick="wishFromModal('+item.id+',this)">♡</button>'+
+            actionsHTML+
+            '<button class="btn-modal-wish '+(inWish?'wishlisted':'')+'" data-wish="'+item.id+'" onclick="wishFromModal('+item.id+',this)">&#9825;</button>'+
           '</div>'+
           relatedHTML+
         '</div>'+
       '</div>'+
     '</div>';
 
+  // Inject gallery CSS once
+  if (!document.getElementById('mg-style')) {
+    var s = document.createElement('style');
+    s.id = 'mg-style';
+    s.textContent =
+      '.mg-main-wrap{position:relative;width:100%;}'+
+      '.mg-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(8,8,8,0.7);border:1px solid rgba(245,240,232,0.15);color:var(--white);width:36px;height:36px;font-size:1.4rem;cursor:pointer;z-index:4;transition:background 0.2s;display:flex;align-items:center;justify-content:center;line-height:1;}'+
+      '.mg-arrow:hover{background:rgba(201,168,76,0.3);}'+
+      '.mg-prev{left:8px;}.mg-next{right:8px;}'+
+      '.mg-thumbs{display:flex;gap:6px;margin-top:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;}'+
+      '.mg-thumbs::-webkit-scrollbar{height:3px;}.mg-thumbs::-webkit-scrollbar-thumb{background:var(--gold);}'+
+      '.mg-thumb{width:60px;height:60px;flex-shrink:0;overflow:hidden;border:1px solid rgba(245,240,232,0.1);cursor:pointer;transition:border-color 0.2s;opacity:0.55;transition:opacity 0.2s,border-color 0.2s;}'+
+      '.mg-thumb:hover{opacity:0.85;border-color:rgba(201,168,76,0.4);}'+
+      '.mg-thumb.active{border-color:var(--gold);opacity:1;}'+
+      '.mg-thumb img{width:100%;height:100%;object-fit:cover;}';
+    document.head.appendChild(s);
+  }
+
+  // Store gallery state on the modal element for arrow/thumb functions
+  modal._mgUrls  = urls;
+  modal._mgIndex = 0;
+
   modal.classList.add('open');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
+}
+
+// ─── Gallery navigation ───────────────────────────────────────────────────────
+function mgGoto(idx) {
+  var modal = document.getElementById('product-modal');
+  if (!modal || !modal._mgUrls) return;
+  var urls = modal._mgUrls;
+  idx = Math.max(0, Math.min(idx, urls.length - 1));
+  modal._mgIndex = idx;
+
+  var img = document.getElementById('mg-main-img');
+  if (img) { img.style.opacity = '0'; setTimeout(function(){ img.src = urls[idx]; img.style.opacity = '1'; }, 120); }
+
+  document.querySelectorAll('.mg-thumb').forEach(function(t, i){
+    t.classList.toggle('active', i === idx);
+  });
+}
+
+function mgSwitch(dir) {
+  var modal = document.getElementById('product-modal');
+  if (!modal || !modal._mgUrls) return;
+  var next = (modal._mgIndex + dir + modal._mgUrls.length) % modal._mgUrls.length;
+  mgGoto(next);
 }
 
 function wishFromModal(id,btn){
@@ -485,7 +582,14 @@ function shareProduct(id){
   if(navigator.share) navigator.share({title:item.name,text:text,url:window.location.href}).catch(function(){});
   else navigator.clipboard.writeText(text).then(function(){showToast('Copiado','info');}).catch(function(){});
 }
-document.addEventListener('keydown',function(e){ if(e.key==='Escape'){closeModal();closeCart();} });
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeModal();closeCart();}
+  var m=document.getElementById('product-modal');
+  if(m&&m.classList.contains('open')){
+    if(e.key==='ArrowLeft') mgSwitch(-1);
+    if(e.key==='ArrowRight') mgSwitch(1);
+  }
+});
 
 // ─── TIENDA ───────────────────────────────────────────────────────────────────
 function buildStore(storeKey) {
@@ -530,7 +634,7 @@ function renderGrid(items) {
       getStockBadge(item.stock, item.store)+
       '<button class="wish-btn '+(inWish?'wishlisted':'')+'" data-wish="'+item.id+'" onclick="cardWish('+item.id+',this)" title="Guardar">♡</button>'+
       '<div class="product-img-wrap">'+
-        '<img src="'+item.img+'" alt="'+item.name+'" loading="lazy">'+
+        '<img src="'+getMainImg(item)+'" alt="'+item.name+'" loading="lazy">'+
         '<div class="product-img-overlay" onclick="openModal('+item.id+')"><span>VER DETALLES</span></div>'+
       '</div>'+
       '<span class="product-tag tag-'+item.type+'">'+item.type.toUpperCase()+'</span>'+
