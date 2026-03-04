@@ -103,7 +103,7 @@
       <h1 class="elegance-hero-title">Elegance<br>Beauty Esthetic</h1>
       <p class="elegance-hero-sub">Especialistas en tratamientos de belleza y bienestar</p>
       <div class="elegance-hero-ctas">
-        <a href="https://wa.me/50684668499?text=Hola!%20Me%20gustar%C3%ADa%20agendar%20una%20cita%20en%20Elegance%20Beauty%20Esthetic" target="_blank" class="btn-elegance-primary">AGENDAR CITA</a>
+        <a href="https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0&utm_source=ig" target="_blank" class="btn-elegance-primary">AGENDAR CITA</a>
         <button class="btn-elegance-ghost" onclick="document.querySelector('.services-section').scrollIntoView({behavior:'smooth'})">VER SERVICIOS</button>
       </div>
     </div>
@@ -147,7 +147,7 @@
 
   <footer>
     <div class="footer-logo">NOMBRE<em>PAG</em></div>
-    <div class="footer-copy">&copy; 2025 Luxury Mall &middot; San Jos&eacute;, Costa Rica &middot; <a href="https://wa.me/50684668499" target="_blank" style="color:var(--rose);text-decoration:none;">WhatsApp 8466-8499</a></div>
+    <div class="footer-copy">&copy; 2025 Luxury Mall &middot; San Jos&eacute;, Costa Rica &middot; <a href="https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0&utm_source=ig" target="_blank" style="color:var(--rose);text-decoration:none;">WhatsApp 8466-8499</a></div>
   </footer>
 
   <button id="back-to-top">&#8593;</button>
@@ -206,8 +206,8 @@
   }
 
   function buildWALink(s) {
-    var msg = 'Hola! Me gustaria agendar una cita para ' + s.name + ' (' + s.duration + ', colonos' + Number(s.price).toLocaleString() + ')';
-    return 'https://wa.me/50684668499?text=' + encodeURIComponent(msg);
+    // Use direct elegance WhatsApp link
+    return 'https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0&utm_source=ig';
   }
 
   function renderServices() {

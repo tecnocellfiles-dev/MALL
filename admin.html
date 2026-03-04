@@ -1003,13 +1003,22 @@ var currentSpecs = {};
 const DEFAULT_CATEGORIES = {
   divino:   ['moda', 'fragancias', 'tech', 'cosméticos'],
   family:   ['tech', 'celulares', 'accesorios'],
-  elegance: ['joyería', 'fragancias', 'belleza']
+  elegance: ['unas', 'cejas-pestanas', 'facial', 'corporal']
 };
 const STORE_NAMES = { divino:'Divino Cielo', family:'FamilyCell And More', elegance:'Elegance Beauty Esthetic' };
 
 function loadCategories() {
   var saved = localStorage.getItem('admin-categories');
-  return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+  if (!saved) return JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+  var cats = JSON.parse(saved);
+  // Migrate elegance: if still has old product categories, replace with service categories
+  var oldElegance = ['joyería', 'fragancias', 'belleza', 'joyeria'];
+  var hasOld = cats.elegance && cats.elegance.some(function(c){ return oldElegance.includes(c); });
+  if (hasOld || !cats.elegance || cats.elegance.length === 0) {
+    cats.elegance = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES.elegance));
+    localStorage.setItem('admin-categories', JSON.stringify(cats));
+  }
+  return cats;
 }
 function saveCats(cats) { localStorage.setItem('admin-categories', JSON.stringify(cats)); }
 
@@ -1304,8 +1313,10 @@ function cancelEdit() {
   editingId = null;
   currentSpecs = {};
   clearForm();
-  document.getElementById('form-mode-label').textContent = 'NUEVO PRODUCTO';
-  document.getElementById('save-btn-label').textContent  = 'AGREGAR PRODUCTO';
+  var store = document.getElementById('f-store').value;
+  var isElegance = store === 'elegance';
+  document.getElementById('form-mode-label').textContent = isElegance ? 'NUEVO SERVICIO' : 'NUEVO PRODUCTO';
+  document.getElementById('save-btn-label').textContent  = isElegance ? 'AGREGAR SERVICIO' : 'AGREGAR PRODUCTO';
   document.getElementById('cancel-edit-btn').style.display = 'none';
 }
 
@@ -1542,7 +1553,19 @@ function sendWhatsApp(){
   var total=cart.reduce(function(s,i){return s+i.price*(i.qty||1);},0);
   var lines=cart.map(function(i){var q=i.qty||1;return '• '+i.name+(q>1?' ×'+q:'')+' — ₡'+(i.price*q).toLocaleString();}).join('\\n');
   var msg='¡Hola! Quiero hacer un pedido 🛍️\\n\\n'+lines+'\\n\\n*TOTAL: ₡'+total.toLocaleString()+'*';
-  window.open('https://wa.me/50687443315?text='+encodeURIComponent(msg),'_blank');
+  // Store-specific WhatsApp links
+  var waLinks = {
+    divino:   'https://api.whatsapp.com/message/LQMOAQKS3LFII1?autoload=1&app_absent=0&utm_source=ig',
+    family:   'https://web.whatsapp.com/send?phone=50687443315&text=',
+    elegance: 'https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0&utm_source=ig'
+  };
+  var store = (window._currentStore || document.body.dataset.store || 'family');
+  var waBase = waLinks[store] || waLinks.family;
+  if (store === 'family') {
+    window.open(waBase + encodeURIComponent(msg), '_blank');
+  } else {
+    window.open(waBase, '_blank');
+  }
 }
 
 function showToast(msg,type){
