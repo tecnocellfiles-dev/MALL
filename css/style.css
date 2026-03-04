@@ -1,5 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap');
 
+/* ═══════════════════════════════════════════════════════
+   CURSOR GLOBAL — overrides everything including auth.js
+   ═══════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after,
+a, button, input, select, textarea,
+[role="button"], [onclick],
+label, summary {
+  cursor: none !important;
+}
+/* Exception: text inputs still need text cursor for UX */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+textarea {
+  cursor: none !important;
+}
+
+
 :root {
   --black: #080808;
   --white: #f5f0e8;
