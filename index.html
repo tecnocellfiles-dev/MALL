@@ -3,10 +3,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NOMBREPAG — Luxury Mall</title>
+  <title>NOMBREPAG &mdash; Luxury Mall</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    /* ── MARQUEE STRIP ──────────────────────────────────────── */
+    .marquee-strip {
+      background: var(--gold);
+      padding: 10px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .marquee-inner {
+      display: inline-flex;
+      animation: marquee-run 22s linear infinite;
+    }
+    .marquee-inner span {
+      font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase;
+      color: #080808; font-weight: 500; padding: 0 32px;
+    }
+    .marquee-inner span::before { content: '◆'; margin-right: 32px; opacity: 0.5; }
+    @keyframes marquee-run {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── LOOKBOOK STRIP (horizontal infinite) ───────────────── */
+    .lookbook-strip { overflow: hidden; position: relative; margin: 0; }
+    .lookbook-strip::before, .lookbook-strip::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2; pointer-events: none;
+    }
+    .lookbook-strip::before { left:0; background: linear-gradient(to right, #080808, transparent); }
+    .lookbook-strip::after  { right:0; background: linear-gradient(to left,  #080808, transparent); }
+    .lookbook-strip-track {
+      display: flex; gap: 3px;
+      animation: lb-scroll 40s linear infinite;
+      width: max-content;
+    }
+    .lookbook-strip-track:hover { animation-play-state: paused; }
+    @keyframes lb-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .lb-img {
+      width: 260px; height: 340px; flex-shrink: 0; overflow: hidden; position: relative;
+    }
+    .lb-img img { width:100%; height:100%; object-fit:cover; transition: transform 0.7s; }
+    .lb-img:hover img { transform: scale(1.06); }
+    .lb-img-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 14px 12px;
+      background: linear-gradient(to top, rgba(8,8,8,0.85), transparent);
+      font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(245,240,232,0.5);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .lb-img:hover .lb-img-label { opacity: 1; }
+
+    /* ── SECTION LABEL ──────────────────────────────────────── */
+    .section-eyebrow {
+      font-size: 0.58rem; letter-spacing: 6px; text-transform: uppercase;
+      color: rgba(245,240,232,0.25); text-align: center;
+      padding: 64px 0 8px;
+    }
+    .section-title-large {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      color: var(--white); text-align: center;
+      margin-bottom: 48px; font-weight: 700;
+    }
+    .section-title-large em { color: var(--gold); font-style: italic; }
+
+    /* ── MIXED PRODUCTS GRID ────────────────────────────────── */
+    .index-products-section { padding: 0 5% 80px; }
+    .index-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 2px;
+    }
+
+    /* Mini product card for index */
+    .index-product-card {
+      position: relative; overflow: hidden; cursor: pointer;
+      background: rgba(245,240,232,0.02);
+      border: 1px solid rgba(245,240,232,0.05);
+      transition: border-color 0.3s;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.45s, transform 0.45s, border-color 0.3s;
+    }
+    .index-product-card.revealed { opacity:1; transform:translateY(0); }
+    .index-product-card:hover { border-color: rgba(201,168,76,0.25); }
+
+    .ipc-store-dot {
+      position: absolute; top: 12px; left: 12px; z-index: 3;
+      font-size: 0.5rem; letter-spacing: 2px; text-transform: uppercase;
+      padding: 3px 8px; background: rgba(8,8,8,0.75);
+      border: 1px solid rgba(245,240,232,0.12); color: rgba(245,240,232,0.5);
+    }
+    .ipc-img-wrap {
+      position: relative; aspect-ratio: 4/5; overflow: hidden;
+    }
+    .ipc-img-wrap img {
+      width:100%; height:100%; object-fit:cover;
+      transition: transform 0.6s;
+    }
+    .index-product-card:hover .ipc-img-wrap img { transform: scale(1.05); }
+    .ipc-overlay {
+      position: absolute; inset: 0;
+      background: rgba(8,8,8,0.55);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .index-product-card:hover .ipc-overlay { opacity: 1; }
+    .ipc-overlay-btn {
+      padding: 10px 20px; background: none;
+      border: 1px solid rgba(245,240,232,0.7);
+      color: var(--white); font-size: 0.55rem; letter-spacing: 3px;
+      text-transform: uppercase; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: 0.2s;
+    }
+    .ipc-overlay-btn:hover { background: var(--gold); border-color: var(--gold); color: #080808; }
+
+    /* Service card variant for elegance in index */
+    .ipc-service-badge {
+      position: absolute; top: 12px; right: 12px; z-index: 3;
+      font-size: 0.48rem; letter-spacing: 2px; text-transform: uppercase;
+      padding: 3px 8px;
+      background: rgba(200,149,108,0.15);
+      border: 1px solid rgba(200,149,108,0.35);
+      color: #c8956c;
+    }
+
+    .ipc-info { padding: 16px 16px 20px; }
+    .ipc-name {
+      font-size: 0.88rem; color: var(--white);
+      margin-bottom: 6px; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ipc-price { font-size: 0.8rem; color: var(--gold); font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; }
+    .ipc-price.rose { color: #c8956c; }
+    .ipc-store-tag {
+      font-size: 0.52rem; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(245,240,232,0.25); margin-top: 4px;
+    }
+
+    /* ── "VER MÁS" ROW ──────────────────────────────────────── */
+    .see-more-row {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .see-more-btn {
+      padding: 12px 28px; background: none;
+      border: 1px solid rgba(245,240,232,0.15);
+      color: rgba(245,240,232,0.5);
+      font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; display: inline-block;
+      transition: 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .see-more-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .see-more-btn.rose:hover { border-color: #c8956c; color: #c8956c; }
+
+    /* ── DIVIDER MARQUEE 2 ──────────────────────────────────── */
+    .divider-marquee {
+      border-top: 1px solid rgba(245,240,232,0.07);
+      border-bottom: 1px solid rgba(245,240,232,0.07);
+      padding: 14px 0; overflow: hidden; margin: 0 0 80px;
+    }
+    .divider-marquee-inner {
+      display: inline-flex;
+      animation: marquee-run 35s linear infinite;
+    }
+    .divider-marquee-inner span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: 8px; color: rgba(245,240,232,0.08);
+      padding: 0 40px;
+    }
+
+    /* ── WHY US STRIP ───────────────────────────────────────── */
+    .why-strip {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      border-top: 1px solid rgba(245,240,232,0.07);
+      margin-bottom: 0;
+    }
+    .why-item {
+      padding: 40px 24px; text-align: center;
+      border-right: 1px solid rgba(245,240,232,0.07);
+    }
+    .why-item:last-child { border-right: none; }
+    .why-icon { font-size: 1.4rem; margin-bottom: 12px; }
+    .why-title {
+      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--white); margin-bottom: 8px;
+    }
+    .why-desc { font-size: 0.72rem; color: rgba(245,240,232,0.3); line-height: 1.6; }
+
+    @media (max-width: 768px) {
+      .why-strip { grid-template-columns: repeat(2,1fr); }
+      .why-item { border-bottom: 1px solid rgba(245,240,232,0.07); }
+    }
+    @media (max-width: 480px) {
+      .index-products-grid { grid-template-columns: repeat(2,1fr); }
+      .lb-img { width: 180px; height: 240px; }
+    }
+  </style>
 </head>
 <body>
   <div id="progress-bar"></div>
@@ -24,31 +221,50 @@
     </div>
   </nav>
 
+  <!-- MARQUEE TOP -->
+  <div class="marquee-strip" style="margin-top:60px;">
+    <div class="marquee-inner" id="marquee-top">
+      <span>Divino Cielo</span><span>FamilyCell And More</span><span>Elegance Beauty Esthetic</span>
+      <span>Moda Colombiana</span><span>Tecnolog&iacute;a</span><span>Tratamientos de Belleza</span>
+      <span>San Jos&eacute;, Costa Rica</span><span>Luxury Mall</span>
+      <span>Divino Cielo</span><span>FamilyCell And More</span><span>Elegance Beauty Esthetic</span>
+      <span>Moda Colombiana</span><span>Tecnolog&iacute;a</span><span>Tratamientos de Belleza</span>
+      <span>San Jos&eacute;, Costa Rica</span><span>Luxury Mall</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
   <section class="home-hero">
-    <p class="hero-eyebrow">Costa Rica · San José</p>
+    <p class="hero-eyebrow">Costa Rica &middot; San Jos&eacute;</p>
     <h1 class="hero-title">NOMBRE<br><em>PAG</em></h1>
-    <p class="hero-subtitle">Tres tiendas. Una experiencia única.</p>
+    <p class="hero-subtitle">Tres tiendas. Una experiencia &uacute;nica.</p>
     <div class="hero-scroll">
       <span>Explorar</span>
       <div class="scroll-line"></div>
     </div>
   </section>
 
+  <!-- LOOKBOOK STRIP -->
+  <div class="lookbook-strip">
+    <div class="lookbook-strip-track" id="lookbook-track">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- TIENDAS -->
   <section class="stores-section">
     <p class="stores-label">Nuestros Locales</p>
     <div class="stores-grid">
-
       <a href="divino.html" class="store-card">
         <div class="store-card-bg" style="background-image:url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1400')"></div>
         <div class="store-card-overlay"></div>
         <div class="store-card-content">
           <div class="store-number">01</div>
-          <div class="store-tagline">Ropa Colombiana • Cosméticos • Perfumería • Hogar</div>
+          <div class="store-tagline">Ropa Colombiana &bull; Cosm&eacute;ticos &bull; Perfumer&iacute;a &bull; Hogar</div>
           <div class="store-name">Tienda<br>Divino<br>Cielo</div>
-          <div class="store-cta">Explorar Catálogo</div>
+          <div class="store-cta">Explorar Cat&aacute;logo</div>
         </div>
       </a>
-
       <a href="familycell.html" class="store-card">
         <div class="store-card-bg" style="background-image:url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1000')"></div>
         <div class="store-card-overlay"></div>
@@ -59,33 +275,79 @@
           <div class="store-cta">Entrar al sitio</div>
         </div>
       </a>
-
       <a href="elegance.html" class="store-card">
-        <div class="store-card-bg" style="background-image:url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1000')"></div>
+        <div class="store-card-bg" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1000')"></div>
         <div class="store-card-overlay"></div>
         <div class="store-card-content">
           <div class="store-number">03</div>
-          <div class="store-tagline">Especialista profesional en belleza y estética</div>
+          <div class="store-tagline">Est&eacute;tica profesional &bull; Tratamientos faciales y corporales</div>
           <div class="store-name">Elegance<br>Beauty<br>Esthetic</div>
-          <div class="store-cta">Descubrir</div>
+          <div class="store-cta">Ver Servicios</div>
         </div>
       </a>
-
     </div>
   </section>
 
+  <!-- DIVIDER MARQUEE -->
+  <div class="divider-marquee">
+    <div class="divider-marquee-inner">
+      <span>MODA</span><span>TECH</span><span>BELLEZA</span><span>FRAGANCIAS</span>
+      <span>JOYERIA</span><span>SERVICIOS</span><span>CELULARES</span><span>ACCESORIOS</span>
+      <span>MODA</span><span>TECH</span><span>BELLEZA</span><span>FRAGANCIAS</span>
+      <span>JOYERIA</span><span>SERVICIOS</span><span>CELULARES</span><span>ACCESORIOS</span>
+    </div>
+  </div>
+
+  <!-- MIXED PRODUCTS -->
+  <section class="index-products-section">
+    <p class="section-eyebrow">Del mall para vos</p>
+    <h2 class="section-title-large">Lo mejor de <em>las tres tiendas</em></h2>
+    <div class="index-products-grid" id="index-products-grid">
+      <!-- filled by JS -->
+    </div>
+    <div class="see-more-row">
+      <a href="divino.html" class="see-more-btn">Ver Divino Cielo &rarr;</a>
+      <a href="familycell.html" class="see-more-btn">Ver FamilyCell &rarr;</a>
+      <a href="elegance.html" class="see-more-btn rose">Ver Elegance &rarr;</a>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <div class="why-strip">
+    <div class="why-item">
+      <div class="why-icon">&#9998;</div>
+      <div class="why-title">Atenci&oacute;n Personalizada</div>
+      <div class="why-desc">Te atendemos directo por WhatsApp, sin intermediarios.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">&#10022;</div>
+      <div class="why-title">Calidad Premium</div>
+      <div class="why-desc">Productos y servicios cuidadosamente seleccionados.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">&#9829;</div>
+      <div class="why-title">Tres Experiencias</div>
+      <div class="why-desc">Moda, tecnolog&iacute;a y belleza bajo un mismo techo.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">&#10003;</div>
+      <div class="why-title">Resultados Garantizados</div>
+      <div class="why-desc">Satisfacci&oacute;n en cada compra y tratamiento.</div>
+    </div>
+  </div>
+
   <footer>
     <div class="footer-logo">NOMBRE<em>PAG</em></div>
-    <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
+    <div class="footer-copy">&copy; 2025 Luxury Mall &middot; San Jos&eacute;, Costa Rica</div>
   </footer>
 
   <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
   <aside id="cart-panel" class="cart-panel">
     <div class="cart-panel-head">
-      <div class="cart-panel-title">Tu Selección</div>
+      <div class="cart-panel-title">Tu Selecci&oacute;n</div>
       <div class="cart-head-right">
         <button class="cart-clear-btn" onclick="clearCart()">VACIAR</button>
-        <button class="cart-close" onclick="closeCart()">✕</button>
+        <button class="cart-close" onclick="closeCart()">&times;</button>
       </div>
     </div>
     <div class="cart-items-wrap" id="cart-items-wrap"></div>
@@ -93,7 +355,7 @@
       <div id="cart-subtotal-row" style="display:none;"></div>
       <div class="cart-total-row">
         <span class="cart-total-label">Total</span>
-        <span class="cart-total-val">₡<span id="cart-total">0</span></span>
+        <span class="cart-total-val">&#8353;<span id="cart-total">0</span></span>
       </div>
       <button class="whatsapp-btn" onclick="sendWhatsApp()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
@@ -102,8 +364,125 @@
     </div>
   </aside>
 
-  <button id="back-to-top">↑</button>
+  <button id="back-to-top">&#8593;</button>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
+  <script>
+  // ── LOOKBOOK IMAGES ──────────────────────────────────────────────────────
+  var LB_IMAGES = [
+    { src:'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=600', label:'Divino Cielo' },
+    { src:'https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=600', label:'Elegance Beauty' },
+    { src:'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=600', label:'FamilyCell' },
+    { src:'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=600', label:'Divino Cielo' },
+    { src:'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=600', label:'Elegance Beauty' },
+    { src:'https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=600', label:'FamilyCell' },
+    { src:'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=600', label:'Divino Cielo' },
+    { src:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600', label:'Elegance Beauty' },
+    { src:'https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=600', label:'Elegance Beauty' },
+    { src:'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=600', label:'Divino Cielo' },
+  ];
+
+  // ── ELEGANCE SERVICES (subset para el index) ──────────────────────────────
+  var INDEX_ELEGANCE = [
+    { isService:true, name:'Limpieza Facial Profunda', price:22000, duration:'60 min',
+      img:'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=600',
+      waLink:'https://wa.me/50684668499?text=Hola!%20Me%20gustar%C3%ADa%20agendar%20Limpieza%20Facial%20Profunda' },
+    { isService:true, name:'Extension de Pestanas', price:35000, duration:'90 min',
+      img:'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=600',
+      waLink:'https://wa.me/50684668499?text=Hola!%20Me%20gustar%C3%ADa%20agendar%20Extension%20de%20Pestanas' },
+    { isService:true, name:'Micro Agujas', price:55000, duration:'60 min',
+      img:'https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=600',
+      waLink:'https://wa.me/50684668499?text=Hola!%20Me%20gustar%C3%ADa%20agendar%20Micro%20Agujas' },
+  ];
+
+  function renderLookbook() {
+    var track = document.getElementById('lookbook-track');
+    if (!track) return;
+    var doubled = LB_IMAGES.concat(LB_IMAGES);
+    track.innerHTML = doubled.map(function(img) {
+      return '<div class="lb-img">' +
+        '<img src="' + img.src + '" alt="' + img.label + '" loading="lazy">' +
+        '<div class="lb-img-label">' + img.label + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderIndexProducts() {
+    var grid = document.getElementById('index-products-grid');
+    if (!grid) return;
+
+    // Get real inventory, pick best from divino + family (up to 5 each), + 3 elegance services
+    var inv = (typeof getInventory === 'function') ? getInventory() : [];
+    var divino  = inv.filter(function(i){ return i.store==='divino'; }).slice(0,5);
+    var family  = inv.filter(function(i){ return i.store==='family'; }).slice(0,4);
+
+    // Interleave: d, d, e(service), f, d, e(service), f, d, f, e(service), f, d
+    var combined = [];
+    var di=0, fi=0, ei=0;
+    var order = ['d','d','e','f','d','f','e','d','f','d','f','e','f'];
+    order.forEach(function(s) {
+      if (s==='d' && di<divino.length)  { combined.push({type:'product', item:divino[fi>0?di:di], store:'divino'}); di++; }
+      if (s==='f' && fi<family.length)  { combined.push({type:'product', item:family[fi], store:'family'}); fi++; }
+      if (s==='e' && ei<INDEX_ELEGANCE.length) { combined.push({type:'service', item:INDEX_ELEGANCE[ei]}); ei++; }
+    });
+
+    // Fallback: just concat if interleave produced nothing
+    if (combined.length === 0) {
+      divino.forEach(function(i){ combined.push({type:'product',item:i,store:'divino'}); });
+      family.forEach(function(i){ combined.push({type:'product',item:i,store:'family'}); });
+      INDEX_ELEGANCE.forEach(function(i){ combined.push({type:'service',item:i}); });
+    }
+
+    var storeNames = { divino:'Divino Cielo', family:'FamilyCell' };
+
+    grid.innerHTML = combined.map(function(entry) {
+      var item = entry.item;
+      if (!item) return '';
+
+      if (entry.type === 'service') {
+        return '<div class="index-product-card revealed" onclick="window.location.href=\'' + item.waLink + '\'">' +
+          '<div class="ipc-service-badge">SERVICIO</div>' +
+          '<div class="ipc-img-wrap"><img src="' + item.img + '" alt="' + item.name + '" loading="lazy">' +
+            '<div class="ipc-overlay"><button class="ipc-overlay-btn" style="border-color:#c8956c;color:#c8956c;">AGENDAR</button></div>' +
+          '</div>' +
+          '<div class="ipc-info">' +
+            '<div class="ipc-name">' + item.name + '</div>' +
+            '<div class="ipc-price rose">&#8353;' + Number(item.price).toLocaleString() + '</div>' +
+            '<div class="ipc-store-tag">Elegance &middot; ' + (item.duration||'') + '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      var mainImg = (typeof getMainImg === 'function') ? getMainImg(item) : (item.img||'');
+      return '<div class="index-product-card reveal-card" onclick="void(0)">' +
+        '<div class="ipc-img-wrap"><img src="' + mainImg + '" alt="' + item.name + '" loading="lazy">' +
+          '<div class="ipc-overlay"><button class="ipc-overlay-btn" onclick="event.stopPropagation();addToCart(' + item.id + ')">+ BOLSA</button></div>' +
+        '</div>' +
+        '<div class="ipc-info">' +
+          '<div class="ipc-name">' + item.name + '</div>' +
+          '<div class="ipc-price">&#8353;' + Number(item.price).toLocaleString() + '</div>' +
+          '<div class="ipc-store-tag">' + (storeNames[entry.store]||entry.store) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).filter(Boolean).join('');
+
+    // Scroll reveal
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e, i) {
+        if (e.isIntersecting) {
+          setTimeout(function(){ e.target.classList.add('revealed'); }, i * 50);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.04 });
+    grid.querySelectorAll('.reveal-card').forEach(function(c){ observer.observe(c); });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    renderLookbook();
+    // Wait for main.js inventory to be ready
+    setTimeout(renderIndexProducts, 80);
+  });
+  </script>
 </body>
 </html>

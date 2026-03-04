@@ -514,6 +514,31 @@
       .topbar { padding: 16px 20px; }
       .main-content { padding: 24px 20px; }
     }
+
+    /* ── ELEGANCE SERVICE MODE ──────────────────────────────── */
+    .service-mode-badge {
+      display: none;
+      background: rgba(200,149,108,0.1);
+      border: 1px solid rgba(200,149,108,0.3);
+      color: #c8956c;
+      font-size: 0.58rem; letter-spacing: 4px; text-transform: uppercase;
+      padding: 8px 14px; margin-bottom: 16px;
+      text-align: center;
+    }
+    body.elegance-mode .service-mode-badge { display: block; }
+    body.elegance-mode #stock-row { display: none !important; }
+    body.elegance-mode #f-name::placeholder { opacity: 0; }
+    body.elegance-mode #duration-row { display: block !important; }
+    body.elegance-mode #f-desc::placeholder { opacity: 0; }
+    body.elegance-mode .gallery-section-title span { color: rgba(200,149,108,0.4); }
+    body.elegance-mode .gallery-hint { color: rgba(200,149,108,0.35); }
+
+    #duration-row { display: none; }
+    #f-name-label-text::after { content: ''; }
+    body.elegance-mode #f-name-label-text::after { content: ' del Servicio'; }
+    body.elegance-mode #f-price-label-text::after { content: ' del Servicio'; }
+    body.elegance-mode #f-desc-label-text::after { content: ' del Servicio'; }
+    body.elegance-mode .gallery-section-title > span:first-child { content:'FOTO DEL SERVICIO'; }
   </style>
 </head>
 <body>
@@ -554,6 +579,8 @@
         <span id="form-mode-label">NUEVO PRODUCTO</span>
       </div>
 
+      <div class="service-mode-badge">◈ MODO SERVICIO — ELEGANCE BEAUTY ESTHETIC</div>
+
       <div class="form-group">
         <label class="form-label">Tienda</label>
         <select class="form-select" id="f-store" onchange="onStoreChange()">
@@ -570,13 +597,17 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Precio (₡)</label>
+          <label class="form-label">Precio (&#8353;)</label>
           <input class="form-input" type="number" id="f-price" placeholder="150000">
         </div>
-        <div class="form-group">
+        <div class="form-group" id="stock-row">
           <label class="form-label">Stock (unidades)</label>
           <input class="form-input" type="number" id="f-stock" placeholder="10" min="0">
         </div>
+      </div>
+      <div class="form-group" id="duration-row">
+        <label class="form-label">Duraci&oacute;n del Servicio</label>
+        <input class="form-input" type="text" id="f-duration" placeholder="Ej: 60 min, 90 min">
       </div>
 
       <div class="form-group">
@@ -991,6 +1022,23 @@ function onStoreChange() {
   renderCategoryList();
   var store = document.getElementById('f-store').value;
   document.getElementById('cat-store-label').textContent = STORE_NAMES[store] || store;
+  // Toggle elegance service mode
+  var isElegance = store === 'elegance';
+  document.body.classList.toggle('elegance-mode', isElegance);
+  // Update form placeholders dynamically
+  var nameInput = document.getElementById('f-name');
+  var descInput = document.getElementById('f-desc');
+  var modeLabel = document.getElementById('form-mode-label');
+  if (nameInput) nameInput.placeholder = isElegance ? 'Ej: Limpieza Facial Profunda' : 'Ej: Vestido Gala Noir';
+  if (descInput) descInput.placeholder = isElegance ? 'Descripci\u00f3n del servicio, incluye, resultados...' : 'Descripci\u00f3n breve del producto';
+  if (modeLabel && modeLabel.textContent === 'NUEVO PRODUCTO') {
+    modeLabel.textContent = isElegance ? 'NUEVO SERVICIO' : 'NUEVO PRODUCTO';
+  }
+  // Update save button label
+  var saveLbl = document.getElementById('save-btn-label');
+  if (saveLbl && (saveLbl.textContent === 'AGREGAR PRODUCTO' || saveLbl.textContent === 'AGREGAR SERVICIO')) {
+    saveLbl.textContent = isElegance ? 'AGREGAR SERVICIO' : 'AGREGAR PRODUCTO';
+  }
 }
 
 function renderCategorySelect(keepVal) {
@@ -1129,6 +1177,8 @@ function clearForm() {
   document.getElementById('f-price').value = '';
   document.getElementById('f-stock').value = '';
   document.getElementById('f-desc').value  = '';
+  var durEl2 = document.getElementById('f-duration');
+  if (durEl2) durEl2.value = '';
   document.getElementById('f-store').value = 'divino';
   renderCategorySelect();
   renderCategoryList();
@@ -1198,7 +1248,9 @@ function saveProduct() {
 
   var specs = Object.keys(currentSpecs).length > 0 ? Object.assign({}, currentSpecs) : {};
 
+  var duration = (document.getElementById('f-duration') ? document.getElementById('f-duration').value.trim() : '') || '';
   var product = { id: editingId !== null ? editingId : nextId++, name, price, stock, store, type, img: mainImg, gallery, desc, specs };
+  if (store === 'elegance' && duration) product.duration = duration;
 
   if (editingId !== null) {
     var idx = inventory.findIndex(function(i){ return i.id===editingId; });
@@ -1232,6 +1284,10 @@ function editProduct(id) {
 
   // Cargar galería
   loadGalleryIntoForm(item);
+  var durEl = document.getElementById('f-duration');
+  if (durEl) durEl.value = item.duration || '';
+  // Trigger mode change for elegance
+  onStoreChange();
 
   // Cargar specs
   currentSpecs = item.specs ? Object.assign({}, item.specs) : {};

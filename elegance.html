@@ -5,17 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elegance Beauty Esthetic — NOMBREPAG</title>
   <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
-    :root { --gold: #d4a574; --gold-light: #f0c89a; }
-    .product-price,.cart-total-val { color:var(--gold); }
-    .whatsapp-btn { background:var(--gold); }
-    .whatsapp-btn:hover { background:var(--gold-light); box-shadow:0 0 30px rgba(212,165,116,0.35); }
-    .add-btn::after,.btn-modal-add::after { background:var(--gold); }
-    #progress-bar { background:linear-gradient(to right,var(--gold),var(--gold-light)); }
+    :root { --rose:#c8956c; --rose-light:#e8b99a; --rose-dim:rgba(200,149,108,0.1); --rose-glow:rgba(200,149,108,0.25); }
+
+    .elegance-hero { position:relative; height:100vh; min-height:600px; display:flex; align-items:center; justify-content:center; overflow:hidden; text-align:center; }
+    .elegance-hero-bg { position:absolute; inset:0; background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1800'); background-size:cover; background-position:center 30%; filter:brightness(0.3); transform:scale(1.04); transition:transform 8s ease; }
+    .elegance-hero:hover .elegance-hero-bg { transform:scale(1.0); }
+    .elegance-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(8,8,8,0.85) 100%); }
+    .elegance-hero-content { position:relative; z-index:2; padding:0 24px; }
+
+    .elegance-eyebrow { font-size:0.6rem; letter-spacing:6px; text-transform:uppercase; color:var(--rose); margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:12px; }
+    .elegance-eyebrow::before,.elegance-eyebrow::after { content:''; width:40px; height:1px; background:var(--rose); opacity:0.5; }
+
+    .elegance-hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(3rem,10vw,7rem); font-weight:300; font-style:italic; color:var(--white); line-height:1.05; margin-bottom:16px; letter-spacing:2px; }
+    .elegance-hero-sub { font-size:0.72rem; letter-spacing:4px; text-transform:uppercase; color:rgba(245,240,232,0.4); margin-bottom:36px; }
+
+    .elegance-hero-ctas { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    .btn-elegance-primary { padding:14px 32px; background:var(--rose); color:#fff; border:none; font-size:0.62rem; letter-spacing:4px; text-transform:uppercase; cursor:pointer; text-decoration:none; display:inline-block; transition:0.25s; font-family:'DM Sans',sans-serif; font-weight:500; }
+    .btn-elegance-primary:hover { background:var(--rose-light); box-shadow:0 0 28px var(--rose-glow); }
+    .btn-elegance-ghost { padding:13px 32px; background:none; color:rgba(245,240,232,0.7); border:1px solid rgba(245,240,232,0.2); font-size:0.62rem; letter-spacing:4px; text-transform:uppercase; cursor:pointer; text-decoration:none; display:inline-block; transition:0.25s; font-family:'DM Sans',sans-serif; }
+    .btn-elegance-ghost:hover { border-color:var(--rose); color:var(--rose); }
+
+    .elegance-stats { display:flex; border-top:1px solid rgba(245,240,232,0.07); border-bottom:1px solid rgba(245,240,232,0.07); }
+    .elegance-stat { flex:1; padding:28px 16px; text-align:center; border-right:1px solid rgba(245,240,232,0.07); }
+    .elegance-stat:last-child { border-right:none; }
+    .elegance-stat-val { font-family:'Cormorant Garamond',serif; font-size:1.8rem; color:var(--rose); line-height:1; margin-bottom:6px; }
+    .elegance-stat-label { font-size:0.55rem; letter-spacing:3px; text-transform:uppercase; color:rgba(245,240,232,0.3); }
+
+    .elegance-filter-bar { padding:40px 6% 0; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+    .elegance-filter-btn { padding:9px 22px; background:none; border:1px solid rgba(245,240,232,0.1); color:rgba(245,240,232,0.4); font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:0.2s; font-family:'DM Sans',sans-serif; }
+    .elegance-filter-btn:hover,.elegance-filter-btn.active { border-color:var(--rose); color:var(--rose); background:var(--rose-dim); }
+
+    .services-section { padding:48px 6% 80px; }
+    .services-section-title { font-size:0.6rem; letter-spacing:6px; text-transform:uppercase; color:var(--rose); text-align:center; margin-bottom:40px; }
+    .services-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:2px; }
+
+    .service-card { background:rgba(245,240,232,0.02); border:1px solid rgba(245,240,232,0.06); padding:32px 28px; position:relative; overflow:hidden; opacity:0; transform:translateY(20px); transition:opacity 0.5s, transform 0.5s, background 0.3s, border-color 0.3s; }
+    .service-card.revealed { opacity:1; transform:translateY(0); }
+    .service-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(to right,transparent,var(--rose),transparent); opacity:0; transition:opacity 0.3s; }
+    .service-card:hover { background:rgba(200,149,108,0.04); border-color:rgba(200,149,108,0.2); }
+    .service-card:hover::before { opacity:1; }
+
+    .service-category-tag { font-size:0.55rem; letter-spacing:3px; text-transform:uppercase; color:var(--rose); margin-bottom:14px; display:inline-block; padding:4px 10px; border:1px solid rgba(200,149,108,0.25); background:var(--rose-dim); }
+    .service-name { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:400; color:var(--white); margin-bottom:10px; line-height:1.2; }
+    .service-desc { font-size:0.78rem; color:rgba(245,240,232,0.45); line-height:1.7; margin-bottom:20px; }
+    .service-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; padding-top:16px; border-top:1px solid rgba(245,240,232,0.07); }
+    .service-price { font-family:'Cormorant Garamond',serif; font-size:1.6rem; color:var(--rose); }
+    .service-duration { font-size:0.6rem; letter-spacing:2px; text-transform:uppercase; color:rgba(245,240,232,0.3); display:flex; align-items:center; gap:6px; }
+    .service-duration::before { content:'◷'; font-size:0.8rem; }
+
+    .btn-agendar { width:100%; padding:12px; background:none; border:1px solid rgba(200,149,108,0.35); color:var(--rose); font-size:0.6rem; letter-spacing:4px; text-transform:uppercase; cursor:pointer; transition:0.2s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
+    .btn-agendar:hover { background:var(--rose); color:#fff; box-shadow:0 0 20px var(--rose-glow); }
+
+    .lookbook-section { padding:0 0 80px; overflow:hidden; }
+    .lookbook-label { font-size:0.6rem; letter-spacing:6px; text-transform:uppercase; color:rgba(245,240,232,0.2); text-align:center; padding:60px 0 32px; }
+    .lookbook-track-wrap { overflow:hidden; position:relative; }
+    .lookbook-track-wrap::before,.lookbook-track-wrap::after { content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none; }
+    .lookbook-track-wrap::before { left:0; background:linear-gradient(to right,#080808,transparent); }
+    .lookbook-track-wrap::after  { right:0; background:linear-gradient(to left,#080808,transparent); }
+    .lookbook-track { display:flex; gap:4px; animation:lookbook-scroll 32s linear infinite; width:max-content; }
+    .lookbook-track:hover { animation-play-state:paused; }
+    @keyframes lookbook-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .lookbook-img { width:220px; height:280px; flex-shrink:0; overflow:hidden; }
+    .lookbook-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.6s; }
+    .lookbook-img:hover img { transform:scale(1.06); }
+
+    .elegance-instagram { text-align:center; padding:60px 6%; border-top:1px solid rgba(245,240,232,0.07); }
+    .elegance-instagram-title { font-family:'Cormorant Garamond',serif; font-size:2rem; font-style:italic; color:var(--white); margin-bottom:8px; }
+    .elegance-instagram-sub { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:rgba(245,240,232,0.3); margin-bottom:28px; }
+    .btn-instagram { display:inline-flex; align-items:center; gap:10px; padding:13px 28px; border:1px solid rgba(200,149,108,0.35); color:var(--rose); text-decoration:none; font-size:0.62rem; letter-spacing:3px; text-transform:uppercase; transition:0.2s; font-family:'DM Sans',sans-serif; }
+    .btn-instagram:hover { background:var(--rose); color:#fff; box-shadow:0 0 24px var(--rose-glow); }
+
+    .no-services { text-align:center; padding:60px 20px; color:rgba(245,240,232,0.2); font-size:0.8rem; letter-spacing:3px; text-transform:uppercase; grid-column:1/-1; }
+    @media(max-width:640px){ .elegance-stats{flex-wrap:wrap} .elegance-stat{min-width:50%} .services-grid{grid-template-columns:1fr} }
   </style>
 </head>
-<body data-store="elegance">
+<body data-store="elegance" data-mode="services">
   <div id="progress-bar"></div>
   <div class="grain"></div>
   <div id="cursor-dot" class="cursor-dot"></div>
@@ -24,80 +90,195 @@
   <nav>
     <a href="index.html" class="nav-logo">NOMBRE<em>PAG</em></a>
     <div class="nav-right">
-      <a href="index.html" class="nav-link">← Volver</a>
-      <button class="cart-btn" onclick="toggleCart()">BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span></button>
+      <a href="index.html" class="nav-link">&#8592; Volver</a>
+      <a href="https://www.instagram.com/elegance_beautyesthetic" target="_blank" class="nav-link" style="color:rgba(200,149,108,0.7);">@elegance_beautyesthetic</a>
     </div>
   </nav>
 
-  <header class="store-page-hero">
-    <div class="store-page-bg" style="background-image:url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1600')"></div>
-    <div class="store-page-content">
-      <p class="store-page-eyebrow">Belleza & Estética · Nº 03</p>
-      <h1 class="store-page-title" style="font-family:'Playfair Display',serif;font-style:italic;">Elegance Beauty Esthetic</h1>
+  <header class="elegance-hero">
+    <div class="elegance-hero-bg"></div>
+    <div class="elegance-hero-overlay"></div>
+    <div class="elegance-hero-content">
+      <div class="elegance-eyebrow">Belleza &middot; Bienestar &middot; Est&eacute;tica</div>
+      <h1 class="elegance-hero-title">Elegance<br>Beauty Esthetic</h1>
+      <p class="elegance-hero-sub">Especialistas en tratamientos de belleza y bienestar</p>
+      <div class="elegance-hero-ctas">
+        <a href="https://wa.me/50684668499?text=Hola!%20Me%20gustar%C3%ADa%20agendar%20una%20cita%20en%20Elegance%20Beauty%20Esthetic" target="_blank" class="btn-elegance-primary">AGENDAR CITA</a>
+        <button class="btn-elegance-ghost" onclick="document.querySelector('.services-section').scrollIntoView({behavior:'smooth'})">VER SERVICIOS</button>
+      </div>
     </div>
   </header>
 
-  <div class="filter-bar">
-    <button class="filter-btn active" data-type="all" onclick="filterStore('all','elegance')">Todo</button>
-    <button class="filter-btn" data-type="joyería" onclick="filterStore('joyería','elegance')">Joyería</button>
-    <button class="filter-btn" data-type="fragancias" onclick="filterStore('fragancias','elegance')">Fragancias</button>
-    <button class="filter-btn" data-type="belleza" onclick="filterStore('belleza','elegance')">Belleza</button>
+  <div class="elegance-stats">
+    <div class="elegance-stat"><div class="elegance-stat-val">+5</div><div class="elegance-stat-label">A&ntilde;os de experiencia</div></div>
+    <div class="elegance-stat"><div class="elegance-stat-val">12</div><div class="elegance-stat-label">Servicios disponibles</div></div>
+    <div class="elegance-stat"><div class="elegance-stat-val">100%</div><div class="elegance-stat-label">Satisfacci&oacute;n garantizada</div></div>
+    <div class="elegance-stat"><div class="elegance-stat-val">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="elegance-stat-label">Valoraci&oacute;n clientes</div></div>
   </div>
 
-  <div class="toolbar">
-    <div class="search-wrap">
-      <input id="search-input" type="text" placeholder="Buscar productos..." oninput="onSearch(this.value,'elegance')">
+  <div class="elegance-filter-bar">
+    <button class="elegance-filter-btn active" data-cat="all" onclick="filterElegance('all')">Todos</button>
+    <button class="elegance-filter-btn" data-cat="u%C3%B1as" onclick="filterElegance('unas')">U&ntilde;as</button>
+    <button class="elegance-filter-btn" data-cat="cejas-pestanas" onclick="filterElegance('cejas-pestanas')">Cejas &amp; Pesta&ntilde;as</button>
+    <button class="elegance-filter-btn" data-cat="facial" onclick="filterElegance('facial')">Facial</button>
+    <button class="elegance-filter-btn" data-cat="corporal" onclick="filterElegance('corporal')">Corporal</button>
+  </div>
+
+  <div class="services-section">
+    <div class="services-section-title">NUESTROS SERVICIOS</div>
+    <div class="services-grid" id="services-grid"></div>
+  </div>
+
+  <div class="lookbook-section">
+    <div class="lookbook-label">GALER&Iacute;A &middot; ELEGANCE BEAUTY ESTHETIC</div>
+    <div class="lookbook-track-wrap">
+      <div class="lookbook-track" id="lookbook-track"></div>
     </div>
-    <select class="sort-select" onchange="sortProducts(this.value,'elegance')">
-      <option value="">Ordenar por</option>
-      <option value="price-asc">Precio: menor a mayor</option>
-      <option value="price-desc">Precio: mayor a menor</option>
-      <option value="name">Nombre A–Z</option>
-      <option value="newest">Más recientes</option>
-    </select>
   </div>
 
-  <div class="products-grid" id="product-grid"></div>
-
-  <section id="recent-views-section" style="display:none;">
-    <div class="recent-label">VISTOS RECIENTEMENTE</div>
-    <div class="recent-grid"></div>
-  </section>
+  <div class="elegance-instagram">
+    <div class="elegance-instagram-title">S&iacute;guenos en Instagram</div>
+    <div class="elegance-instagram-sub">Insp&iacute;rate con nuestros resultados</div>
+    <a href="https://www.instagram.com/elegance_beautyesthetic" target="_blank" class="btn-instagram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      @elegance_beautyesthetic
+    </a>
+  </div>
 
   <footer>
     <div class="footer-logo">NOMBRE<em>PAG</em></div>
-    <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
+    <div class="footer-copy">&copy; 2025 Luxury Mall &middot; San Jos&eacute;, Costa Rica &middot; <a href="https://wa.me/50684668499" target="_blank" style="color:var(--rose);text-decoration:none;">WhatsApp 8466-8499</a></div>
   </footer>
 
-  <div id="product-modal"></div>
-  <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
-  <aside id="cart-panel" class="cart-panel">
-    <div class="cart-panel-head">
-      <div class="cart-panel-title">Tu Selección</div>
-      <div class="cart-head-right">
-        <button class="cart-clear-btn" onclick="clearCart()">VACIAR</button>
-        <button class="cart-close" onclick="closeCart()">✕</button>
-      </div>
-    </div>
-    <div class="cart-items-wrap" id="cart-items-wrap"></div>
-    <div class="cart-panel-foot">
-      <div id="cart-subtotal-row" style="display:none;">
-        <span class="cart-total-label">Subtotal</span>
-        <span style="font-size:0.85rem;color:rgba(245,240,232,0.5);font-family:'Bebas Neue';letter-spacing:2px;">₡<span id="cart-total">0</span></span>
-      </div>
-      <div class="cart-total-row">
-        <span class="cart-total-label">Total</span>
-        <span class="cart-total-val">₡<span id="cart-total">0</span></span>
-      </div>
-      <button class="whatsapp-btn" onclick="sendWhatsApp()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-        ORDENAR POR WHATSAPP
-      </button>
-    </div>
-  </aside>
+  <button id="back-to-top">&#8593;</button>
+  <div id="toast-wrap"></div>
 
-  <button id="back-to-top">↑</button>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
+  <script>
+  var DEFAULT_SERVICES = [
+    { id:'s1', cat:'unas', name:'Unas Acrilicas', duration:'90 min', price:25000, desc:'Construccion completa en acrilico con diseno incluido. Incluye forma, limado, sellado y decoracion a eleccion.', details:{'Incluye':'Diseno a eleccion','Durabilidad':'3-4 semanas','Remocion':'Disponible'} },
+    { id:'s2', cat:'unas', name:'Unas en Gel', duration:'75 min', price:20000, desc:'Acabado natural y brillante de larga duracion. Ideal para fortalecer y embellecer la una natural.', details:{'Incluye':'Color y brillo','Durabilidad':'2-3 semanas','Remocion':'Disponible'} },
+    { id:'s3', cat:'cejas-pestanas', name:'Diseno de Cejas', duration:'30 min', price:8000, desc:'Depilacion y diseno personalizado segun la forma de tu rostro para un resultado perfecto y simetrico.', details:{'Tecnica':'Hilo + cera','Incluye':'Diseno personalizado','Resultado':'Inmediato'} },
+    { id:'s4', cat:'cejas-pestanas', name:'Extension de Pestanas', duration:'90 min', price:35000, desc:'Extensiones pelo a pelo para una mirada mas intensa y profunda. Efecto natural, cat eye o volumen.', details:{'Tipo':'Pelo a pelo / Volumen','Durabilidad':'3-4 semanas','Relleno':'Disponible'} },
+    { id:'s5', cat:'facial', name:'Limpieza Facial Profunda', duration:'60 min', price:22000, desc:'Limpieza completa de poros, extraccion de comedones, vapor y mascarilla hidratante. Piel renovada y luminosa.', details:{'Para':'Todo tipo de piel','Incluye':'Mascarilla + hidratacion','Frecuencia':'Mensual recomendada'} },
+    { id:'s6', cat:'facial', name:'Tratamiento Anti-edad', duration:'75 min', price:40000, desc:'Protocolo de rejuvenecimiento con activos de alta concentracion. Reduce lineas de expresion y firmeza visible desde la primera sesion.', details:{'Activos':'Retinol, Vitamina C','Sesiones':'4-6 recomendadas','Resultado':'Progresivo'} },
+    { id:'s7', cat:'facial', name:'Control de Acne', duration:'60 min', price:28000, desc:'Tratamiento especializado para piel con acne. Limpieza profunda, peelings acidos y tratamiento seborreico.', details:{'Para':'Piel grasa / Acne','Incluye':'Peeling + mascarilla','Sesiones':'6-8 recomendadas'} },
+    { id:'s8', cat:'facial', name:'Micro Agujas', duration:'60 min', price:55000, desc:'Microdermoabrasion con agujas para estimular el colageno. Mejora textura, poros, cicatrices y manchas.', details:{'Profundidad':'0.5-1.5mm','Recuperacion':'24-48 horas','Sesiones':'3-6 recomendadas'} },
+    { id:'s9', cat:'facial', name:'Dermaplaning', duration:'45 min', price:30000, desc:'Exfoliacion suave con bisturi para eliminar vello facial fino y celulas muertas. Piel perfectamente lisa.', details:{'Incluye':'Hidratacion post','Para':'Todo tipo de piel','Resultado':'Inmediato'} },
+    { id:'s10', cat:'corporal', name:'Levantamiento de Gluteos', duration:'60 min', price:45000, desc:'Tratamiento no invasivo con radiofrecuencia y masaje modelador para tonificar y levantar la zona glutea.', details:{'Tecnologia':'Radiofrecuencia','Sesiones':'8-10 recomendadas','Resultado':'Progresivo'} },
+    { id:'s11', cat:'corporal', name:'Reduccion de Grasa Localizada', duration:'75 min', price:50000, desc:'Cavitacion ultrasonora para romper celulas de grasa en zonas especificas: abdomen, muslos, brazos.', details:{'Tecnologia':'Cavitacion','Zonas':'Abdomen, muslos, brazos','Sesiones':'10-12 recomendadas'} },
+    { id:'s12', cat:'corporal', name:'Celulitis y Estrias', duration:'60 min', price:42000, desc:'Tratamiento combinado de presoterapia y radiofrecuencia para mejorar la apariencia de celulitis y estrias.', details:{'Tecnica':'Presoterapia + RF','Resultado':'Visible desde sesion 3','Sesiones':'8-10 recomendadas'} }
+  ];
+
+  var LOOKBOOK_IMGS = [
+    'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=600',
+    'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=600',
+    'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600',
+    'https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=600',
+    'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=600',
+    'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?q=80&w=600',
+    'https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=600',
+    'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=600'
+  ];
+
+  var activeCategory = 'all';
+
+  function getServices() {
+    try {
+      var raw = localStorage.getItem('elegance-services');
+      var parsed = raw ? JSON.parse(raw) : null;
+      return (parsed && parsed.length) ? parsed : DEFAULT_SERVICES;
+    } catch(e) { return DEFAULT_SERVICES; }
+  }
+
+  function filterElegance(cat) {
+    activeCategory = cat;
+    document.querySelectorAll('.elegance-filter-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.cat === cat);
+    });
+    renderServices();
+  }
+
+  function catLabel(cat) {
+    var map = { 'unas':'Unas', 'cejas-pestanas':'Cejas & Pestanas', 'facial':'Facial', 'corporal':'Corporal' };
+    return map[cat] || cat;
+  }
+
+  function buildWALink(s) {
+    var msg = 'Hola! Me gustaria agendar una cita para ' + s.name + ' (' + s.duration + ', colonos' + Number(s.price).toLocaleString() + ')';
+    return 'https://wa.me/50684668499?text=' + encodeURIComponent(msg);
+  }
+
+  function renderServices() {
+    var grid = document.getElementById('services-grid');
+    if (!grid) return;
+    var all = getServices();
+    var filtered = activeCategory === 'all' ? all : all.filter(function(s) { return s.cat === activeCategory; });
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="no-services">Sin servicios en esta categoria</div>';
+      return;
+    }
+
+    var waIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
+
+    grid.innerHTML = filtered.map(function(s) {
+      return '<div class="service-card reveal-card">' +
+        '<div class="service-category-tag">' + catLabel(s.cat) + '</div>' +
+        '<div class="service-name">' + s.name + '</div>' +
+        '<div class="service-desc">' + s.desc + '</div>' +
+        '<div class="service-meta">' +
+          '<div class="service-price">&#8353;' + Number(s.price).toLocaleString() + '</div>' +
+          '<div class="service-duration">' + (s.duration || '60 min') + '</div>' +
+        '</div>' +
+        '<a href="' + buildWALink(s) + '" target="_blank" class="btn-agendar">' +
+          waIcon + ' AGENDAR CITA' +
+        '</a>' +
+      '</div>';
+    }).join('');
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e, i) {
+        if (e.isIntersecting) {
+          setTimeout(function() { e.target.classList.add('revealed'); }, i * 60);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.05 });
+    grid.querySelectorAll('.reveal-card').forEach(function(c) { observer.observe(c); });
+  }
+
+  function renderLookbook() {
+    var track = document.getElementById('lookbook-track');
+    if (!track) return;
+    var imgs = LOOKBOOK_IMGS.concat(LOOKBOOK_IMGS);
+    track.innerHTML = imgs.map(function(src) {
+      return '<div class="lookbook-img"><img src="' + src + '" alt="Elegance Beauty" loading="lazy"></div>';
+    }).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    renderServices();
+    renderLookbook();
+    var bar = document.getElementById('progress-bar');
+    var btn = document.getElementById('back-to-top');
+    var nav = document.querySelector('nav');
+    window.addEventListener('scroll', function() {
+      var y = window.scrollY;
+      if (nav) nav.classList.toggle('scrolled', y > 50);
+      if (btn) btn.classList.toggle('visible', y > 400);
+      if (bar) { var h = document.documentElement.scrollHeight - window.innerHeight; bar.style.width = (h > 0 ? y/h*100 : 0) + '%'; }
+    });
+    if (btn) btn.addEventListener('click', function() { window.scrollTo({ top:0, behavior:'smooth' }); });
+    // init cursor
+    var dot = document.getElementById('cursor-dot'), ring = document.getElementById('cursor-ring');
+    if (dot && ring && !window.matchMedia('(pointer:coarse)').matches) {
+      var rx=0,ry=0,mx=0,my=0;
+      document.addEventListener('mousemove', function(e){ mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+      (function a(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(a); })();
+    } else { if(dot) dot.style.display='none'; if(ring) ring.style.display='none'; }
+  });
+  </script>
 </body>
 </html>
