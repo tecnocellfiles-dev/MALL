@@ -5,7 +5,7 @@
 (function() {
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
-const ADMIN_CODE = 'ADMIN2025'; // Código secreto para activar rol admin
+const ADMIN_CODE = 'DCUSERS3'; // Código secreto para activar rol admin
 const STORE_KEY  = 'lm-users';
 const SESSION_KEY = 'lm-session';
 
