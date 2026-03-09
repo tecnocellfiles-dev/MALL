@@ -143,16 +143,19 @@ function getInventory() {
     if (!saved) return DEFAULT_INVENTORY;
     var parsed = JSON.parse(saved);
     if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_INVENTORY;
+    // Validate minimum structure
     var first = parsed[0];
-    if (!first.id || !first.name || !first.store) {
+    if (!first || !first.id || !first.name || !first.store) {
       localStorage.removeItem('lm-inventory');
       return DEFAULT_INVENTORY;
     }
-    parsed.forEach(function(item) {
+    // Ensure every item has required fields so renderGrid never crashes
+    parsed.forEach(function(item){
       if (!item.img) item.img = '';
       if (!item.gallery || !item.gallery.length) item.gallery = item.img ? [{url:item.img,isMain:true}] : [];
       if (!item.specs) item.specs = {};
       if (item.desc === undefined) item.desc = '';
+      if (!item.type) item.type = 'general';
     });
     return parsed;
   } catch(e) {
@@ -257,7 +260,7 @@ function sendWhatsApp(){
   if(window.saveOrderToAccount) window.saveOrderToAccount(cart);
   var total=cart.reduce(function(s,i){return s+i.price*(i.qty||1);},0);
   var lines=cart.map(function(i){var q=i.qty||1;return '• '+i.name+(q>1?' ×'+q:'')+' — ₡'+(i.price*q).toLocaleString();}).join('\\n');
-  var msg='\u00a1Hola! Quiero hacer un pedido \u{1F6D2}\\n\\n'+lines+'\\n\\n*TOTAL: \u20a1'+total.toLocaleString()+'*';
+  var msg='¡Hola! Quiero hacer un pedido \uD83D\uDED2\\n\\n'+lines+'\\n\\n*TOTAL: \u20a1'+total.toLocaleString()+'*';
   // Store-specific WhatsApp links
   var waLinks = {
     divino:   'https://api.whatsapp.com/message/LQMOAQKS3LFII1?autoload=1&app_absent=0&utm_source=ig',
@@ -294,27 +297,39 @@ function initCursor(){
     document.documentElement.style.cursor='auto';
     return;
   }
+  // Start invisible — reveal only after first real mouse movement
   dot.style.opacity='0'; ring.style.opacity='0';
   var hasMoved=false, rafRunning=true;
   var cx=window.innerWidth/2, cy=window.innerHeight/2;
-  var rx=cx,ry=cy,mx=cx,my=cy;
+  var rx=cx, ry=cy, mx=cx, my=cy;
   document.addEventListener('mousemove',function(e){
     mx=e.clientX; my=e.clientY;
     dot.style.left=mx+'px'; dot.style.top=my+'px';
     if(!hasMoved){
-      hasMoved=true; rx=mx; ry=my;
+      hasMoved=true;
+      rx=mx; ry=my; // snap ring to avoid drift from center
       dot.style.opacity='1'; ring.style.opacity='1';
     }
   },{passive:true});
-  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';});
-  document.addEventListener('mouseenter',function(){if(hasMoved){rx=mx;ry=my;dot.style.opacity='1';ring.style.opacity='1';}});
+  document.addEventListener('mouseleave',function(){
+    dot.style.opacity='0'; ring.style.opacity='0';
+  });
+  document.addEventListener('mouseenter',function(){
+    if(hasMoved){ rx=mx; ry=my; dot.style.opacity='1'; ring.style.opacity='1'; }
+  });
+  // Pause RAF when tab is hidden — prevents ring drifting to center on return
   document.addEventListener('visibilitychange',function(){
-    if(document.hidden){rafRunning=false;}
-    else{if(!rafRunning){rafRunning=true;rx=mx;ry=my;loop();}}
+    if(document.hidden){ rafRunning=false; }
+    else if(!rafRunning){ rafRunning=true; rx=mx; ry=my; loop(); }
   });
   document.addEventListener('mousedown',function(){dot.style.transform='translate(-50%,-50%) scale(1.5)';});
   document.addEventListener('mouseup',function(){dot.style.transform='translate(-50%,-50%) scale(1)';});
-  function loop(){if(!rafRunning)return;rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);}
+  function loop(){
+    if(!rafRunning)return;
+    rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  }
   loop();
 }
 
@@ -383,7 +398,7 @@ function switchModalImg(idx) {
   }
   // Actualizar wrap onclick para zoom
   var wrap = document.getElementById('modal-main-img-wrap');
-  if (wrap)   if (wrap) wrap.dataset.zoomSrc = _modalGallery[idx];
+  if (wrap) wrap.dataset.zoomSrc = _modalGallery[idx];
   // Actualizar prev/next
   var prev = wrap && wrap.querySelector('.modal-gallery-prev');
   var next = wrap && wrap.querySelector('.modal-gallery-next');
@@ -533,8 +548,14 @@ function renderGrid(items){
 
 function cardWish(id,btn){
   var added=false;
-  if(window.toggleFavorite){added=!!window.toggleFavorite(id);}
-  else{var favs=[];try{favs=JSON.parse(localStorage.getItem('lm-wishlist')||'[]');}catch(e){}var ix=favs.indexOf(id);if(ix===-1){favs.push(id);added=true;}else{favs.splice(ix,1);}try{localStorage.setItem('lm-wishlist',JSON.stringify(favs));}catch(e){}}
+  if(window.toggleFavorite){
+    added=!!window.toggleFavorite(id);
+  } else {
+    var favs=[]; try{favs=JSON.parse(localStorage.getItem('lm-wishlist')||'[]');}catch(e){}
+    var ix=favs.indexOf(id);
+    if(ix===-1){favs.push(id);added=true;}else{favs.splice(ix,1);}
+    try{localStorage.setItem('lm-wishlist',JSON.stringify(favs));}catch(e){}
+  }
   btn.classList.toggle('wishlisted',added);
   showToast(added?'Guardado en favoritos':'Eliminado de favoritos','info');
 }
