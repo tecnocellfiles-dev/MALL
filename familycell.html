@@ -105,5 +105,47 @@
   <button id="back-to-top">↑</button>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    (function() {
+      var STORE_KEY = 'family';
+      var DEFAULT_CATS = ['tech', 'celulares', 'accesorios'];
+
+      function getDynamicCats() {
+        try {
+          var saved = localStorage.getItem('admin-categories');
+          if (saved) {
+            var all = JSON.parse(saved);
+            if (all[STORE_KEY] && all[STORE_KEY].length > 0) return all[STORE_KEY];
+          }
+        } catch(e) {}
+        return DEFAULT_CATS;
+      }
+
+      function rebuildFilterBar() {
+        var bar = document.querySelector('.filter-bar');
+        if (!bar) return;
+        var cats = getDynamicCats();
+        var params = new URLSearchParams(window.location.search);
+        var active = params.get('type') || 'all';
+        var btns = '<button class="filter-btn' + (active === 'all' ? ' active' : '') + '" data-type="all" onclick="filterStore(\'all\',\'' + STORE_KEY + '\')">Todo</button>';
+        cats.forEach(function(cat) {
+          var label = cat.charAt(0).toUpperCase() + cat.slice(1);
+          var isActive = active === cat ? ' active' : '';
+          btns += '<button class="filter-btn' + isActive + '" data-type="' + cat + '" onclick="filterStore(\'' + cat + '\',\'' + STORE_KEY + '\')">' + label + '</button>';
+        });
+        bar.innerHTML = btns;
+      }
+
+      window.addEventListener('DOMContentLoaded', function() {
+        rebuildFilterBar();
+      });
+
+      var _orig = window.filterStore;
+      window.filterStore = function(type, storeKey) {
+        if (_orig) _orig(type, storeKey);
+        rebuildFilterBar();
+      };
+    })();
+  </script>
 </body>
 </html>

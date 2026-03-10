@@ -268,7 +268,28 @@
     }).join('');
   }
 
+  function rebuildEleganceFilterBar() {
+    var bar = document.querySelector('.elegance-filter-bar');
+    if (!bar) return;
+    var DEFAULT_ELEGANCE_CATS = ['unas', 'cejas-pestanas', 'facial', 'corporal'];
+    var cats = DEFAULT_ELEGANCE_CATS;
+    try {
+      var saved = localStorage.getItem('admin-categories');
+      if (saved) {
+        var all = JSON.parse(saved);
+        if (all['elegance'] && all['elegance'].length > 0) cats = all['elegance'];
+      }
+    } catch(e) {}
+    var btns = '<button class="elegance-filter-btn active" data-cat="all" onclick="filterElegance(\'all\')">Todos</button>';
+    cats.forEach(function(cat) {
+      var label = catLabel(cat);
+      btns += '<button class="elegance-filter-btn" data-cat="' + cat + '" onclick="filterElegance(\'' + cat + '\')">' + label + '</button>';
+    });
+    bar.innerHTML = btns;
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
+    rebuildEleganceFilterBar();
     renderServices();
     renderLookbook();
     var bar = document.getElementById('progress-bar');
