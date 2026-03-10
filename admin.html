@@ -1003,12 +1003,39 @@ const DEFAULT_INVENTORY = [
 ];
 
 function loadInventory() {
-  var saved = localStorage.getItem('admin-inventory');
-  return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
+  // ── FUENTE DE VERDAD: lm-inventory siempre tiene prioridad ──
+  // Orden: lm-inventory → admin-inventory → DEFAULT_INVENTORY
+  try {
+    var lmRaw = localStorage.getItem('lm-inventory');
+    if (lmRaw) {
+      var lmParsed = JSON.parse(lmRaw);
+      if (Array.isArray(lmParsed) && lmParsed.length > 0) {
+        // Sincronizar admin-inventory con lm-inventory
+        localStorage.setItem('admin-inventory', lmRaw);
+        return lmParsed;
+      }
+    }
+  } catch(e) { console.warn('loadInventory: error leyendo lm-inventory', e); }
+
+  try {
+    var adminRaw = localStorage.getItem('admin-inventory');
+    if (adminRaw) {
+      var adminParsed = JSON.parse(adminRaw);
+      if (Array.isArray(adminParsed) && adminParsed.length > 0) {
+        // Sincronizar lm-inventory con admin-inventory
+        localStorage.setItem('lm-inventory', adminRaw);
+        return adminParsed;
+      }
+    }
+  } catch(e) { console.warn('loadInventory: error leyendo admin-inventory', e); }
+
+  return JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
 }
 function saveInventory(inv) {
-  localStorage.setItem('admin-inventory', JSON.stringify(inv));
-  localStorage.setItem('lm-inventory', JSON.stringify(inv));
+  // Guardar siempre en AMBAS claves para mantenerlas sincronizadas
+  var json = JSON.stringify(inv);
+  localStorage.setItem('lm-inventory', json);
+  localStorage.setItem('admin-inventory', json);
 }
 
 var inventory = loadInventory();

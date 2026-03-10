@@ -138,16 +138,30 @@ const DEFAULT_INVENTORY = [
 ];
 
 function getInventory() {
+  // ── FUENTE DE VERDAD: lm-inventory, con fallback a admin-inventory ──
   try {
-    var saved = localStorage.getItem('lm-inventory');
-    if (!saved) return DEFAULT_INVENTORY;
-    var parsed = JSON.parse(saved);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    return DEFAULT_INVENTORY;
+    var lmRaw = localStorage.getItem('lm-inventory');
+    if (lmRaw) {
+      var lmParsed = JSON.parse(lmRaw);
+      if (Array.isArray(lmParsed) && lmParsed.length > 0) return lmParsed;
+    }
   } catch(e) {
     try { localStorage.removeItem('lm-inventory'); } catch(_) {}
-    return DEFAULT_INVENTORY;
   }
+  try {
+    var adminRaw = localStorage.getItem('admin-inventory');
+    if (adminRaw) {
+      var adminParsed = JSON.parse(adminRaw);
+      if (Array.isArray(adminParsed) && adminParsed.length > 0) {
+        // Restaurar lm-inventory desde admin-inventory
+        localStorage.setItem('lm-inventory', adminRaw);
+        return adminParsed;
+      }
+    }
+  } catch(e) {
+    try { localStorage.removeItem('admin-inventory'); } catch(_) {}
+  }
+  return DEFAULT_INVENTORY;
 }
 
 var inventory = getInventory();
@@ -275,10 +289,17 @@ window.showToast=showToast;
 function initCursor(){
   if(window.__cursorInit)return; window.__cursorInit=true;
   var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){if(dot)dot.style.display='none';if(ring)ring.style.display='none';return;}
-  var rx=0,ry=0,mx=0,my=0;
+  if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){
+    if(dot)dot.style.display='none';
+    if(ring)ring.style.display='none';
+    return;
+  }
+  dot.style.display='block'; ring.style.display='block';
+  var rx=0,ry=0,mx=window.innerWidth/2,my=window.innerHeight/2;
   document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
   (function a(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+  document.addEventListener('mouseenter',function(){dot.style.opacity='1';ring.style.opacity='1';});
+  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';});
 }
 
 function initNav(){
