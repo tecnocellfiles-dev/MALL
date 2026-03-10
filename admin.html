@@ -1003,36 +1003,18 @@ const DEFAULT_INVENTORY = [
 ];
 
 function loadInventory() {
-  // ── FUENTE DE VERDAD: lm-inventory siempre tiene prioridad ──
-  // Orden: lm-inventory → admin-inventory → DEFAULT_INVENTORY
+  // lm-inventory es la fuente de verdad — siempre tiene prioridad
   try {
-    var lmRaw = localStorage.getItem('lm-inventory');
-    if (lmRaw) {
-      var lmParsed = JSON.parse(lmRaw);
-      if (Array.isArray(lmParsed) && lmParsed.length > 0) {
-        // Sincronizar admin-inventory con lm-inventory
-        localStorage.setItem('admin-inventory', lmRaw);
-        return lmParsed;
-      }
-    }
-  } catch(e) { console.warn('loadInventory: error leyendo lm-inventory', e); }
-
+    var lm = localStorage.getItem('lm-inventory');
+    if (lm) { var p = JSON.parse(lm); if (Array.isArray(p) && p.length > 0) { localStorage.setItem('admin-inventory', lm); return p; } }
+  } catch(e) {}
   try {
-    var adminRaw = localStorage.getItem('admin-inventory');
-    if (adminRaw) {
-      var adminParsed = JSON.parse(adminRaw);
-      if (Array.isArray(adminParsed) && adminParsed.length > 0) {
-        // Sincronizar lm-inventory con admin-inventory
-        localStorage.setItem('lm-inventory', adminRaw);
-        return adminParsed;
-      }
-    }
-  } catch(e) { console.warn('loadInventory: error leyendo admin-inventory', e); }
-
+    var adm = localStorage.getItem('admin-inventory');
+    if (adm) { var p2 = JSON.parse(adm); if (Array.isArray(p2) && p2.length > 0) { localStorage.setItem('lm-inventory', adm); return p2; } }
+  } catch(e) {}
   return JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
 }
 function saveInventory(inv) {
-  // Guardar siempre en AMBAS claves para mantenerlas sincronizadas
   var json = JSON.stringify(inv);
   localStorage.setItem('lm-inventory', json);
   localStorage.setItem('admin-inventory', json);
@@ -1526,16 +1508,20 @@ ${itemsStr}
 ];
 
 function getInventory() {
+  // DEFAULT_INVENTORY (hardcodeado en este archivo) es siempre la fuente de verdad base.
+  // lm-inventory solo se usa si tiene MÁS productos que el default (admin añadió algo en sesión).
   try {
     var saved = localStorage.getItem('lm-inventory');
-    if (!saved) return DEFAULT_INVENTORY;
-    var parsed = JSON.parse(saved);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    return DEFAULT_INVENTORY;
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length >= DEFAULT_INVENTORY.length) return parsed;
+    }
   } catch(e) {
     try { localStorage.removeItem('lm-inventory'); } catch(_) {}
-    return DEFAULT_INVENTORY;
   }
+  // Siempre sincronizar lm-inventory con el DEFAULT real
+  try { localStorage.setItem('lm-inventory', JSON.stringify(DEFAULT_INVENTORY)); } catch(_) {}
+  return DEFAULT_INVENTORY;
 }
 
 var inventory = getInventory();
@@ -1664,7 +1650,8 @@ function initCursor(){
   if(window.__cursorInit)return; window.__cursorInit=true;
   var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
   if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){if(dot)dot.style.display='none';if(ring)ring.style.display='none';return;}
-  var rx=0,ry=0,mx=0,my=0;
+  dot.style.display='block'; ring.style.display='block';
+  var rx=0,ry=0,mx=window.innerWidth/2,my=window.innerHeight/2;
   document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
   (function a(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
 }

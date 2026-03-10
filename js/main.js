@@ -138,29 +138,17 @@ const DEFAULT_INVENTORY = [
 ];
 
 function getInventory() {
-  // ── FUENTE DE VERDAD: lm-inventory, con fallback a admin-inventory ──
+  // DEFAULT_INVENTORY hardcodeado es la base. lm-inventory solo gana si tiene >= productos.
   try {
-    var lmRaw = localStorage.getItem('lm-inventory');
-    if (lmRaw) {
-      var lmParsed = JSON.parse(lmRaw);
-      if (Array.isArray(lmParsed) && lmParsed.length > 0) return lmParsed;
+    var saved = localStorage.getItem('lm-inventory');
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length >= DEFAULT_INVENTORY.length) return parsed;
     }
   } catch(e) {
     try { localStorage.removeItem('lm-inventory'); } catch(_) {}
   }
-  try {
-    var adminRaw = localStorage.getItem('admin-inventory');
-    if (adminRaw) {
-      var adminParsed = JSON.parse(adminRaw);
-      if (Array.isArray(adminParsed) && adminParsed.length > 0) {
-        // Restaurar lm-inventory desde admin-inventory
-        localStorage.setItem('lm-inventory', adminRaw);
-        return adminParsed;
-      }
-    }
-  } catch(e) {
-    try { localStorage.removeItem('admin-inventory'); } catch(_) {}
-  }
+  try { localStorage.setItem('lm-inventory', JSON.stringify(DEFAULT_INVENTORY)); } catch(_) {}
   return DEFAULT_INVENTORY;
 }
 
@@ -289,17 +277,11 @@ window.showToast=showToast;
 function initCursor(){
   if(window.__cursorInit)return; window.__cursorInit=true;
   var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){
-    if(dot)dot.style.display='none';
-    if(ring)ring.style.display='none';
-    return;
-  }
+  if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){if(dot)dot.style.display='none';if(ring)ring.style.display='none';return;}
   dot.style.display='block'; ring.style.display='block';
   var rx=0,ry=0,mx=window.innerWidth/2,my=window.innerHeight/2;
   document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
   (function a(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
-  document.addEventListener('mouseenter',function(){dot.style.opacity='1';ring.style.opacity='1';});
-  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';});
 }
 
 function initNav(){
