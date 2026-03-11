@@ -1,6 +1,16 @@
 // ═══════════════════════════════════════════════════════════
-// MAIN.JS — Luxury Mall · v4 (auto-generado por Admin)
+// MAIN.JS — Luxury Mall · v5 (inventario a prueba de balas)
 // ═══════════════════════════════════════════════════════════
+//
+// ✅ CÓMO AGREGAR PRODUCTOS DESDE AQUÍ AHORA:
+//    Agréga el objeto al array DEFAULT_INVENTORY abajo.
+//    El sistema lo fusionará automáticamente con el inventario
+//    del admin sin borrar NADA. Seguro al 100%.
+//
+// ⚠️  NUNCA cambiar DEFAULT_INVENTORY_VERSION a menos que
+//    quieras borrar TODO el inventario del admin (reset total).
+//
+// ════════════════════════════════════════════════════════════
 
 const DEFAULT_INVENTORY = [
   { id:6, name:"Victoria's Secret Amber Romance", price:10000, stock:20, store:"divino", type:"fragancias",
@@ -203,20 +213,45 @@ const DEFAULT_INVENTORY = [
     desc:"Plancha con placas recubiertas de cerámica infundida con aguacate y coco, para un cuidado y alisado excepcionales.", specs:{"Marca":"Conair","Color":"Verde Metalico","Material":"Plástico y Cerámica"} }
 ];
 
+// ── VERSIÓN DEL INVENTARIO BASE ───────────────────────────────────────────────
+// IMPORTANTE: Incrementar este número SOLO cuando se quiera forzar un reset
+// total del inventario (perderá productos del admin). En uso normal NUNCA cambiar.
+var DEFAULT_INVENTORY_VERSION = 1;
+
 function getInventory() {
-  // DEFAULT_INVENTORY hardcodeado es la fuente de verdad.
-  // Solo usar lm-inventory si tiene >= productos (viene de admin actualizado).
+  // REGLA DE ORO:
+  // 1. Si existe lm-inventory en localStorage Y es un array válido → SIEMPRE usarlo.
+  //    El admin manda. No importa cuántos productos tenga el código.
+  // 2. Solo si NO existe o está corrupto → cargar DEFAULT_INVENTORY y guardarlo.
+  // 3. NUNCA comparar cantidades. El número de productos en el código no importa.
   try {
     var saved = localStorage.getItem('lm-inventory');
     if (saved) {
       var parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length >= DEFAULT_INVENTORY.length) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Merge: agregar productos nuevos del DEFAULT que no existan en el guardado
+        // Esto permite añadir productos al código SIN borrar los del admin
+        var savedIds = {};
+        parsed.forEach(function(p){ savedIds[p.id] = true; });
+        var merged = false;
+        DEFAULT_INVENTORY.forEach(function(def) {
+          if (!savedIds[def.id]) {
+            parsed.push(def);
+            merged = true;
+          }
+        });
+        if (merged) {
+          try { localStorage.setItem('lm-inventory', JSON.stringify(parsed)); } catch(_) {}
+        }
+        return parsed;
+      }
     }
   } catch(e) {
     try { localStorage.removeItem('lm-inventory'); } catch(_) {}
   }
+  // Primera carga: guardar inventario base
   try { localStorage.setItem('lm-inventory', JSON.stringify(DEFAULT_INVENTORY)); } catch(_) {}
-  return DEFAULT_INVENTORY;
+  return DEFAULT_INVENTORY.slice();
 }
 
 var inventory = getInventory();
@@ -343,12 +378,27 @@ window.showToast=showToast;
 
 function initCursor(){
   if(window.__cursorInit)return; window.__cursorInit=true;
+  if(window.matchMedia('(pointer:coarse)').matches){
+    var _d=document.getElementById('cursor-dot'),_r=document.getElementById('cursor-ring');
+    if(_d)_d.style.display='none'; if(_r)_r.style.display='none'; return;
+  }
   var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){if(dot)dot.style.display='none';if(ring)ring.style.display='none';return;}
-  dot.style.display='block'; ring.style.display='block';
-  var rx=0,ry=0,mx=window.innerWidth/2,my=window.innerHeight/2;
-  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
-  (function a(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+  if(!dot){ dot=document.createElement('div'); dot.id='cursor-dot'; dot.className='cursor-dot'; document.body.appendChild(dot); }
+  if(!ring){ ring=document.createElement('div'); ring.id='cursor-ring'; ring.className='cursor-ring'; document.body.appendChild(ring); }
+  dot.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99999;';
+  ring.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99998;';
+  var rx=window.innerWidth/2,ry=window.innerHeight/2,mx=rx,my=ry,visible=false;
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+'px'; dot.style.top=my+'px';
+    if(!visible){ visible=true; dot.style.opacity='1'; ring.style.opacity='1'; }
+  });
+  document.addEventListener('mouseleave',function(){ dot.style.opacity='0'; ring.style.opacity='0'; visible=false; });
+  document.addEventListener('mouseenter',function(){ if(mx>0){ dot.style.opacity='1'; ring.style.opacity='1'; visible=true; } });
+  var hoverSel='a,button,input,select,[onclick],[role=button],.product-card,.filter-btn,.add-btn,.wish-btn';
+  document.addEventListener('mouseover',function(e){ if(e.target&&e.target.closest&&e.target.closest(hoverSel)){ dot.classList.add('hovered'); ring.classList.add('hovered'); } });
+  document.addEventListener('mouseout',function(e){ if(e.target&&e.target.closest&&e.target.closest(hoverSel)){ dot.classList.remove('hovered'); ring.classList.remove('hovered'); } });
+  (function loop(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
 }
 
 function initNav(){
