@@ -430,7 +430,7 @@
         <div class="contact-item-icon">&#9993;</div>
         <div class="contact-item-content">
           <div class="contact-item-label">Correo</div>
-          <div class="contact-item-val"><a href="mailto:tecnocellfiles@gmail.com">tecnocellfiles@gmail.com</a></div>
+          <div class="contact-item-val"><a href="/cdn-cgi/l/email-protection#9febfafcf1f0fcfaf3f3f9f6f3faecdff8f2fef6f3b1fcf0f2"><span class="__cf_email__" data-cfemail="fc88999f92939f9990909a9590998fbc9b919d9590d29f9391">[email&#160;protected]</span></a></div>
         </div>
       </div>
 
@@ -524,7 +524,7 @@
   </aside>
 
   <button id="back-to-top">&#8593;</button>
-  <script src="js/auth.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/auth.js"></script>
   <script src="js/main.js"></script>
   <script>
   // ── LOOKBOOK IMAGES ──────────────────────────────────────────────────────
@@ -580,7 +580,7 @@
     var di=0, fi=0, ei=0;
     var order = ['d','d','e','f','d','f','e','d','f','d','f','e','f'];
     order.forEach(function(s) {
-      if (s==='d' && di<divino.length)  { combined.push({type:'product', item:divino[fi>0?di:di], store:'divino'}); di++; }
+      if (s==='d' && di<divino.length)  { combined.push({type:'product', item:divino[di], store:'divino'}); di++; }
       if (s==='f' && fi<family.length)  { combined.push({type:'product', item:family[fi], store:'family'}); fi++; }
       if (s==='e' && ei<INDEX_ELEGANCE.length) { combined.push({type:'service', item:INDEX_ELEGANCE[ei]}); ei++; }
     });
@@ -637,10 +637,12 @@
     grid.querySelectorAll('.reveal-card').forEach(function(c){ observer.observe(c); });
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  window.addEventListener('DOMContentLoaded', function() {
     renderLookbook();
-    // Wait for main.js inventory to be ready
-    setTimeout(renderIndexProducts, 80);
+    renderIndexProducts();
+    if (typeof initCursor === 'function') initCursor();
+    if (typeof initNav === 'function') initNav();
+    if (typeof refreshCartUI === 'function') refreshCartUI();
   });
   </script>
 </body>
