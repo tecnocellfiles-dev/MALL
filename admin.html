@@ -1539,62 +1539,22 @@ async function commitToGitHub() {
 
 function generateMainJS(itemsStr) {
   return `// ═══════════════════════════════════════════════════════════
-// MAIN.JS — Luxury Mall · v4 (auto-generado por Admin)
+// MAIN.JS — Luxury Mall · v5 (auto-generado por Admin)
 // ═══════════════════════════════════════════════════════════
 
 const DEFAULT_INVENTORY = [
 ${itemsStr}
 ];
 
+// El inventario SIEMPRE viene del código (DEFAULT_INVENTORY).
+// NO depende de localStorage para los productos.
+// localStorage solo se usa para carrito y favoritos.
 function getInventory() {
-  // DEFAULT_INVENTORY hardcodeado es la fuente de verdad.
-  // Solo usar lm-inventory si tiene >= productos (viene de admin actualizado).
-  try {
-    var saved = localStorage.getItem('lm-inventory');
-    if (saved) {
-      var parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length >= DEFAULT_INVENTORY.length) return parsed;
-    }
-  } catch(e) {
-    try { localStorage.removeItem('lm-inventory'); } catch(_) {}
-  }
-  try { localStorage.setItem('lm-inventory', JSON.stringify(DEFAULT_INVENTORY)); } catch(_) {}
   return DEFAULT_INVENTORY;
 }
 
-var inventory = getInventory();
+var inventory = DEFAULT_INVENTORY;
 window._inventory = inventory;
-
-// ── MIGRATE: elegance-services → lm-inventory ─────────────────────────────
-(function migrateEleganceServices() {
-  try {
-    var raw = localStorage.getItem('elegance-services');
-    if (!raw) return;
-    var services = JSON.parse(raw);
-    if (!services || !services.length) return;
-    var inv = getInventory();
-    var hasEleganceServices = inv.some(function(i){ return i.store==='elegance' && i.duration; });
-    if (hasEleganceServices) { localStorage.removeItem('elegance-services'); return; }
-    // Remove old elegance products, add migrated services
-    inv = inv.filter(function(i){ return i.store !== 'elegance'; });
-    var maxId = inv.reduce(function(m,i){ return Math.max(m, typeof i.id==='number'?i.id:0); }, 25);
-    services.forEach(function(s, idx) {
-      inv.push({
-        id: maxId + idx + 1,
-        name: s.name, price: s.price, stock: null,
-        duration: s.duration || '60 min',
-        store: 'elegance', type: s.cat || 'facial',
-        img: s.img || '', gallery: s.img ? [{url:s.img,isMain:true}] : [],
-        desc: s.desc || '', specs: {}
-      });
-    });
-    localStorage.setItem('lm-inventory', JSON.stringify(inv));
-    localStorage.removeItem('elegance-services');
-    inventory = getInventory();
-    window._inventory = inventory;
-    console.log('Migrated', services.length, 'elegance services to lm-inventory');
-  } catch(e) { console.warn('Migration error:', e); }
-})();
 
 var cart = [];
 try { cart = JSON.parse(localStorage.getItem('lm-cart') || '[]'); } catch(e) { cart = []; }
@@ -1686,12 +1646,23 @@ window.showToast=showToast;
 
 function initCursor(){
   if(window.__cursorInit)return; window.__cursorInit=true;
+  if(window.matchMedia('(pointer:coarse)').matches){
+    var _d=document.getElementById('cursor-dot'),_r=document.getElementById('cursor-ring');
+    if(_d)_d.style.display='none'; if(_r)_r.style.display='none'; return;
+  }
   var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot||!ring||window.matchMedia('(pointer:coarse)').matches){if(dot)dot.style.display='none';if(ring)ring.style.display='none';return;}
-  dot.style.display='block'; ring.style.display='block';
-  var rx=0,ry=0,mx=window.innerWidth/2,my=window.innerHeight/2;
-  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
-  (function a(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+  if(!dot){dot=document.createElement('div');dot.id='cursor-dot';dot.className='cursor-dot';document.body.appendChild(dot);}
+  if(!ring){ring=document.createElement('div');ring.id='cursor-ring';ring.className='cursor-ring';document.body.appendChild(ring);}
+  dot.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99999;';
+  ring.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99998;';
+  var rx=window.innerWidth/2,ry=window.innerHeight/2,mx=rx,my=ry,visible=false;
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';
+    if(!visible){visible=true;dot.style.opacity='1';ring.style.opacity='1';}
+  });
+  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';visible=false;});
+  document.addEventListener('mouseenter',function(){if(mx>0){dot.style.opacity='1';ring.style.opacity='1';visible=true;}});
+  (function loop(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
 }
 
 function initNav(){
