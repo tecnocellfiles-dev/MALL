@@ -1,1556 +1,207 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Admin — Tiendas</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0a0a0a;
-      --surface: #111111;
-      --surface2: #181818;
-      --border: rgba(255,255,255,0.07);
-      --border-focus: rgba(255,255,255,0.2);
-      --white: #f0ece4;
-      --muted: rgba(240,236,228,0.35);
-      --gold: #c9a84c;
-      --gold-dim: rgba(201,168,76,0.15);
-      --cyan: #00e5ff;
-      --cyan-dim: rgba(0,229,255,0.12);
-      --red: #e05050;
-      --red-dim: rgba(224,80,80,0.12);
-      --green: #4caf7d;
-      --green-dim: rgba(76,175,125,0.12);
-    }
-
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-    }
-
-    /* ── LOGIN ── */
-    #login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg);
-    }
-    .login-box {
-      width: 380px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      padding: 48px;
-    }
-    .login-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.4rem;
-      letter-spacing: 6px;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-    .login-sub {
-      font-size: 0.7rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 40px;
-    }
-    .form-group { margin-bottom: 20px; }
-    .form-label {
-      display: block;
-      font-size: 0.65rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .form-input {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--white);
-      padding: 12px 16px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.9rem;
-      transition: border-color 0.2s;
-      outline: none;
-    }
-    .form-input:focus { border-color: var(--border-focus); }
-    .form-select {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--white);
-      padding: 12px 16px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      outline: none;
-      transition: border-color 0.2s;
-      appearance: none;
-      cursor: pointer;
-    }
-    .form-select:focus { border-color: var(--border-focus); }
-    .form-select option { background: #1a1a1a; }
-
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: var(--gold);
-      color: #000;
-      border: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
-      margin-top: 8px;
-    }
-    .btn-primary:hover { background: #e0c06a; box-shadow: 0 0 20px rgba(201,168,76,0.25); }
-
-    .login-error {
-      background: var(--red-dim);
-      border: 1px solid rgba(224,80,80,0.3);
-      color: var(--red);
-      padding: 10px 14px;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
-      margin-top: 16px;
-      display: none;
-    }
-
-    /* ── PANEL ── */
-    #admin-panel { display: none; }
-
-    .topbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(10,10,10,0.95);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 18px 40px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .topbar-left { display: flex; align-items: center; gap: 20px; }
-    .topbar-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.2rem;
-      letter-spacing: 5px;
-      color: var(--gold);
-    }
-    .topbar-badge {
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      background: var(--gold-dim);
-      border: 1px solid rgba(201,168,76,0.2);
-      color: var(--gold);
-      padding: 4px 10px;
-    }
-    .btn-logout {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 8px 16px;
-      font-size: 0.65rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .btn-logout:hover { border-color: var(--red); color: var(--red); }
-
-    .panel-body {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 0;
-      min-height: calc(100vh - 65px);
-    }
-
-    /* ── SIDEBAR FORM ── */
-    .sidebar {
-      border-right: 1px solid var(--border);
-      padding: 32px;
-      background: var(--surface);
-      position: sticky;
-      top: 65px;
-      height: calc(100vh - 65px);
-      overflow-y: auto;
-    }
-    .sidebar-title {
-      font-size: 0.65rem;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 28px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .sidebar-title span {
-      color: var(--gold);
-      font-weight: 600;
-    }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-    /* ── GALERÍA DE IMÁGENES ── */
-    .gallery-section {
-      margin-bottom: 20px;
-    }
-    .gallery-section-title {
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .gallery-section-title span { color: rgba(255,255,255,0.18); font-size: 0.55rem; }
-
-    .gallery-slots {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .gallery-slot {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-    }
-    .gallery-slot-thumb {
-      width: 52px;
-      height: 52px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .gallery-slot-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    .gallery-slot-thumb .thumb-placeholder {
-      font-size: 0.55rem;
-      letter-spacing: 1px;
-      color: var(--muted);
-      text-align: center;
-      padding: 4px;
-      line-height: 1.3;
-    }
-    .gallery-slot-main-badge {
-      position: absolute;
-      bottom: 2px;
-      left: 2px;
-      font-size: 0.45rem;
-      letter-spacing: 1px;
-      background: var(--gold);
-      color: #000;
-      padding: 1px 4px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .gallery-slot-right {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .gallery-slot-input {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--white);
-      padding: 8px 10px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .gallery-slot-input:focus { border-color: var(--border-focus); }
-    .gallery-slot-input::placeholder { color: rgba(240,236,228,0.2); font-size: 0.65rem; }
-    .gallery-slot-actions {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-    }
-    .btn-set-main {
-      flex: 1;
-      padding: 5px 8px;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.55rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .btn-set-main:hover { border-color: var(--gold); color: var(--gold); }
-    .btn-set-main.is-main { background: var(--gold-dim); border-color: rgba(201,168,76,0.4); color: var(--gold); }
-    .btn-clear-slot {
-      padding: 5px 8px;
-      background: none;
-      border: 1px solid transparent;
-      color: rgba(224,80,80,0.35);
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .btn-clear-slot:hover { color: var(--red); border-color: rgba(224,80,80,0.3); }
-    .gallery-hint {
-      font-size: 0.62rem;
-      color: var(--muted);
-      margin-top: 6px;
-      line-height: 1.5;
-    }
-
-    .btn-secondary {
-      width: 100%;
-      padding: 12px;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.65rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 8px;
-    }
-    .btn-secondary:hover { border-color: var(--border-focus); color: var(--white); }
-
-    /* ── PRODUCT LIST ── */
-    .main-content { padding: 32px 40px; }
-
-    .store-tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 32px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0;
-    }
-    .tab-btn {
-      padding: 10px 20px;
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--muted);
-      font-size: 0.7rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-bottom: -1px;
-    }
-    .tab-btn:hover { color: var(--white); }
-    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
-
-    .products-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .products-table th {
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-align: left;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      font-weight: 400;
-    }
-    .products-table td {
-      padding: 16px;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-      vertical-align: middle;
-    }
-    .product-row { transition: background 0.2s; }
-    .product-row:hover { background: rgba(255,255,255,0.02); }
-
-    .prod-img {
-      width: 52px; height: 52px;
-      object-fit: contain;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-    }
-    .prod-name { font-weight: 500; }
-    .prod-price {
-      font-family: 'DM Mono', monospace;
-      color: var(--gold);
-      font-size: 0.8rem;
-    }
-    .prod-type {
-      font-size: 0.6rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border: 1px solid;
-    }
-    .type-moda { color: var(--gold); border-color: rgba(201,168,76,0.3); }
-    .type-tech { color: var(--cyan); border-color: rgba(0,229,255,0.3); }
-    .type-joyería { color: #d4a574; border-color: rgba(212,165,116,0.3); }
-    .type-fragancias { color: #a896b0; border-color: rgba(168,150,176,0.3); }
-
-    .btn-edit {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 6px 14px;
-      font-size: 0.6rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-right: 6px;
-    }
-    .btn-edit:hover { border-color: var(--gold); color: var(--gold); }
-
-    .btn-del {
-      background: none;
-      border: 1px solid transparent;
-      color: rgba(224,80,80,0.4);
-      padding: 6px 10px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .btn-del:hover { color: var(--red); border-color: rgba(224,80,80,0.3); }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px;
-      color: var(--muted);
-      font-size: 0.75rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    /* ── STATS BAR ── */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      margin-bottom: 32px;
-    }
-    .stat-card {
-      background: var(--surface);
-      padding: 20px 24px;
-    }
-    .stat-label {
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .stat-val {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.8rem;
-      letter-spacing: 2px;
-      color: var(--gold);
-    }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed; bottom: 32px; right: 32px;
-      padding: 14px 24px;
-      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
-      font-weight: 600; z-index: 9999;
-      opacity: 0; transform: translateY(10px);
-      transition: opacity 0.3s, transform 0.3s;
-      pointer-events: none;
-    }
-    .toast.success { background: var(--green); color: #000; }
-    .toast.error { background: var(--red); color: #fff; }
-    .toast.show { opacity: 1; transform: translateY(0); }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-
-    /* ── DANGER ZONE ── */
-    .danger-zone {
-      background: rgba(224,80,80,0.04);
-      border: 1px solid rgba(224,80,80,0.15);
-      padding: 14px; margin-top: 16px;
-    }
-    .danger-zone-title {
-      font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase;
-      color: rgba(224,80,80,0.6); margin-bottom: 10px;
-    }
-    .btn-danger {
-      width: 100%; padding: 10px; background: none;
-      border: 1px solid rgba(224,80,80,0.3); color: rgba(224,80,80,0.7);
-      font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase;
-      cursor: pointer; transition: 0.2s; margin-bottom: 6px;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .btn-danger:hover { background: rgba(224,80,80,0.08); color: #e05050; border-color: #e05050; }
-
-    @media (max-width: 900px) {
-      .panel-body { grid-template-columns: 1fr; }
-      .sidebar { position: static; height: auto; }
-      .form-row { grid-template-columns: 1fr; }
-      .stats-bar { grid-template-columns: 1fr; }
-      .topbar { padding: 16px 20px; }
-      .main-content { padding: 24px 20px; }
-    }
-
-    /* ── ELEGANCE SERVICE MODE ──────────────────────────────── */
-    .service-mode-badge {
-      display: none;
-      background: rgba(200,149,108,0.1);
-      border: 1px solid rgba(200,149,108,0.3);
-      color: #c8956c;
-      font-size: 0.58rem; letter-spacing: 4px; text-transform: uppercase;
-      padding: 8px 14px; margin-bottom: 16px;
-      text-align: center;
-    }
-    body.elegance-mode .service-mode-badge { display: block; }
-    body.elegance-mode #stock-row { display: none !important; }
-    body.elegance-mode #f-name::placeholder { opacity: 0; }
-    body.elegance-mode #duration-row { display: block !important; }
-    body.elegance-mode #f-desc::placeholder { opacity: 0; }
-    body.elegance-mode .gallery-section-title span { color: rgba(200,149,108,0.4); }
-    body.elegance-mode .gallery-hint { color: rgba(200,149,108,0.35); }
-
-    #duration-row { display: none; }
-    #f-name-label-text::after { content: ''; }
-    body.elegance-mode #f-name-label-text::after { content: ' del Servicio'; }
-    body.elegance-mode #f-price-label-text::after { content: ' del Servicio'; }
-    body.elegance-mode #f-desc-label-text::after { content: ' del Servicio'; }
-    body.elegance-mode .gallery-section-title > span:first-child { content:'FOTO DEL SERVICIO'; }
-  </style>
-</head>
-<body>
-
-<!-- ── LOGIN ── -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">ADMIN</div>
-    <div class="login-sub">Panel de Administración</div>
-    <div class="form-group">
-      <label class="form-label">Contraseña</label>
-      <input class="form-input" type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
-    </div>
-    <button class="btn-primary" onclick="doLogin()">ENTRAR</button>
-    <div class="login-error" id="login-error">Contraseña incorrecta</div>
-  </div>
-</div>
-
-<!-- ── ADMIN PANEL ── -->
-<div id="admin-panel">
-
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-logo">ADMIN</div>
-      <div class="topbar-badge">Panel de Productos</div>
-    </div>
-    <div style="display:flex;gap:12px;align-items:center;">
-      <a href="index.html" target="_blank" style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--muted)'">VER TIENDA →</a>
-      <button class="btn-logout" onclick="doLogout()">CERRAR SESIÓN</button>
-    </div>
-  </div>
-
-  <div class="panel-body">
-
-    <!-- SIDEBAR: FORMULARIO -->
-    <div class="sidebar">
-      <div class="sidebar-title">
-        <span id="form-mode-label">NUEVO PRODUCTO</span>
-      </div>
-
-      <div class="service-mode-badge">◈ MODO SERVICIO — ELEGANCE BEAUTY ESTHETIC</div>
-
-      <div class="form-group">
-        <label class="form-label">Tienda</label>
-        <select class="form-select" id="f-store" onchange="onStoreChange()">
-          <option value="divino">Divino Cielo</option>
-          <option value="family">FamilyCell And More</option>
-          <option value="elegance">Elegance Beauty Esthetic</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Nombre del Producto</label>
-        <input class="form-input" type="text" id="f-name" placeholder="Ej: Vestido Gala Noir">
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Precio (&#8353;)</label>
-          <input class="form-input" type="number" id="f-price" placeholder="150000">
-        </div>
-        <div class="form-group" id="stock-row">
-          <label class="form-label">Stock (unidades)</label>
-          <input class="form-input" type="number" id="f-stock" placeholder="10" min="0">
-        </div>
-      </div>
-      <div class="form-group" id="duration-row">
-        <label class="form-label">Duraci&oacute;n del Servicio</label>
-        <input class="form-input" type="text" id="f-duration" placeholder="Ej: 60 min, 90 min">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Categoría</label>
-        <select class="form-select" id="f-type"></select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Descripción</label>
-        <input class="form-input" type="text" id="f-desc" placeholder="Descripción breve del producto">
-      </div>
-
-      <!-- ── GALERÍA DE IMÁGENES ── -->
-      <div class="gallery-section">
-        <div class="gallery-section-title">
-          IMÁGENES DEL PRODUCTO <span>(hasta 3 fotos)</span>
-        </div>
-        <div class="gallery-slots" id="gallery-slots">
-          <!-- Slot 1 -->
-          <div class="gallery-slot" id="slot-0">
-            <div class="gallery-slot-thumb" id="thumb-0">
-              <div class="thumb-placeholder">FOTO<br>1</div>
-            </div>
-            <div class="gallery-slot-right">
-              <input class="gallery-slot-input" type="text" id="img-0" placeholder="https://... (URL foto 1)" oninput="onGalleryInput(0)">
-              <div class="gallery-slot-actions">
-                <button class="btn-set-main is-main" id="main-btn-0" onclick="setMainImage(0)">★ PRINCIPAL</button>
-                <button class="btn-clear-slot" onclick="clearSlot(0)" title="Limpiar">✕</button>
-              </div>
-            </div>
-          </div>
-          <!-- Slot 2 -->
-          <div class="gallery-slot" id="slot-1">
-            <div class="gallery-slot-thumb" id="thumb-1">
-              <div class="thumb-placeholder">FOTO<br>2</div>
-            </div>
-            <div class="gallery-slot-right">
-              <input class="gallery-slot-input" type="text" id="img-1" placeholder="https://... (URL foto 2)" oninput="onGalleryInput(1)">
-              <div class="gallery-slot-actions">
-                <button class="btn-set-main" id="main-btn-1" onclick="setMainImage(1)">☆ PRINCIPAL</button>
-                <button class="btn-clear-slot" onclick="clearSlot(1)" title="Limpiar">✕</button>
-              </div>
-            </div>
-          </div>
-          <!-- Slot 3 -->
-          <div class="gallery-slot" id="slot-2">
-            <div class="gallery-slot-thumb" id="thumb-2">
-              <div class="thumb-placeholder">FOTO<br>3</div>
-            </div>
-            <div class="gallery-slot-right">
-              <input class="gallery-slot-input" type="text" id="img-2" placeholder="https://... (URL foto 3)" oninput="onGalleryInput(2)">
-              <div class="gallery-slot-actions">
-                <button class="btn-set-main" id="main-btn-2" onclick="setMainImage(2)">☆ PRINCIPAL</button>
-                <button class="btn-clear-slot" onclick="clearSlot(2)" title="Limpiar">✕</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="gallery-hint">La foto marcada como ★ Principal aparece en la grilla y como imagen destacada en el modal. Las demás se muestran como miniaturas navegables.</p>
-      </div>
-
-      <!-- DETALLES / ESPECIFICACIONES DINÁMICAS -->
-      <div style="margin-bottom:20px;">
-        <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);">
-          DETALLES DEL PRODUCTO <span style="color:rgba(255,255,255,0.2);font-size:0.55rem;">(opcional)</span>
-        </div>
-        <div id="specs-list" style="margin-bottom:8px;"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;">
-          <input class="form-input" type="text" id="spec-key" placeholder="Ej: Material" style="padding:8px 10px;font-size:0.8rem;">
-          <input class="form-input" type="text" id="spec-val" placeholder="Ej: Seda fría" style="padding:8px 10px;font-size:0.8rem;" onkeydown="if(event.key==='Enter') addSpec()">
-          <button onclick="addSpec()" style="padding:8px 12px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.8rem;cursor:pointer;height:100%;transition:background 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='var(--gold-dim)'">+</button>
-        </div>
-      </div>
-
-      <button class="btn-primary" onclick="saveProduct()">
-        <span id="save-btn-label">AGREGAR PRODUCTO</span>
-      </button>
-      <button class="btn-secondary" id="cancel-edit-btn" onclick="cancelEdit()" style="display:none;">CANCELAR EDICIÓN</button>
-
-      <!-- CATEGORÍAS -->
-      <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
-        <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">
-          CATEGORÍAS DE: <span id="cat-store-label" style="color:var(--gold);">DIVINO CIELO</span>
-        </div>
-        <div id="cat-list" style="margin-bottom:12px;"></div>
-        <div style="display:flex;gap:8px;">
-          <input class="form-input" type="text" id="new-cat-input" placeholder="Nueva categoría..." style="flex:1;padding:10px 12px;font-size:0.8rem;" onkeydown="if(event.key==='Enter') addCategory()">
-          <button onclick="addCategory()" style="padding:10px 16px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.75rem;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:background 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.25)'" onmouseout="this.style.background='var(--gold-dim)'">+ AÑADIR</button>
-        </div>
-        <p style="font-size:0.68rem;color:var(--muted);margin-top:10px;line-height:1.5;">Cambia la tienda arriba para gestionar sus categorías.</p>
-      </div>
-
-      <!-- PUBLICAR -->
-      <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border);">
-        <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">PUBLICAR CAMBIOS</div>
-
-        <div id="gh-config-panel">
-          <div style="font-size:0.68rem;color:var(--muted);margin-bottom:12px;line-height:1.6;">Conecta tu repo de GitHub para publicar sin tocar código.</div>
-          <div class="form-group" style="margin-bottom:10px;">
-            <label class="form-label">Usuario GitHub</label>
-            <input class="form-input" type="text" id="gh-user" placeholder="tu-usuario" style="padding:9px 12px;font-size:0.82rem;">
-          </div>
-          <div class="form-group" style="margin-bottom:10px;">
-            <label class="form-label">Repositorio</label>
-            <input class="form-input" type="text" id="gh-repo" placeholder="nombre-repo" style="padding:9px 12px;font-size:0.82rem;">
-          </div>
-          <div class="form-group" style="margin-bottom:10px;">
-            <label class="form-label">Personal Access Token &nbsp;<a href="https://github.com/settings/tokens/new?scopes=repo&description=LuxuryMallAdmin" target="_blank" style="color:var(--gold);font-size:0.6rem;text-decoration:none;">CREAR TOKEN →</a></label>
-            <input class="form-input" type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" style="padding:9px 12px;font-size:0.82rem;font-family:'DM Mono',monospace;">
-          </div>
-          <button onclick="saveGHConfig()" style="width:100%;padding:11px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='var(--gold-dim)'">GUARDAR CONFIGURACION</button>
-        </div>
-
-        <div id="gh-commit-panel" style="display:none;">
-          <div id="gh-status-badge" style="font-size:0.6rem;letter-spacing:2px;padding:5px 10px;margin-bottom:12px;display:inline-block;"></div>
-          <input class="form-input" type="text" id="gh-commit-msg" placeholder="Actualizacion de productos" style="margin-bottom:8px;padding:9px 12px;font-size:0.82rem;" value="Actualizacion de productos">
-          <button class="btn-primary" onclick="commitToGitHub()" id="gh-commit-btn" style="margin-top:0;">
-            <span id="gh-commit-label">&#8679; PUBLICAR EN GITHUB</span>
-          </button>
-          <button onclick="resetGHConfig()" class="btn-secondary" style="margin-top:6px;">Cambiar configuracion</button>
-        </div>
-
-        <button class="btn-secondary" onclick="exportJS()" style="margin-top:8px;">&#8595; DESCARGAR main.js (local)</button>
-      </div>
-
-      <!-- ZONA DE EMERGENCIA (solo limpiar caché) -->
-      <div style="margin-top:20px;">
-        <div class="danger-zone">
-          <div class="danger-zone-title">⚠ ZONA DE EMERGENCIA</div>
-          <button class="btn-danger" onclick="clearInventoryCache()">
-            🗑 LIMPIAR CACHÉ DE INVENTARIO
-          </button>
-          <p style="font-size:0.62rem;color:rgba(224,80,80,0.4);margin-top:8px;line-height:1.5;">
-            Si los productos no cargan en la tienda, usa "Limpiar Caché" y recarga.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- MAIN: TABLA DE PRODUCTOS -->
-    <div class="main-content">
-      <div class="stats-bar" id="stats-bar"></div>
-      <div class="store-tabs" id="store-tabs">
-        <button class="tab-btn active" data-store="all" onclick="setTab('all')">Todos</button>
-        <button class="tab-btn" data-store="divino" onclick="setTab('divino')">Divino Cielo</button>
-        <button class="tab-btn" data-store="family" onclick="setTab('family')">FamilyCell</button>
-        <button class="tab-btn" data-store="elegance" onclick="setTab('elegance')">Elegance</button>
-      </div>
-      <div id="products-container"></div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ══════════════════════════════════════════════════════════════
-// GALERÍA DE IMÁGENES
-// ══════════════════════════════════════════════════════════════
-
-// mainImageIndex: 0, 1 o 2 — cuál slot es la imagen principal
-var mainImageIndex = 0;
-
-function onGalleryInput(slotIdx) {
-  var url = document.getElementById('img-' + slotIdx).value.trim();
-  var thumb = document.getElementById('thumb-' + slotIdx);
-  if (url && url.startsWith('http')) {
-    thumb.innerHTML = '<img src="' + url + '" onerror="this.parentElement.innerHTML=\'<div class=thumb-placeholder>URL<br>inválida</div>\'">' +
-      (mainImageIndex === slotIdx ? '<div class="gallery-slot-main-badge">MAIN</div>' : '');
-  } else {
-    thumb.innerHTML = '<div class="thumb-placeholder">FOTO<br>' + (slotIdx + 1) + '</div>';
-  }
-}
-
-function setMainImage(slotIdx) {
-  // Solo se puede marcar como principal si tiene URL
-  var url = document.getElementById('img-' + slotIdx).value.trim();
-  if (!url) { showToast('Primero ingresa una URL en esa foto', 'error'); return; }
-  mainImageIndex = slotIdx;
-  // Actualizar botones
-  for (var i = 0; i < 3; i++) {
-    var btn = document.getElementById('main-btn-' + i);
-    if (i === slotIdx) {
-      btn.classList.add('is-main');
-      btn.textContent = '★ PRINCIPAL';
-    } else {
-      btn.classList.remove('is-main');
-      btn.textContent = '☆ PRINCIPAL';
-    }
-    // Redibujar thumb para mostrar/quitar badge
-    onGalleryInput(i);
-  }
-}
-
-function clearSlot(slotIdx) {
-  document.getElementById('img-' + slotIdx).value = '';
-  document.getElementById('thumb-' + slotIdx).innerHTML = '<div class="thumb-placeholder">FOTO<br>' + (slotIdx + 1) + '</div>';
-  // Si era la principal, mover a 0
-  if (mainImageIndex === slotIdx) {
-    mainImageIndex = 0;
-    setMainImage(0);
-  }
-}
-
-function getGalleryImages() {
-  var imgs = [];
-  for (var i = 0; i < 3; i++) {
-    var url = (document.getElementById('img-' + i).value || '').trim();
-    if (url) imgs.push({ url: url, isMain: (i === mainImageIndex) });
-  }
-  return imgs;
-}
-
-function loadGalleryIntoForm(item) {
-  // Limpiar slots
-  for (var i = 0; i < 3; i++) clearSlot(i);
-
-  if (item.gallery && item.gallery.length > 0) {
-    // Producto con galería
-    item.gallery.forEach(function(g, i) {
-      if (i >= 3) return;
-      document.getElementById('img-' + i).value = g.url;
-      onGalleryInput(i);
-    });
-    // Encontrar el main
-    var mainIdx = item.gallery.findIndex(function(g) { return g.isMain; });
-    if (mainIdx < 0) mainIdx = 0;
-    mainImageIndex = mainIdx;
-    setMainImage(mainIdx);
-  } else if (item.img) {
-    // Producto legacy con solo img
-    document.getElementById('img-0').value = item.img;
-    mainImageIndex = 0;
-    setMainImage(0);
-  }
-}
-
-// ══════════════════════════════════════════════════════════════
-// ZONA DE EMERGENCIA
-// ══════════════════════════════════════════════════════════════
-
-function clearInventoryCache() {
-  if (!confirm('¿Limpiar el caché de inventario?')) return;
-  localStorage.removeItem('lm-inventory');
-  localStorage.removeItem('admin-inventory');
-  localStorage.removeItem('admin-categories');
-  showToast('✓ Caché limpiado — recargando...', 'success');
-  setTimeout(function() {
-    window.location.href = window.location.pathname + '?nocache=' + Date.now();
-  }, 900);
-}
-
-// ══════════════════════════════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════════════════════════════
-
-const ADMIN_PASSWORD = 'admin1234';
-
-function doLogin() {
-  var pw = document.getElementById('pw-input').value;
-  if (pw === ADMIN_PASSWORD) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-panel').style.display = 'block';
-    // Intentar sincronizar inventario desde GitHub antes de renderizar
-    syncFromGitHub(function() {
-      renderAll();
-    });
-  } else {
-    document.getElementById('login-error').style.display = 'block';
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
-  }
-}
-
-// Descarga main.js de GitHub y extrae el inventario para sincronizar
-async function syncFromGitHub(callback) {
-  var cfg = loadGHConfig();
-  if (!cfg) { if (callback) callback(); return; }
-  try {
-    showToast('Sincronizando inventario desde GitHub...', 'info');
-    var apiBase = 'https://api.github.com/repos/' + cfg.user + '/' + cfg.repo;
-    var headers = { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' };
-    var res = await fetch(apiBase + '/contents/js/main.js', { headers });
-    if (!res.ok) throw new Error('No se pudo leer main.js');
-    var fd = await res.json();
-    // Decodificar base64
-    var jsContent = decodeURIComponent(escape(atob(fd.content.replace(/\n/g, ''))));
-    // Extraer DEFAULT_INVENTORY del archivo
-    var match = jsContent.match(/const DEFAULT_INVENTORY = \[([\s\S]*?)\];/);
-    if (!match) throw new Error('No se encontró DEFAULT_INVENTORY');
-    // Evaluar el array de productos de forma segura
-    var invArray = (new Function('return [' + match[1] + ']'))();
-    if (Array.isArray(invArray) && invArray.length > 0) {
-      // Solo actualizar si GitHub tiene MÁS productos que lo que tenemos local
-      var local = loadInventory();
-      if (invArray.length >= local.length) {
-        saveInventory(invArray);
-        inventory = invArray;
-        nextId = Math.max.apply(null, [25].concat(inventory.map(function(i){ return typeof i.id === 'number' ? i.id : 0; }))) + 1;
-        showToast('✓ Inventario sincronizado (' + invArray.length + ' productos)', 'success');
-      } else {
-        showToast('✓ Inventario local más actualizado (' + local.length + ' productos)', 'success');
-      }
-    }
-  } catch(e) {
-    console.warn('syncFromGitHub error:', e);
-    showToast('Sin conexión a GitHub — usando inventario local', 'info');
-  }
-  if (callback) callback();
-}
-function doLogout() {
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('admin-panel').style.display = 'none';
-  document.getElementById('pw-input').value = '';
-}
-
-// ══════════════════════════════════════════════════════════════
-// INVENTARIO
-// ══════════════════════════════════════════════════════════════
-
-const DEFAULT_INVENTORY = [
-  { id:1,  name:"Saco 'Cielo' Silk-Line",           price:285000, stock:8,  store:"divino",   type:"moda",
-    img:"https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800",isMain:true}],
-    desc:"Saco de seda fría, corte estructurado, forro de lujo.",
-    specs:{"Material":"Seda fría premium","Corte":"Estructurado","Forro":"Lujo","Origen":"Colombia"} },
-  { id:2,  name:"Vestido Gala Nightfall",            price:320000, stock:3,  store:"divino",   type:"moda",
-    img:"https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800",isMain:true}],
-    desc:"Vestido de noche, caída perfecta, exclusivo.",
-    specs:{"Silueta":"A-line","Tela":"Chifón","Largo":"Maxi","Ocasión":"Gala / Noche"} },
-  { id:3,  name:"MacBook Pro M3 Elite",              price:1850000,stock:5,  store:"divino",   type:"tech",
-    img:"https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg",
-    gallery:[{url:"https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg",isMain:true}],
-    desc:"Chip M3, 18 GB RAM, pantalla Liquid Retina XDR.",
-    specs:{"Chip":"Apple M3","RAM":"18 GB","Almacenamiento":"512 GB SSD","Pantalla":"Liquid Retina XDR 14\""} },
-  { id:4,  name:"Camisa Lino 'Nube'",               price:95000,  stock:12, store:"divino",   type:"moda",
-    img:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800",isMain:true}],
-    desc:"Lino premium, bordado artesanal.",
-    specs:{"Material":"Lino premium","Bordado":"Artesanal","Cuello":"Clásico","Tallas":"XS–XL"} },
-  { id:5,  name:"Bolso Cuero Artesanal",             price:210000, stock:2,  store:"divino",   type:"moda",
-    img:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800",isMain:true}],
-    desc:"Cuero genuino, costura a mano, edición limitada.",
-    specs:{"Material":"Cuero genuino","Costura":"A mano","Edición":"Limitada","Dimensiones":"32 × 24 × 10 cm"} },
-  { id:6,  name:"Victoria's Secret Amber Romance",   price:10000,  stock:20, store:"divino",   type:"fragancias",
-    img:"https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg",
-    gallery:[{url:"https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg",isMain:true}],
-    desc:"Ámbar resinoso y crema de vainilla.",
-    specs:{"Familia":"Oriental","Notas base":"Ámbar, Vainilla","Notas corazón":"Gardenia","Presentación":"Loción 250 ml"} },
-  { id:7,  name:"NVIDIA RTX 4090 Lab",               price:1100000,stock:4,  store:"family",   type:"tech",
-    img:"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg",
-    gallery:[{url:"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg",isMain:true}],
-    desc:"24 GB GDDR6X, máxima potencia gráfica.",
-    specs:{"VRAM":"24 GB GDDR6X","Núcleos CUDA":"16384","TDP":"450 W","Interfaz":"PCIe 4.0 x16"} },
-  { id:8,  name:"Teclado Custom 'Cell'",             price:145000, stock:7,  store:"family",   type:"tech",
-    img:"https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800",isMain:true}],
-    desc:"Switches mecánicos Cherry MX, aluminio CNC.",
-    specs:{"Switches":"Cherry MX Red","Cuerpo":"Aluminio CNC","Conectividad":"USB-C","Retroiluminación":"RGB"} },
-  { id:9,  name:"iPhone 15 Pro Max",                 price:980000, stock:6,  store:"family",   type:"celulares",
-    img:"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800",isMain:true}],
-    desc:"Titanio, cámara 48MP, chip A17 Pro.",
-    specs:{"Chip":"A17 Pro","Cámara":"48 MP triple","Almacenamiento":"256 GB","Material":"Titanio grado 5"} },
-  { id:10, name:"AirPods Pro 2 Gen",                 price:210000, stock:11, store:"family",   type:"accesorios",
-    img:"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800",isMain:true}],
-    desc:"Cancelación activa de ruido, audio espacial.",
-    specs:{"ANC":"Activa adaptativa","Audio":"Espacial personalizado","Batería":"6h + 24h estuche","Chip":"H2"} },
-  { id:11, name:'Monitor 4K OLED 32"',               price:620000, stock:3,  store:"family",   type:"tech",
-    img:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800",isMain:true}],
-    desc:"OLED, 120Hz, HDR True Black 400.",
-    specs:{"Panel":"OLED","Resolución":"3840×2160","Tasa de refresco":"120 Hz","HDR":"True Black 400"} },
-  { id:12, name:"Unas Acrilicas",           price:25000, stock:null, duration:"90 min", store:"elegance", type:"unas",
-    img:"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800",isMain:true}],
-    desc:"Construccion completa en acrilico con diseno incluido. Incluye forma, limado, sellado y decoracion a eleccion.", specs:{} },
-  { id:13, name:"Unas en Gel",              price:20000, stock:null, duration:"75 min", store:"elegance", type:"unas",
-    img:"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800",isMain:true}],
-    desc:"Acabado natural y brillante de larga duracion. Ideal para fortalecer y embellecer la una natural.", specs:{} },
-  { id:14, name:"Diseno de Cejas",          price:8000,  stock:null, duration:"30 min", store:"elegance", type:"cejas-pestanas",
-    img:"https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?q=80&w=800",isMain:true}],
-    desc:"Depilacion y diseno personalizado segun la forma de tu rostro.", specs:{} },
-  { id:15, name:"Extension de Pestanas",    price:35000, stock:null, duration:"90 min", store:"elegance", type:"cejas-pestanas",
-    img:"https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800",isMain:true}],
-    desc:"Extensiones pelo a pelo para una mirada mas intensa y profunda.", specs:{} },
-  { id:16, name:"Victoria's Secret Romance",         price:10000,  stock:15, store:"divino",   type:"fragancias",
-    img:"https://victoriassecretbeautycr.vtexassets.com/arquivos/ids/172845-1200-1600?v=638030941474070000&width=1200&height=1600&aspect=true",
-    gallery:[{url:"https://victoriassecretbeautycr.vtexassets.com/arquivos/ids/172845-1200-1600?v=638030941474070000&width=1200&height=1600&aspect=true",isMain:true}],
-    desc:"Petalos de rosa. Almizcle puro.", specs:{"Familia":"Floral","Notas base":"Almizcle blanco","Notas corazon":"Rosa, Lila","Presentacion":"Locion 250 ml"} },
-  { id:17, name:"Victoria's Secret Romantic",        price:10000,  stock:18, store:"divino",   type:"fragancias",
-    img:"https://cdnx.jumpseller.com/la-perfumeria-cl/image/69524237/resize/540/540?1762793584",
-    gallery:[{url:"https://cdnx.jumpseller.com/la-perfumeria-cl/image/69524237/resize/540/540?1762793584",isMain:true}],
-    desc:"Floral - clasico, femenino y delicado.", specs:{"Familia":"Floral","Notas base":"Sandalo","Notas corazon":"Jazmin, Rosa","Presentacion":"Locion 250 ml"} },
-  { id:18, name:"Limpieza Facial Profunda", price:22000, stock:null, duration:"60 min", store:"elegance", type:"facial",
-    img:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800",isMain:true}],
-    desc:"Limpieza completa de poros, extraccion de comedones, vapor y mascarilla hidratante.", specs:{} },
-  { id:19, name:"Tratamiento Anti-edad",    price:40000, stock:null, duration:"75 min", store:"elegance", type:"facial",
-    img:"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800",isMain:true}],
-    desc:"Protocolo de rejuvenecimiento con activos de alta concentracion. Reduce lineas de expresion.", specs:{} },
-  { id:20, name:"Control de Acne",          price:28000, stock:null, duration:"60 min", store:"elegance", type:"facial",
-    img:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800",isMain:true}],
-    desc:"Tratamiento especializado para piel con acne. Limpieza profunda y peelings acidos.", specs:{} },
-  { id:21, name:"Micro Agujas",             price:55000, stock:null, duration:"60 min", store:"elegance", type:"facial",
-    img:"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800",isMain:true}],
-    desc:"Microdermoabrasion con agujas para estimular el colageno. Mejora textura y poros.", specs:{} },
-  { id:22, name:"Dermaplaning",             price:30000, stock:null, duration:"45 min", store:"elegance", type:"facial",
-    img:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800",isMain:true}],
-    desc:"Exfoliacion suave con bisturi para eliminar vello facial fino y celulas muertas.", specs:{} },
-  { id:23, name:"Levantamiento de Gluteos", price:45000, stock:null, duration:"60 min", store:"elegance", type:"corporal",
-    img:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800",isMain:true}],
-    desc:"Tratamiento no invasivo con radiofrecuencia y masaje modelador.", specs:{} },
-  { id:24, name:"Reduccion de Grasa",       price:50000, stock:null, duration:"75 min", store:"elegance", type:"corporal",
-    img:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800",isMain:true}],
-    desc:"Cavitacion ultrasonica para romper celulas de grasa en zonas especificas.", specs:{} },
-  { id:25, name:"Celulitis y Estrias",      price:42000, stock:null, duration:"60 min", store:"elegance", type:"corporal",
-    img:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800",
-    gallery:[{url:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800",isMain:true}],
-    desc:"Tratamiento combinado de presoterapia y radiofrecuencia para mejorar celulitis.", specs:{} }
-];
-
-function loadInventory() {
-  try {
-    var lm = localStorage.getItem('lm-inventory');
-    if (lm) { var p = JSON.parse(lm); if (Array.isArray(p) && p.length > 0) { localStorage.setItem('admin-inventory', lm); return p; } }
-  } catch(e) {}
-  try {
-    var adm = localStorage.getItem('admin-inventory');
-    if (adm) { var p2 = JSON.parse(adm); if (Array.isArray(p2) && p2.length > 0) { localStorage.setItem('lm-inventory', adm); return p2; } }
-  } catch(e) {}
-  return JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
-}
-function saveInventory(inv) {
-  var json = JSON.stringify(inv);
-  localStorage.setItem('lm-inventory', json);
-  localStorage.setItem('admin-inventory', json);
-}
-
-var inventory = loadInventory();
-var nextId = Math.max.apply(null, [25].concat(inventory.map(function(i){return typeof i.id==='number'?i.id:0;}))) + 1;
-var editingId = null;
-var currentTab = 'all';
-var currentSpecs = {};
-
-// ══════════════════════════════════════════════════════════════
-// CATEGORÍAS
-// ══════════════════════════════════════════════════════════════
-
-const DEFAULT_CATEGORIES = {
-  divino:   ['moda', 'fragancias', 'tech', 'cosméticos'],
-  family:   ['tech', 'celulares', 'accesorios'],
-  elegance: ['unas', 'cejas-pestanas', 'facial', 'corporal']
-};
-const STORE_NAMES = { divino:'Divino Cielo', family:'FamilyCell And More', elegance:'Elegance Beauty Esthetic' };
-
-function loadCategories() {
-  var saved = localStorage.getItem('admin-categories');
-  if (!saved) return JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
-  var cats = JSON.parse(saved);
-  // Migrate elegance: if still has old product categories, replace with service categories
-  var oldElegance = ['joyería', 'fragancias', 'belleza', 'joyeria'];
-  var hasOld = cats.elegance && cats.elegance.some(function(c){ return oldElegance.includes(c); });
-  if (hasOld || !cats.elegance || cats.elegance.length === 0) {
-    cats.elegance = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES.elegance));
-    localStorage.setItem('admin-categories', JSON.stringify(cats));
-  }
-  return cats;
-}
-function saveCats(cats) { localStorage.setItem('admin-categories', JSON.stringify(cats)); }
-
-var storeCategories = loadCategories();
-
-function getCatsForStore(store) { return storeCategories[store] || []; }
-
-function onStoreChange() {
-  renderCategorySelect();
-  renderCategoryList();
-  var store = document.getElementById('f-store').value;
-  document.getElementById('cat-store-label').textContent = STORE_NAMES[store] || store;
-  // Toggle elegance service mode
-  var isElegance = store === 'elegance';
-  document.body.classList.toggle('elegance-mode', isElegance);
-  // Update form placeholders dynamically
-  var nameInput = document.getElementById('f-name');
-  var descInput = document.getElementById('f-desc');
-  var modeLabel = document.getElementById('form-mode-label');
-  if (nameInput) nameInput.placeholder = isElegance ? 'Ej: Limpieza Facial Profunda' : 'Ej: Vestido Gala Noir';
-  if (descInput) descInput.placeholder = isElegance ? 'Descripci\u00f3n del servicio, incluye, resultados...' : 'Descripci\u00f3n breve del producto';
-  if (modeLabel && modeLabel.textContent === 'NUEVO PRODUCTO') {
-    modeLabel.textContent = isElegance ? 'NUEVO SERVICIO' : 'NUEVO PRODUCTO';
-  }
-  // Update save button label
-  var saveLbl = document.getElementById('save-btn-label');
-  if (saveLbl && (saveLbl.textContent === 'AGREGAR PRODUCTO' || saveLbl.textContent === 'AGREGAR SERVICIO')) {
-    saveLbl.textContent = isElegance ? 'AGREGAR SERVICIO' : 'AGREGAR PRODUCTO';
-  }
-}
-
-function renderCategorySelect(keepVal) {
-  var store = document.getElementById('f-store').value;
-  var sel = document.getElementById('f-type');
-  var prev = keepVal || sel.value;
-  var cats = getCatsForStore(store);
-  sel.innerHTML = cats.length
-    ? cats.map(function(c){ return '<option value="'+c+'"'+(c===prev?' selected':'')+'>'+c.charAt(0).toUpperCase()+c.slice(1)+'</option>'; }).join('')
-    : '<option value="">Sin categorías</option>';
-}
-
-function renderCategoryList() {
-  var store = document.getElementById('f-store').value;
-  var cats = getCatsForStore(store);
-  var list = document.getElementById('cat-list');
-  if (!list) return;
-  if (cats.length === 0) { list.innerHTML = '<div style="font-size:0.7rem;color:var(--muted);padding:8px 0;">Sin categorías</div>'; return; }
-  list.innerHTML = cats.map(function(cat, idx){
-    var inUse = inventory.some(function(i){ return i.store===store && i.type===cat; });
-    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);margin-bottom:4px;">'+
-      '<span style="font-size:0.8rem;">'+cat.charAt(0).toUpperCase()+cat.slice(1)+'</span>'+
-      '<div style="display:flex;align-items:center;gap:8px;">'+
-        (inUse?'<span style="font-size:0.6rem;letter-spacing:2px;color:var(--muted);">EN USO</span>':'')+
-        '<button onclick="deleteCategory(\''+store+'\','+idx+')" style="background:none;border:none;color:rgba(224,80,80,'+(inUse?'0.2':'0.5')+');cursor:'+(inUse?'not-allowed':'pointer')+';font-size:0.85rem;padding:2px 6px;transition:color 0.2s;"'+(inUse?'':' onmouseover="this.style.color=\'#e05050\'" onmouseout="this.style.color=\'rgba(224,80,80,0.5)\'"')+'>✕</button>'+
-      '</div></div>';
-  }).join('');
-}
-
-function addCategory() {
-  var store = document.getElementById('f-store').value;
-  var input = document.getElementById('new-cat-input');
-  var val = input.value.trim().toLowerCase();
-  if (!val) return;
-  if (!storeCategories[store]) storeCategories[store] = [];
-  if (storeCategories[store].includes(val)) { showToast('Ya existe en esta tienda', 'error'); return; }
-  storeCategories[store].push(val);
-  saveCats(storeCategories);
-  input.value = '';
-  renderCategoryList();
-  renderCategorySelect();
-  showToast('"'+val+'" añadida a '+STORE_NAMES[store], 'success');
-}
-
-function deleteCategory(store, idx) {
-  var cat = storeCategories[store][idx];
-  var inUse = inventory.some(function(i){ return i.store===store && i.type===cat; });
-  if (inUse) { showToast('Tiene productos — no se puede eliminar', 'error'); return; }
-  storeCategories[store].splice(idx, 1);
-  saveCats(storeCategories);
-  renderCategoryList();
-  renderCategorySelect();
-  showToast('Categoría eliminada', 'error');
-}
-
-// ══════════════════════════════════════════════════════════════
-// STATS
-// ══════════════════════════════════════════════════════════════
-
-function renderStats() {
-  var total = inventory.length;
-  var stores = {divino:0, family:0, elegance:0};
-  inventory.forEach(function(i){ stores[i.store]++; });
-  document.getElementById('stats-bar').innerHTML =
-    '<div class="stat-card"><div class="stat-label">Total Productos</div><div class="stat-val">'+total+'</div></div>'+
-    '<div class="stat-card"><div class="stat-label">Divino Cielo</div><div class="stat-val">'+stores.divino+'</div></div>'+
-    '<div class="stat-card"><div class="stat-label">Elegance Servicios</div><div class="stat-val">'+stores.elegance+'</div></div>'+
-    '<div class="stat-card"><div class="stat-label">FamilyCell Productos</div><div class="stat-val">'+stores.family+'</div></div>';
-}
-
-// ══════════════════════════════════════════════════════════════
-// TABS Y TABLA
-// ══════════════════════════════════════════════════════════════
-
-function setTab(store) {
-  currentTab = store;
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.store===store); });
-  renderTable();
-}
-
-function renderTable() {
-  var filtered = currentTab==='all' ? inventory : inventory.filter(function(i){ return i.store===currentTab; });
-  var container = document.getElementById('products-container');
-  if (filtered.length===0) { container.innerHTML='<div class="empty-state">Sin productos en esta tienda</div>'; return; }
-
-  var storeNames = {divino:'Divino Cielo', family:'FamilyCell', elegance:'Elegance'};
-
-  function stockCell(stock) {
-    if (stock===undefined||stock===null) return '<span style="color:var(--muted);font-size:0.75rem;">—</span>';
-    if (stock<=0) return '<span style="color:var(--red);font-size:0.72rem;">AGOTADO</span>';
-    if (stock<=2) return '<span style="color:var(--red);font-family:\'DM Mono\',monospace;font-size:0.8rem;">'+stock+' ⚠</span>';
-    if (stock<=5) return '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;font-size:0.8rem;">'+stock+'</span>';
-    return '<span style="color:var(--green);font-family:\'DM Mono\',monospace;font-size:0.8rem;">'+stock+'</span>';
-  }
-
-  function getMainImg(item) {
-    if (item.gallery && item.gallery.length > 0) {
-      var main = item.gallery.find(function(g){ return g.isMain; });
-      return main ? main.url : item.gallery[0].url;
-    }
-    return item.img || '';
-  }
-
-  function galleryBadge(item) {
-    var count = item.gallery ? item.gallery.length : (item.img ? 1 : 0);
-    if (count > 1) return ' <span style="font-size:0.55rem;letter-spacing:1px;color:var(--gold);margin-left:4px;">📷'+count+'</span>';
-    return '';
-  }
-
-  container.innerHTML = '<table class="products-table">'+
-    '<thead><tr>'+
-    '<th>Imagen</th><th>Nombre</th><th>Precio</th><th>'+(currentTab==='elegance'?'Duración':'Stock')+'</th><th>Tipo</th>'+
-    (currentTab==='all'?'<th>Tienda</th>':'')+
-    '<th>Acciones</th></tr></thead><tbody>'+
-    filtered.map(function(item){
-      return '<tr class="product-row">'+
-        '<td><img class="prod-img" src="'+getMainImg(item)+'" alt="" onerror="this.style.opacity=0.2"></td>'+
-        '<td class="prod-name">'+item.name+galleryBadge(item)+(item.specs&&Object.keys(item.specs).length>0?' <span style="font-size:0.6rem;letter-spacing:1px;color:var(--cyan);margin-left:4px;">SPECS</span>':'')+'</td>'+
-        '<td class="prod-price">₡'+item.price.toLocaleString()+'</td>'+
-        '<td>'+(item.store==='elegance' && item.duration ? '<span style="font-size:0.72rem;letter-spacing:1px;color:#c8956c;">◷ '+item.duration+'</span>' : stockCell(item.stock))+'</td>'+
-        '<td><span class="prod-type type-'+item.type+'">'+item.type+'</span></td>'+
-        (currentTab==='all'?'<td style="font-size:0.75rem;color:var(--muted);">'+(storeNames[item.store]||item.store)+'</td>':'')+
-        '<td>'+
-          '<button class="btn-edit" onclick="editProduct('+item.id+')">EDITAR</button>'+
-          '<button class="btn-del" onclick="deleteProduct('+item.id+')" title="Eliminar">✕</button>'+
-        '</td></tr>';
-    }).join('')+
-    '</tbody></table>';
-}
-
-// ══════════════════════════════════════════════════════════════
-// FORMULARIO
-// ══════════════════════════════════════════════════════════════
-
-function clearForm() {
-  document.getElementById('f-name').value  = '';
-  document.getElementById('f-price').value = '';
-  document.getElementById('f-stock').value = '';
-  document.getElementById('f-desc').value  = '';
-  var durEl2 = document.getElementById('f-duration');
-  if (durEl2) durEl2.value = '';
-  document.getElementById('f-store').value = 'divino';
-  renderCategorySelect();
-  renderCategoryList();
-  document.getElementById('cat-store-label').textContent = 'DIVINO CIELO';
-  // Limpiar galería
-  mainImageIndex = 0;
-  for (var i = 0; i < 3; i++) clearSlot(i);
-  setMainImage(0);
-  // Limpiar specs
-  currentSpecs = {};
-  renderSpecsList();
-}
-
-// ── SPECS ────────────────────────────────────────────────────────────────────
-
-function renderSpecsList() {
-  var list = document.getElementById('specs-list');
-  if (!list) return;
-  var entries = Object.entries(currentSpecs);
-  if (entries.length===0) { list.innerHTML=''; return; }
-  list.innerHTML = entries.map(function(pair){
-    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);margin-bottom:4px;">'+
-      '<span style="font-size:0.75rem;color:var(--muted);">'+pair[0]+'</span>'+
-      '<span style="font-size:0.8rem;flex:1;margin:0 12px;">'+pair[1]+'</span>'+
-      '<button onclick="removeSpec(\''+pair[0].replace(/'/g,"\\'")+'\') " style="background:none;border:none;color:rgba(224,80,80,0.5);cursor:pointer;font-size:0.8rem;padding:2px 6px;transition:color 0.2s;" onmouseover="this.style.color=\'#e05050\'" onmouseout="this.style.color=\'rgba(224,80,80,0.5)\'">✕</button>'+
-    '</div>';
-  }).join('');
-}
-
-function addSpec() {
-  var k = document.getElementById('spec-key').value.trim();
-  var v = document.getElementById('spec-val').value.trim();
-  if (!k||!v) { showToast('Completa nombre y valor', 'error'); return; }
-  currentSpecs[k] = v;
-  document.getElementById('spec-key').value = '';
-  document.getElementById('spec-val').value = '';
-  renderSpecsList();
-  document.getElementById('spec-key').focus();
-}
-
-function removeSpec(key) {
-  delete currentSpecs[key];
-  renderSpecsList();
-}
-
-// ── GUARDAR ──────────────────────────────────────────────────────────────────
-
-function saveProduct() {
-  var name  = document.getElementById('f-name').value.trim();
-  var price = parseInt(document.getElementById('f-price').value);
-  var stock = parseInt(document.getElementById('f-stock').value) || 0;
-  var desc  = document.getElementById('f-desc').value.trim();
-  var store = document.getElementById('f-store').value;
-  var type  = document.getElementById('f-type').value;
-
-  // Recoger galería
-  var gallery = getGalleryImages();
-  if (gallery.length === 0) { showToast('Agrega al menos una imagen', 'error'); return; }
-  if (!name || !price) { showToast('Completa nombre y precio', 'error'); return; }
-  if (store === 'elegance') stock = null; // servicios no tienen stock
-
-  // Asegurar que haya un main; si ninguno está marcado, usar el primero
-  var hasMain = gallery.some(function(g){ return g.isMain; });
-  if (!hasMain) gallery[0].isMain = true;
-
-  // img legado = la imagen principal
-  var mainImg = gallery.find(function(g){ return g.isMain; }).url;
-
-  var specs = Object.keys(currentSpecs).length > 0 ? Object.assign({}, currentSpecs) : {};
-
-  var duration = (document.getElementById('f-duration') ? document.getElementById('f-duration').value.trim() : '') || '';
-  var product = { id: editingId !== null ? editingId : nextId++, name, price, stock, store, type, img: mainImg, gallery, desc, specs };
-  if (store === 'elegance') { var durEl=document.getElementById('f-duration'); if(durEl&&durEl.value.trim()) product.duration=durEl.value.trim(); delete product.stock; }
-  if (store === 'elegance' && duration) product.duration = duration;
-
-  if (editingId !== null) {
-    var idx = inventory.findIndex(function(i){ return i.id===editingId; });
-    if (idx !== -1) inventory[idx] = product;
-    showToast('Producto actualizado ✓', 'success');
-    cancelEdit();
-  } else {
-    inventory.push(product);
-    showToast('Producto agregado ✓', 'success');
-    clearForm();
-  }
-
-  saveInventory(inventory);
-  renderAll();
-}
-
-function editProduct(id) {
-  var item = inventory.find(function(i){ return i.id===id; });
-  if (!item) return;
-  editingId = id;
-
-  document.getElementById('f-name').value  = item.name;
-  document.getElementById('f-price').value = item.price;
-  document.getElementById('f-stock').value = item.stock || 0;
-  document.getElementById('f-desc').value  = item.desc;
-  document.getElementById('f-store').value = item.store;
-  document.getElementById('cat-store-label').textContent = STORE_NAMES[item.store] || item.store;
-  renderCategorySelect(item.type);
-  renderCategoryList();
-  document.getElementById('f-type').value = item.type;
-
-  // Cargar galería
-  loadGalleryIntoForm(item);
-  var durEl = document.getElementById('f-duration');
-  if (durEl) durEl.value = item.duration || '';
-  // Trigger mode change for elegance
-  onStoreChange();
-
-  // Cargar specs
-  currentSpecs = item.specs ? Object.assign({}, item.specs) : {};
-  renderSpecsList();
-
-  document.getElementById('form-mode-label').textContent = 'EDITANDO PRODUCTO';
-  document.getElementById('save-btn-label').textContent  = 'GUARDAR CAMBIOS';
-  document.getElementById('cancel-edit-btn').style.display = 'block';
-
-  document.querySelector('.sidebar').scrollTo({top:0, behavior:'smooth'});
-}
-
-function cancelEdit() {
-  editingId = null;
-  currentSpecs = {};
-  clearForm();
-  var store = document.getElementById('f-store').value;
-  var isElegance = store === 'elegance';
-  document.getElementById('form-mode-label').textContent = isElegance ? 'NUEVO SERVICIO' : 'NUEVO PRODUCTO';
-  document.getElementById('save-btn-label').textContent  = isElegance ? 'AGREGAR SERVICIO' : 'AGREGAR PRODUCTO';
-  document.getElementById('cancel-edit-btn').style.display = 'none';
-}
-
-function deleteProduct(id) {
-  if (!confirm('¿Eliminar este producto?')) return;
-  inventory = inventory.filter(function(i){ return i.id!==id; });
-  saveInventory(inventory);
-  renderAll();
-  showToast('Producto eliminado', 'error');
-}
-
-// ══════════════════════════════════════════════════════════════
-// EXPORT JS — genera main.js con soporte de galería
-// ══════════════════════════════════════════════════════════════
-
-function exportJS() {
-  var items = inventory.map(function(item) {
-    var specsStr = (item.specs && Object.keys(item.specs).length > 0)
-      ? ', specs:' + JSON.stringify(item.specs)
-      : ', specs:{}';
-    var galleryStr = item.gallery && item.gallery.length > 0
-      ? ', gallery:' + JSON.stringify(item.gallery)
-      : ', gallery:[{url:' + JSON.stringify(item.img) + ',isMain:true}]';
-    return '  { id:'+item.id+
-      ', name:'+JSON.stringify(item.name)+
-      ', price:'+item.price+
-      ', stock:'+(item.stock||0)+
-      ', store:'+JSON.stringify(item.store)+
-      ', type:'+JSON.stringify(item.type)+
-      ',\n    img:'+JSON.stringify(item.img)+
-      galleryStr+
-      ',\n    desc:'+JSON.stringify(item.desc)+
-      specsStr+' }';
-  }).join(',\n');
-
-  var js = generateMainJS(items);
-  var blob = new Blob([js], {type:'text/javascript'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'main.js';
-  a.click();
-  showToast('main.js descargado ✓', 'success');
-}
-
-// ══════════════════════════════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════════════════════════════
-
-function showToast(msg, type) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + (type||'success') + ' show';
-  setTimeout(function(){ t.classList.remove('show'); }, 2500);
-}
-
-// ══════════════════════════════════════════════════════════════
-// RENDER ALL
-// ══════════════════════════════════════════════════════════════
-
-function renderAll() {
-  renderStats();
-  renderTable();
-  renderCategorySelect();
-  renderCategoryList();
-  renderGHPanel();
-}
-
-// ══════════════════════════════════════════════════════════════
-// GITHUB INTEGRATION
-// ══════════════════════════════════════════════════════════════
-
-var GH_CONFIG_KEY = 'admin-gh-config';
-
-function loadGHConfig() {
-  try { return JSON.parse(localStorage.getItem(GH_CONFIG_KEY)||'null'); } catch(e){ return null; }
-}
-
-function saveGHConfig() {
-  var user  = document.getElementById('gh-user').value.trim();
-  var repo  = document.getElementById('gh-repo').value.trim();
-  var token = document.getElementById('gh-token').value.trim();
-  if (!user||!repo||!token) { showToast('Completa usuario, repo y token', 'error'); return; }
-  localStorage.setItem(GH_CONFIG_KEY, JSON.stringify({user,repo,token}));
-  showToast('Configuración guardada ✓', 'success');
-  renderGHPanel();
-}
-
-function resetGHConfig() {
-  localStorage.removeItem(GH_CONFIG_KEY);
-  renderGHPanel();
-}
-
-function renderGHPanel() {
-  var cfg = loadGHConfig();
-  var configPanel = document.getElementById('gh-config-panel');
-  var commitPanel = document.getElementById('gh-commit-panel');
-  if (!configPanel||!commitPanel) return;
-  if (cfg) {
-    configPanel.style.display = 'none';
-    commitPanel.style.display = 'block';
-    var badge = document.getElementById('gh-status-badge');
-    if (badge) { badge.textContent = cfg.user+'/'+cfg.repo; badge.style.cssText='background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);color:#00e5ff;font-size:0.6rem;letter-spacing:2px;padding:5px 10px;margin-bottom:12px;display:inline-block;'; }
-  } else {
-    configPanel.style.display = 'block';
-    commitPanel.style.display = 'none';
-  }
-}
-
-async function commitToGitHub() {
-  var cfg = loadGHConfig();
-  if (!cfg) { showToast('Configura GitHub primero', 'error'); return; }
-  var msg = document.getElementById('gh-commit-msg').value.trim() || 'Actualización de productos';
-  var btn = document.getElementById('gh-commit-btn');
-  var label = document.getElementById('gh-commit-label');
-  btn.disabled = true; label.textContent = 'PUBLICANDO...';
-  try {
-    var filePath = 'js/main.js';
-    var apiBase  = 'https://api.github.com/repos/'+cfg.user+'/'+cfg.repo;
-    var headers  = {'Authorization':'token '+cfg.token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    var fileRes  = await fetch(apiBase+'/contents/'+filePath, {headers});
-    if (!fileRes.ok && fileRes.status!==404) throw new Error('No se pudo leer el archivo (status '+fileRes.status+')');
-    var sha = null;
-    if (fileRes.ok) { var fd = await fileRes.json(); sha = fd.sha; }
-    var items = inventory.map(function(item){
-      var specsStr = (item.specs&&Object.keys(item.specs).length>0)?', specs:'+JSON.stringify(item.specs):', specs:{}';
-      var galleryStr = (item.gallery&&item.gallery.length>0)?', gallery:'+JSON.stringify(item.gallery):', gallery:[{url:'+JSON.stringify(item.img)+',isMain:true}]';
-      return '  { id:'+item.id+', name:'+JSON.stringify(item.name)+', price:'+item.price+', stock:'+(item.stock||0)+', store:'+JSON.stringify(item.store)+', type:'+JSON.stringify(item.type)+',\n    img:'+JSON.stringify(item.img)+galleryStr+',\n    desc:'+JSON.stringify(item.desc)+specsStr+' }';
-    }).join(',\n');
-    var newContent = generateMainJS(items);
-    var encoded    = btoa(unescape(encodeURIComponent(newContent)));
-    var body = {message:'[Admin] '+msg, content:encoded};
-    if (sha) body.sha = sha;
-    var commitRes = await fetch(apiBase+'/contents/'+filePath, {method:'PUT', headers, body:JSON.stringify(body)});
-    if (!commitRes.ok) { var err=await commitRes.json(); throw new Error(err.message||'Error al hacer commit'); }
-    showToast('¡Publicado en GitHub! ✓', 'success');
-    label.textContent = '✓ PUBLICADO';
-    setTimeout(function(){ label.textContent='⬆ PUBLICAR EN GITHUB'; btn.disabled=false; }, 3000);
-  } catch(err) {
-    showToast('Error: '+err.message, 'error');
-    label.textContent = '⬆ PUBLICAR EN GITHUB';
-    btn.disabled = false;
-  }
-}
-
-// ══════════════════════════════════════════════════════════════
-// GENERATE MAIN.JS — con soporte de galería en el modal
-// ══════════════════════════════════════════════════════════════
-
-function generateMainJS(itemsStr) {
-  return `// ═══════════════════════════════════════════════════════════
-// MAIN.JS — Luxury Mall · v5 (auto-generado por Admin)
+// ═══════════════════════════════════════════════════════════
+// MAIN.JS — Luxury Mall · v4 (auto-generado por Admin)
 // ═══════════════════════════════════════════════════════════
 
 const DEFAULT_INVENTORY = [
-\${itemsStr}
+  { id:6, name:"Victoria's Secret Amber Romance", price:10000, stock:20, store:"divino", type:"fragancias",
+    img:"https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg", gallery:[{"url":"https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg","isMain":true}],
+    desc:"Ámbar resinoso y crema de vainilla.", specs:{"Familia":"Oriental","Notas base":"Ámbar, Vainilla","Notas corazón":"Gardenia","Presentación":"Loción 250 ml"} },
+  { id:16, name:"Victoria's Secret Romance", price:10000, stock:15, store:"divino", type:"fragancias",
+    img:"https://victoriassecretbeautycr.vtexassets.com/arquivos/ids/172845-1200-1600?v=638030941474070000&width=1200&height=1600&aspect=true", gallery:[{"url":"https://victoriassecretbeautycr.vtexassets.com/arquivos/ids/172845-1200-1600?v=638030941474070000&width=1200&height=1600&aspect=true","isMain":true}],
+    desc:"Pétalos de rosa. Almizcle puro. Enamorándome de ti.", specs:{"Familia":"Floral","Notas base":"Almizcle blanco","Notas corazón":"Rosa, Lila","Presentación":"Loción 250 ml"} },
+  { id:17, name:"Victoria's Secret Romantic", price:10000, stock:18, store:"divino", type:"fragancias",
+    img:"https://cdnx.jumpseller.com/la-perfumeria-cl/image/69524237/resize/540/540?1762793584", gallery:[{"url":"https://cdnx.jumpseller.com/la-perfumeria-cl/image/69524237/resize/540/540?1762793584","isMain":true}],
+    desc:"Floral – clásico, femenino y delicado.", specs:{"Familia":"Floral","Notas base":"Sándalo","Notas corazón":"Jazmín, Rosa","Presentación":"Loción 250 ml"} },
+  { id:32, name:"Lattafa Ladies Yara Deodorant Spray", price:6500, stock:11, store:"divino", type:"fragancias",
+    img:"https://i.ebayimg.com/images/g/vcQAAOSwZA5m8W6W/s-l1600.jpg", gallery:[{"url":"https://i.ebayimg.com/images/g/vcQAAOSwZA5m8W6W/s-l1600.jpg","isMain":true},{"url":"https://www.intenseoud.com/cdn/shop/files/3_b1cef525-6643-489a-affe-fd56e171bd19.webp?v=1746547711","isMain":false},{"url":"https://www.intenseoud.com/cdn/shop/files/Yara_Deo_200ML_2.webp?v=1746547711","isMain":false}],
+    desc:"Aroma dulce, cremoso y tipo gourmand. Comparado con un batido de fresa o postre tropical.", specs:{"Notas de Salida":"Orquídea, heliotropo y mandarina.","Notas de Corazón":"Frutas tropicales y acorde gourmand.","Notas de Fondo":"Vainilla, almizcle y sándalo.","Duración":"Entre 5 y 7 horas"} },
+  { id:33, name:"Curve Sport Cologne Spray 125ml", price:14300, stock:1, store:"divino", type:"fragancias",
+    img:"https://fimgs.net/mdimg/secundar/o.31107.jpg", gallery:[{"url":"https://fimgs.net/mdimg/secundar/o.31107.jpg","isMain":true},{"url":"https://holacompras.com/wp-content/uploads/2021/10/PERF-LIZ-CURSPORT-H-1-1000x1000.jpg","isMain":false}],
+    desc:"Fresca, masculina y sensual. Combina notas verdes y cálidas con toque cítrico.", specs:{} },
+  { id:19, name:"SAMSUNG CHROMEBOOK GO", price:285000, stock:8, store:"divino", type:"tech",
+    img:"https://cdcinternacional.com/wp-content/uploads/2024/01/XE340XDA-KA2US-2.jpg", gallery:[{"url":"https://cdcinternacional.com/wp-content/uploads/2024/01/XE340XDA-KA2US-2.jpg","isMain":true}],
+    desc:"REFURB ING CHROME CEL N4500 1.10-2.80/4GB/64GB/14"/PLATA", specs:{"Marca":"Samsung","Sistema Operativo":"Chrome","Procesador":"Celeron","Memoria Ram":"4GB","Estado":"Refurbished"} },
+  { id:38, name:"Cable Rainbow type C 1 metro", price:7000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2302234_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2302234_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2302234_2.webp?v=7798820","isMain":false}],
+    desc:"Cable rainbow type c carga rápido y data", specs:{"Color":"Multicolor","Material":"Plástico PVC y TPE"} },
+  { id:39, name:"Cable tipo C 1metro Magnético", price:10000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2405103_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2405103_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2405103_2.webp?v=7798820","isMain":false}],
+    desc:"Cable magnético flexible, evita roturas y garantiza carga estable. Diseño magnético facilita enrollarlo.", specs:{"Dimensiones":"largo: 1 metro"} },
+  { id:40, name:"Cable Rainbow V8 Carga Rapida y Data 1metro", price:7000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2302233_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2302233_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2302233_2.webp?v=7798820","isMain":false}],
+    desc:"Cable de carga rápida de alta calidad. Compatible con todo tipo de dispositivos móviles.", specs:{} },
+  { id:41, name:"Cable Rainbow IOS Carga Rapida Y Data", price:7000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2302235_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2302235_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2302235_2.webp?v=7798820","isMain":false}],
+    desc:"Cable de carga rápida para dispositivos iOS. Compatible con iPhone y iPad.", specs:{"Material":"Plástico PVC y TPE","Dimensiones:":"Largo: 1 metro."} },
+  { id:42, name:"Cable Plano V8 2Metros", price:7000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL181202_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL181202_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL181202_2.webp?v=7798820","isMain":false}],
+    desc:"Cable plano V8 2 metros", specs:{"Color:":"Varios","Dimensiones:":"2 Metros"} },
+  { id:43, name:"Cable Plano Iphone 3Metros", price:7000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL181205_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL181205_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL181205_2.webp?v=7798820","isMain":false}],
+    desc:"Cable plano iPhone 3 Metros de diferentes colores. Fabricado con plástico duradero y alambre de cobre.", specs:{} },
+  { id:44, name:"Cable Lightning 1Metro Magnético", price:7000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2405104_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2405104_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2405104_2.webp?v=7798820","isMain":false}],
+    desc:"Cable magnético flexible, evita roturas y garantiza carga estable. Se adhiere a superficies metálicas.", specs:{"Material:":"Nylon y Metal."} },
+  { id:45, name:"Cable Flat Wire 4 en 1 65W", price:11000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2411160_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2411160_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2411160_2.webp?v=7798820","isMain":false},{"url":"https://www.acopluscr.com/public/6/productos/FEL2411160_3.webp?v=7798820","isMain":false}],
+    desc:"Cable 4 en 1: USB a Tipo C, Tipo C a Lightning 27W, y más. Carga rápida compatible con todos los dispositivos.", specs:{"Dimensiones:":"1 mtr x 1.5 cm.","Material:":"Plástico PVC y TPE."} },
+  { id:46, name:"Cargador Inalámbrico QI Estándar", price:13000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL220237_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL220237_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL220237_2.webp?v=9363716","isMain":false}],
+    desc:"Compatible con todos los modelos con tecnología Qi. Coloque su teléfono directamente en la base. Corriente 110V.", specs:{} },
+  { id:47, name:"Cable Auxiliar Audio 1Metro 3.5 Aux", price:8000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2302217_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2302217_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2302217_2.webp?v=9363716","isMain":false}],
+    desc:"Cable doble espiga de 3.5mm, resistente y duradero. Compatible con todo tipo de dispositivos de audio.", specs:{"Dimensiones:":"1 metro.","Material:":"Nailon y Cobre."} },
+  { id:48, name:"Audifonos BT Diadema", price:12000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2411001_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2411001_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2411001_2.webp?v=9363716","isMain":false}],
+    desc:"Sonido envolvente y Bluetooth hasta 10 metros. Radio FM, MP3 vía SD y entrada auxiliar 3.5mm. Diseño plegable.", specs:{"Material:":"Plástico y Metal."} },
+  { id:49, name:"Audifonos Diadema Tipo Unicornio", price:15000, stock:5, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL210907_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL210907_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL210907_2.webp?v=9363716","isMain":false}],
+    desc:"Bluetooth, Radio FM, MP3 desde SD y entrada auxiliar 3.5mm. Iluminación LED RGB.", specs:{"Dimensiones:":"24 cm x 18 cm."} },
+  { id:50, name:"Audifonos Bluetooth Diadema Tipo Gato", price:15000, stock:11, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL200942_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL200942_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL200942_2.webp?v=9363716","isMain":false}],
+    desc:"Bluetooth, Radio FM, MP3 desde SD y entrada auxiliar 3.5mm. Iluminación LED RGB.", specs:{"Material:":"Plástico ABS"} },
+  { id:51, name:"Audifonos Tipo Zipper Cajita", price:5000, stock:5, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/AEL190671_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/AEL190671_1.webp?v=9363716","isMain":true}],
+    desc:"Audifonos manos libres plug 3.5mm. Colores surtidos Negro/Verde/Rosa/Azul/Blanco/Rojo.", specs:{"Dimensiones:":"1.2 m de largo","Material:":"Plástico"} },
+  { id:52, name:"Aro de Luz Selfie Con Espejo", price:7000, stock:3, store:"divino", type:"tech",
+    img:"https://www.acopluscr.com/public/6/productos/FEL200918_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL200918_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL200918_2.webp?v=9363716","isMain":false}],
+    desc:"36 LEDs blancos recargable USB. 3 opciones de brillo para fotos y videos mejor iluminados.", specs:{"Material:":"Plástico ABS y PC"} },
+  { id:26, name:"Set 12 cepillos desechables para manicuristas", price:500, stock:5, store:"divino", type:"cosméticos",
+    img:"https://divinocielo.hiboutik.com/shop/image.php?img=big_130-1.jpg", gallery:[{"url":"https://divinocielo.hiboutik.com/shop/image.php?img=big_130-1.jpg","isMain":true},{"url":"https://divinocielo.hiboutik.com/shop/image.php?img=big_130-2.jpg","isMain":false},{"url":"https://divinocielo.hiboutik.com/shop/image.php?img=big_130-3.jpg","isMain":false}],
+    desc:"Mango ergonómico de plástico con cerdas de nailon.", specs:{"Uso":"Limpieza de uñas y manos."} },
+  { id:27, name:"Espejo Maquillaje Táctil Led", price:12500, stock:5, store:"divino", type:"cosméticos",
+    img:"https://http2.mlstatic.com/D_Q_NP_828259-MLC92151088387_092025-F.webp", gallery:[{"url":"https://http2.mlstatic.com/D_Q_NP_828259-MLC92151088387_092025-F.webp","isMain":true},{"url":"https://http2.mlstatic.com/D_Q_NP_658868-MLC92151039181_092025-F.webp","isMain":false},{"url":"https://http2.mlstatic.com/D_Q_NP_779292-MLC92151019369_092025-F.webp","isMain":false}],
+    desc:"Ajustable a 180 grados, ampliación, LED iluminado, plegable tripliegue.", specs:{"Temperatura de la luz":"Cálida y fría.","Color del marco":"Blanco."} },
+  { id:28, name:"Skala Expert Bomba de Vitaminas", price:6500, stock:1, store:"divino", type:"cosméticos",
+    img:"https://m.media-amazon.com/images/I/71dDSNmffFL._SL1500_.jpg", gallery:[{"url":"https://m.media-amazon.com/images/I/71dDSNmffFL._SL1500_.jpg","isMain":true}],
+    desc:"Enriquecida con Ácido Hialurónico, Aceite de Ricino, Proteínas Vegetales, Vitamina A, E y D-Pantenol.", specs:{"Propósito":"Crecimiento espectacular del cabello.","Características":"100% vegano, sin sulfatos ni parabenos."} },
+  { id:29, name:"Creme para Pentear Salon Line Kids Cachinhos Uva", price:9200, stock:1, store:"divino", type:"cosméticos",
+    img:"https://www.salonline.com.br/ccstore/v1/images/?source=/file/v694171561523967103/products/32446%20-%20SKU1.jpg&height=940&width=940", gallery:[{"url":"https://www.salonline.com.br/ccstore/v1/images/?source=/file/v694171561523967103/products/32446%20-%20SKU1.jpg&height=940&width=940","isMain":true},{"url":"https://m.media-amazon.com/images/I/61MEL7-nh1L._AC_SY355_.jpg","isMain":false}],
+    desc:"Crema de peinar infantil vegana, ideal para cabellos ondulados, rizados y crespos. Brillo, suavidad y desenredar.", specs:{"Contenido":"1000g (1kg).","Forma":"Crema"} },
+  { id:30, name:"Karseell Maca Essence Repair Collagen", price:12000, stock:2, store:"divino", type:"cosméticos",
+    img:"https://hibeautycr.com/cdn/shop/files/FullSizeRender_333b6afe-3e35-4106-ab48-42f21b15d451_860x.jpg?v=1702749214", gallery:[{"url":"https://hibeautycr.com/cdn/shop/files/FullSizeRender_333b6afe-3e35-4106-ab48-42f21b15d451_860x.jpg?v=1702749214","isMain":true},{"url":"https://hibeautycr.com/cdn/shop/files/FullSizeRender_8a5ed4cf-8366-4134-8315-b06947be5bbb_860x.jpg?v=1702749214","isMain":false}],
+    desc:"Tratamiento intensivo de 500ml que repara el cabello dañado, seco o teñido. Fórmula de colágeno y esencia de maca.", specs:{} },
+  { id:31, name:"Karseell Maca Essence Oil", price:9000, stock:1, store:"divino", type:"cosméticos",
+    img:"https://perfumeriaonlinex.com/wp-content/uploads/2025/09/Disenosintitulo-46_d78f0a47-39fb-438d-a2db-03f0cf428fd1.webp", gallery:[{"url":"https://perfumeriaonlinex.com/wp-content/uploads/2025/09/Disenosintitulo-46_d78f0a47-39fb-438d-a2db-03f0cf428fd1.webp","isMain":true}],
+    desc:"Hidrata y repara el cabello seco. Controla el frizz y deja el cabello suave y brillante.", specs:{"Función":"Humedad, suavidad y brillo intenso.","Beneficios":"Intensifica y mantiene el color del cabello."} },
+  { id:34, name:"Ushas Matte Lips 2in1 Lipstick & Lipline", price:1900, stock:20, store:"divino", type:"cosméticos",
+    img:"https://static.wixstatic.com/media/d4e13d_d5239857ca434aee95b889c6477a59a7~mv2.jpg/v1/fill/w_498,h_498,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/d4e13d_d5239857ca434aee95b889c6477a59a7~mv2.jpg", gallery:[{"url":"https://static.wixstatic.com/media/d4e13d_d5239857ca434aee95b889c6477a59a7~mv2.jpg/v1/fill/w_498,h_498,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/d4e13d_d5239857ca434aee95b889c6477a59a7~mv2.jpg","isMain":true}],
+    desc:"Textura mate que hace los labios lucir más regordetes e hidratados. Para trabajo, escuela, citas y fiestas.", specs:{} },
+  { id:35, name:"Espuma Limpiadora Vitamina Arroz CQK", price:2500, stock:1, store:"divino", type:"cosméticos",
+    img:"https://circulob.mx/wp-content/uploads/2023/09/ESPUMA-LIMPIADORA-ARROZ-CQK-800x800.jpg", gallery:[{"url":"https://circulob.mx/wp-content/uploads/2023/09/ESPUMA-LIMPIADORA-ARROZ-CQK-800x800.jpg","isMain":true}],
+    desc:"Limpiador facial suave con extracto de arroz. Elimina impurezas y maquillaje. Aclara y suaviza la textura.", specs:{} },
+  { id:36, name:"Espuma Limpiadora Vitamina Naranja CQK", price:2500, stock:1, store:"divino", type:"cosméticos",
+    img:"https://circulob.mx/wp-content/uploads/2023/09/ESPUMA-LIMPIADORA-NARANJA-CQK-800x800.jpg", gallery:[{"url":"https://circulob.mx/wp-content/uploads/2023/09/ESPUMA-LIMPIADORA-NARANJA-CQK-800x800.jpg","isMain":true}],
+    desc:"Limpiador facial refrescante con vitamina C. Ilumina y unifica el tono. Incluye cepillo de silicona.", specs:{} },
+  { id:37, name:"Crema para Pentear Uva y Sandía", price:9200, stock:1, store:"divino", type:"cosméticos",
+    img:"https://i.ebayimg.com/images/g/CWIAAeSw6H5owxNB/s-l960.jpg", gallery:[{"url":"https://i.ebayimg.com/images/g/CWIAAeSw6H5owxNB/s-l960.jpg","isMain":true},{"url":"https://i.ebayimg.com/images/g/PucAAeSwbCZowxNB/s-l140.jpg","isMain":false}],
+    desc:"Crema de peinar con extractos de uva y sandía. Nutrición profunda, brillo extremo y alta definición.", specs:{"Ingredientes":"Extractos de uva y sandía con óleo de tratamiento extraordinario.","Tipo de cabello":"Ondulados, rizados y crespos."} },
+  { id:53, name:"Cobertor Para Colchon Matrimonial", price:15000, stock:1, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL03231015_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL03231015_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL03231015_2.webp?v=9363716","isMain":false}],
+    desc:"Protección y comodidad adicional para tu colchón. Ajuste elástico e impermeable.", specs:{"Dimensiones:":"150 cm x 200 cm.","Material:":"Poliéster."} },
+  { id:54, name:"Batidora Eléctrica De Mano", price:13500, stock:2, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2512019_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2512019_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2512019_2.webp?v=9363716","isMain":false}],
+    desc:"7 velocidades, incluye batidores de globo y ganchos metálicos. Conexión 110V.", specs:{"Color:":"Blanco con Negro.","Material:":"Plástico y Acero."} },
+  { id:55, name:"Aspiradora Multifuncional Recargable", price:12000, stock:3, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2512020_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2512020_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2512020_2.webp?v=9363716","isMain":false}],
+    desc:"Filtro lavable, depósito fácil de vaciar. Batería recargable 12V con entrada Tipo C.", specs:{"Dimensiones:":"24cm x 22cm x 7cm.","Material:":"Plástico ABS."} },
+  { id:56, name:"Horno Eléctrico 25L", price:25000, stock:11, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL012511046_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL012511046_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL012511046_2.webp?v=9363716","isMain":false},{"url":"https://www.acopluscr.com/public/6/productos/FEL012511046_3.webp?v=9363716","isMain":false}],
+    desc:"25 litros, temperatura 90°C a 250°C, temporizador 60 min. Incluye bandeja y rejilla. 110V / 1500W.", specs:{"Color:":"Negro.","Material:":"Metal y Vidrio."} },
+  { id:57, name:"Waflera Eléctrica", price:12000, stock:10, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL052511043_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL052511043_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL052511043_2.webp?v=9363716","isMain":false}],
+    desc:"Placas antiadherentes, diseño compacto. Conexión 110V y potencia de 350W.", specs:{"Dimensiones:":"16cm x 12cm x 8cm.","Material:":"Metal y Plástico."} },
+  { id:58, name:"Waflera Con Forma de Canasta", price:12500, stock:1, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL042511044_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL042511044_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL042511044_2.webp?v=9363716","isMain":false}],
+    desc:"Waffles en forma de canasta. Placas antiadherentes, diseño compacto. 110V / 350W.", specs:{"Color:":"Turquesa.","Material:":"Metal y Plástico."} },
+  { id:59, name:"Horno Eléctrico 12L", price:25000, stock:1, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL012511045_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL012511045_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL012511045_2.webp?v=9363716","isMain":false}],
+    desc:"12 litros, hasta 230°C, temporizador 60 min. Incluye bandeja y rejilla metálicas. 110V.", specs:{"Dimensiones:":"32cm x 20cm x 18cm.","Material:":"Metal y Vidrio."} },
+  { id:60, name:"Humificador Tipo Barco", price:20000, stock:1, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2511036_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2511036_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2511036_2.webp?v=9363716","isMain":false}],
+    desc:"Barco con luces RGB, vapor por las chimeneas. Control remoto para encender/apagar/cambiar colores/temporizador.", specs:{"Material:":"Plástico ABS."} },
+  { id:61, name:"Zapatera Vertical", price:10000, stock:13, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2403017_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2403017_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2403017_2.webp?v=9363716","isMain":false}],
+    desc:"Diseño apilable para más espacio. Instalación sin herramientas.", specs:{"Dimensiones:":"Al:52.5, An:27, L:29.5","Material:":"Plástico ABS"} },
+  { id:62, name:"Zapatera Plegable", price:15000, stock:5, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2504009_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2504009_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2504009_2.webp?v=9363716","isMain":false}],
+    desc:"Se pliega completamente cuando no está en uso. Ocupa el mínimo espacio.", specs:{"Color:":"Blanco - Transparente","Material:":"Plástico y Acrílico."} },
+  { id:63, name:"Zacate Artificial 1x1m", price:9000, stock:20, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2506032_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2506032_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2506032_2.webp?v=9363716","isMain":false}],
+    desc:"Ideal para jardines, terrazas, balcones. Se puede cortar y adaptar para espacios irregulares.", specs:{"Material:":"Plástico PE."} },
+  { id:64, name:"Zacate Artificial Económico", price:6000, stock:15, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2506033_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2506033_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2506033_2.webp?v=9363716","isMain":false}],
+    desc:"Ideal para decorar jardines, terrazas y balcones. Se puede cortar y adaptar.", specs:{"Dimensiones:":"1mtr x 1mtr x 15mm.","Material:":"Plástico PE."} },
+  { id:65, name:"Utensilio de Cocina 2 en 1 Cuchillo y Tijera", price:10500, stock:3, store:"divino", type:"hogar",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2410011_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2410011_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2410011_2.webp?v=9363716","isMain":false},{"url":"https://www.acopluscr.com/public/6/productos/FEL2410011_3.webp?v=9363716","isMain":false}],
+    desc:"Herramienta 6 en 1: cuchillo, tijeras, abrebotellas, cascanueces, pelador y sierra para pan.", specs:{"Color:":"Rojo con Negro.","Material:":"Acero inoxidable."} },
+  { id:7, name:"NVIDIA RTX 4090 Lab", price:1100000, stock:4, store:"family", type:"tech",
+    img:"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg", gallery:[{"url":"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg","isMain":true}],
+    desc:"24 GB GDDR6X, máxima potencia gráfica.", specs:{"VRAM":"24 GB GDDR6X","Núcleos CUDA":"16384","TDP":"450 W","Interfaz":"PCIe 4.0 x16"} },
+  { id:9, name:"iPhone 15 Pro Max", price:980000, stock:6, store:"family", type:"celulares",
+    img:"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800","isMain":true}],
+    desc:"Titanio, cámara 48MP, chip A17 Pro.", specs:{"Chip":"A17 Pro","Cámara":"48 MP triple","Almacenamiento":"256 GB","Material":"Titanio grado 5"} },
+  { id:10, name:"AirPods Pro 2 Gen", price:210000, stock:11, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800","isMain":true}],
+    desc:"Cancelación activa de ruido, audio espacial.", specs:{"ANC":"Activa adaptativa","Batería":"6h + 24h estuche","Chip":"H2"} },
+  { id:12, name:"Uñas Acrílicas", price:25000, stock:0, store:"elegance", type:"unas",
+    img:"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800","isMain":true}],
+    desc:"Construcción completa en acrílico con diseño incluido. Incluye forma, limado, sellado y decoración.", specs:{} },
+  { id:13, name:"Uñas en Gel", price:20000, stock:0, store:"elegance", type:"unas",
+    img:"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800","isMain":true}],
+    desc:"Acabado natural y brillante de larga duración. Ideal para fortalecer y embellecer la uña natural.", specs:{} },
+  { id:14, name:"Diseño de Cejas", price:8000, stock:0, store:"elegance", type:"cejas-pestanas",
+    img:"https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?q=80&w=800","isMain":true}],
+    desc:"Depilación y diseño personalizado según la forma de tu rostro.", specs:{} },
+  { id:15, name:"Extensión de Pestañas", price:35000, stock:0, store:"elegance", type:"cejas-pestanas",
+    img:"https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800","isMain":true}],
+    desc:"Extensiones pelo a pelo para una mirada más intensa y profunda.", specs:{} },
+  { id:18, name:"Limpieza Facial Profunda", price:22000, stock:0, store:"elegance", type:"facial",
+    img:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800","isMain":true}],
+    desc:"Limpieza completa de poros, extracción de comedones, vapor y mascarilla hidratante.", specs:{} },
+  { id:20, name:"Tratamiento Anti-edad", price:40000, stock:0, store:"elegance", type:"facial",
+    img:"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800","isMain":true}],
+    desc:"Protocolo de rejuvenecimiento con activos de alta concentración. Reduce líneas de expresión.", specs:{} },
+  { id:21, name:"Control de Acné", price:28000, stock:0, store:"elegance", type:"facial",
+    img:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800","isMain":true}],
+    desc:"Tratamiento especializado para piel con acné. Limpieza profunda y peelings ácidos.", specs:{} },
+  { id:22, name:"Micro Agujas", price:55000, stock:0, store:"elegance", type:"facial",
+    img:"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800","isMain":true}],
+    desc:"Microdermoabrasión con agujas para estimular el colágeno. Mejora textura y poros.", specs:{} },
+  { id:23, name:"Dermaplaning", price:30000, stock:0, store:"elegance", type:"facial",
+    img:"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800","isMain":true}],
+    desc:"Exfoliación suave con bisturí para eliminar vello facial fino y células muertas.", specs:{} },
+  { id:24, name:"Levantamiento de Glúteos", price:45000, stock:0, store:"elegance", type:"corporal",
+    img:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800","isMain":true}],
+    desc:"Tratamiento no invasivo con radiofrecuencia y masaje modelador.", specs:{} },
+  { id:25, name:"Reducción de Grasa", price:50000, stock:0, store:"elegance", type:"corporal",
+    img:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800","isMain":true}],
+    desc:"Cavitación ultrasónica para romper células de grasa en zonas específicas.", specs:{} },
+  { id:66, name:"Celulitis y Estrías", price:42000, stock:0, store:"elegance", type:"corporal",
+    img:"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?q=80&w=800","isMain":true}],
+    desc:"Tratamiento combinado de presoterapia y radiofrecuencia para mejorar celulitis.", specs:{} },
+  { id:67, name:"Secadora Leafless Single", price:17000, stock:12, store:"divino", type:"cosméticos",
+    img:"https://www.acopluscr.com/public/6/productos/FEL2411028_1.webp?v=7923332", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2411028_1.webp?v=7923332","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2411028_2.webp?v=7923332","isMain":false}],
+    desc:"Secadora de cabello con diseño moderno sin aspas que ofrece un secado rápido y eficiente protegiendo la fibra capilar.", specs:{"Material":"Plastico y Metal","Ajuste":"3 Temperaturas / 3 velocidades","Accesorios":"Boquilla magnaetica y holder"} },
+  { id:68, name:"Secadora Kemei", price:25000, stock:7, store:"divino", type:"cosméticos",
+    img:"https://www.acopluscr.com/public/6/productos/FEL210814_1.webp?v=7923332", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL210814_1.webp?v=7923332","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL210814_2.webp?v=7923332","isMain":false}],
+    desc:"Su diseño aerodinámico permite un manejo cómodo, ideal para lograr acabados de salón cuidando la salud de tu cabello.", specs:{"Marca":"Kemei","Potencia":"1400W (Eficiencia Profesional)","Material":"Plastico ABS"} },
+  { id:69, name:"Plancha Lizbella", price:22000, stock:8, store:"divino", type:"cosméticos",
+    img:"https://www.acopluscr.com/public/6/productos/FLB-542_1.webp?v=7923332", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FLB-542_1.webp?v=7923332","isMain":true}],
+    desc:"Plancha profesional con placas de turmalina cerámica que distribuyen el calor uniformemente, evitando daños por puntos calientes.", specs:{"Material":"Turmalina de ceramica","Temperatura":"200°C max"} },
+  { id:70, name:"Plancha De Cabello", price:10500, stock:3, store:"divino", type:"cosméticos",
+    img:"https://www.acopluscr.com/public/6/productos/FLB235_1.webp?v=7923332", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FLB235_1.webp?v=7923332","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FLB235_2.webp?v=7923332","isMain":false}],
+    desc:"Plancha profesional de 1.5 pulgadas diseñada con canales y difusores de vapor para uso seguro en cabello húmedo o seco.", specs:{"Material":"Turmalina y Ceramica","Uso":"Cabello humedo y seco","Temperatura":"Ajustable hasta 220°C"} },
+  { id:71, name:"Set Plancha y Rizadora Lizbella", price:23000, stock:4, store:"divino", type:"cosméticos",
+    img:"https://www.acopluscr.com/public/6/productos/FSEP0601_1.webp?v=7923332", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FSEP0601_1.webp?v=7923332","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FSEP0601_2.webp?v=7923332","isMain":false},{"url":"https://www.acopluscr.com/public/6/productos/FSEP0601_3.webp?v=7923332","isMain":false}],
+    desc:"¡Todo lo que necesitás para tu cabello! ✨ Set Lizbella con plancha de 230°C y rizadora para ondas perfectas. Incluye peine y bolso. ¡Liso o rizado en minutos!", specs:{"Material":"Plastico ABS","Temperatura":"230°C","Conexion":"110v"} },
+  { id:72, name:"Plancha Lizbella Diamante", price:16000, stock:11, store:"divino", type:"cosméticos",
+    img:"https://www.acopluscr.com/public/6/productos/FLB399_1.webp?v=7923332", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FLB399_1.webp?v=7923332","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FLB399_2.webp?v=7923332","isMain":false}],
+    desc:"Plancha de pelo Digital Titanium con placas conductoras del calor, temperatura uniforme para alisar suavemente el cabello. Potencia de 40w, temperatura máxima de 450 °F y voltaje de 110v. Incluye un peine que mide 26.5cm y 2,54cm de ancho.", specs:{} },
+  { id:73, name:"Plancha Aguacate Coco Conair", price:42000, stock:11, store:"divino", type:"cosméticos",
+    img:"https://www.acopluscr.com/public/6/productos/FCOCS952BT_1.webp?v=7923332", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FCOCS952BT_1.webp?v=7923332","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FCOCS952BT_2.webp?v=7923332","isMain":false}],
+    desc:"Plancha con placas recubiertas de cerámica infundida con aguacate y coco, para un cuidado y alisado excepcionales.", specs:{"Marca":"Conair","Color":"Verde Metalico","Material":"Plástico y Cerámica"} }
 ];
-
-function getInventory() { return DEFAULT_INVENTORY; }
-
-var inventory = DEFAULT_INVENTORY;
-window._inventory = inventory;
-
 
 function getInventory() { return DEFAULT_INVENTORY; }
 
@@ -1795,7 +446,7 @@ function openModal(id){
   if (!document.getElementById('gallery-modal-styles')) {
     var st = document.createElement('style');
     st.id = 'gallery-modal-styles';
-    st.textContent = \`
+    st.textContent = `
       .modal-thumbs { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
       .modal-thumb { width:56px; height:56px; border:1px solid rgba(245,240,232,0.1); overflow:hidden; cursor:pointer; transition:border-color 0.2s; flex-shrink:0; }
       .modal-thumb img { width:100%; height:100%; object-fit:contain; }
@@ -1811,7 +462,7 @@ function openModal(id){
       .modal-gallery-prev { left:6px; }
       .modal-gallery-next { right:6px; }
       .modal-gallery-prev:hover,.modal-gallery-next:hover { background:rgba(201,168,76,0.3); }
-    \`;
+    `;
     document.head.appendChild(st);
   }
 
@@ -1890,381 +541,3 @@ window.addEventListener('DOMContentLoaded',function(){
   initCursor();initNav();refreshCartUI();
   if(document.body.dataset.store)buildStore(document.body.dataset.store);
 });
-
-`;
-}
-var inventory = getInventory();
-window._inventory = inventory;
-
-// ── MIGRATE: elegance-services → lm-inventory ─────────────────────────────
-(function migrateEleganceServices() {
-  try {
-    var raw = localStorage.getItem('elegance-services');
-    if (!raw) return;
-    var services = JSON.parse(raw);
-    if (!services || !services.length) return;
-    var inv = getInventory();
-    var hasEleganceServices = inv.some(function(i){ return i.store==='elegance' && i.duration; });
-    if (hasEleganceServices) { localStorage.removeItem('elegance-services'); return; }
-    // Remove old elegance products, add migrated services
-    inv = inv.filter(function(i){ return i.store !== 'elegance'; });
-    var maxId = inv.reduce(function(m,i){ return Math.max(m, typeof i.id==='number'?i.id:0); }, 25);
-    services.forEach(function(s, idx) {
-      inv.push({
-        id: maxId + idx + 1,
-        name: s.name, price: s.price, stock: null,
-        duration: s.duration || '60 min',
-        store: 'elegance', type: s.cat || 'facial',
-        img: s.img || '', gallery: s.img ? [{url:s.img,isMain:true}] : [],
-        desc: s.desc || '', specs: {}
-      });
-    });
-    localStorage.setItem('lm-inventory', JSON.stringify(inv));
-    localStorage.removeItem('elegance-services');
-    inventory = getInventory();
-    window._inventory = inventory;
-    console.log('Migrated', services.length, 'elegance services to lm-inventory');
-  } catch(e) { console.warn('Migration error:', e); }
-})();
-
-var cart = [];
-try { cart = JSON.parse(localStorage.getItem('lm-cart') || '[]'); } catch(e) { cart = []; }
-
-function saveCart() { localStorage.setItem('lm-cart', JSON.stringify(cart)); }
-
-function addToCart(id) {
-  inventory = getInventory(); window._inventory = inventory;
-  var item = inventory.find(function(i) { return i.id === id; });
-  if (!item) return;
-  var existing = cart.find(function(i) { return i.id === id; });
-  if (existing) { existing.qty = (existing.qty || 1) + 1; }
-  else { cart.push({ id:item.id, name:item.name, price:item.price, img:item.img, store:item.store, qty:1 }); }
-  saveCart(); refreshCartUI(); openCart(); showToast(item.name + ' añadido', 'success');
-}
-
-function removeFromCart(id) { cart = cart.filter(function(i){return i.id!==id;}); saveCart(); refreshCartUI(); }
-function changeQty(id, delta) {
-  var item = cart.find(function(i){return i.id===id;}); if(!item) return;
-  item.qty = (item.qty||1) + delta;
-  if(item.qty<=0){removeFromCart(id);return;}
-  saveCart(); refreshCartUI();
-}
-function clearCart() { cart=[]; saveCart(); refreshCartUI(); }
-
-function refreshCartUI() {
-  var count = cart.reduce(function(s,i){return s+(i.qty||1);},0);
-  document.querySelectorAll('.cart-count').forEach(function(el){
-    el.textContent=count; el.classList.add('bump'); setTimeout(function(){el.classList.remove('bump');},300);
-  });
-  var wrap=document.getElementById('cart-items-wrap'); if(!wrap) return;
-  if(cart.length===0){
-    wrap.innerHTML='<div class="cart-empty"><div class="cart-empty-icon">◻</div><div>Tu bolsa está vacía</div></div>';
-    document.querySelectorAll('#cart-total').forEach(function(el){el.textContent='0';}); return;
-  }
-  var grandTotal=0;
-  var html=cart.map(function(item){
-    var qty=item.qty||1; var lineTotal=item.price*qty; grandTotal+=lineTotal;
-    return '<div class="cart-item">'+
-      '<img class="cart-item-img" src="'+item.img+'" alt="'+item.name+'">'+
-      '<div class="cart-item-info">'+
-        '<div class="cart-item-name">'+item.name+'</div>'+
-        '<div class="cart-item-price">₡'+lineTotal.toLocaleString()+'</div>'+
-        '<div class="cart-qty-row">'+
-          '<button class="qty-btn" onclick="changeQty('+item.id+',-1)">−</button>'+
-          '<span class="qty-val">'+qty+'</span>'+
-          '<button class="qty-btn" onclick="changeQty('+item.id+',1)">+</button>'+
-        '</div></div>'+
-      '<button class="cart-item-remove" onclick="removeFromCart('+item.id+')" title="Eliminar">✕</button></div>';
-  }).join('');
-  wrap.innerHTML=html;
-  document.querySelectorAll('#cart-total').forEach(function(el){el.textContent=grandTotal.toLocaleString();});
-}
-
-function openCart(){document.getElementById('cart-panel').classList.add('open');var o=document.getElementById('cart-overlay');if(o)o.classList.add('open');}
-function closeCart(){document.getElementById('cart-panel').classList.remove('open');var o=document.getElementById('cart-overlay');if(o)o.classList.remove('open');}
-function toggleCart(){document.getElementById('cart-panel').classList.contains('open')?closeCart():openCart();}
-
-function sendWhatsApp(){
-  if(cart.length===0) return;
-  if(window.saveOrderToAccount) window.saveOrderToAccount(cart);
-  var total=cart.reduce(function(s,i){return s+i.price*(i.qty||1);},0);
-  var lines=cart.map(function(i){var q=i.qty||1;return '• '+i.name+(q>1?' ×'+q:'')+' — ₡'+(i.price*q).toLocaleString();}).join('\\n');
-  var msg='¡Hola! Quiero hacer un pedido 🛍️\\n\\n'+lines+'\\n\\n*TOTAL: ₡'+total.toLocaleString()+'*';
-  // Store-specific WhatsApp links
-  var waLinks = {
-    divino:   'https://api.whatsapp.com/message/LQMOAQKS3LFII1?autoload=1&app_absent=0&utm_source=ig',
-    family:   'https://web.whatsapp.com/send?phone=50687443315&text=',
-    elegance: 'https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0&utm_source=ig'
-  };
-  var store = (window._currentStore || document.body.dataset.store || 'family');
-  var waBase = waLinks[store] || waLinks.family;
-  if (store === 'family') {
-    window.open(waBase + encodeURIComponent(msg), '_blank');
-  } else {
-    window.open(waBase, '_blank');
-  }
-}
-
-function showToast(msg,type){
-  type=type||'info'; var wrap=document.getElementById('toast-wrap');
-  if(!wrap){wrap=document.createElement('div');wrap.id='toast-wrap';document.body.appendChild(wrap);}
-  var t=document.createElement('div'); t.className='toast toast-'+type;
-  t.innerHTML='<span class="toast-icon">'+({success:'✓',info:'◈',error:'✕'}[type]||'◈')+'</span>'+msg;
-  wrap.appendChild(t); requestAnimationFrame(function(){t.classList.add('show');});
-  setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},400);},2500);
-}
-window.showToast=showToast;
-
-function initCursor(){
-  if(window.__cursorInit)return; window.__cursorInit=true;
-  if(window.matchMedia('(pointer:coarse)').matches){
-    var _d=document.getElementById('cursor-dot'),_r=document.getElementById('cursor-ring');
-    if(_d)_d.style.display='none'; if(_r)_r.style.display='none'; return;
-  }
-  var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot){dot=document.createElement('div');dot.id='cursor-dot';dot.className='cursor-dot';document.body.appendChild(dot);}
-  if(!ring){ring=document.createElement('div');ring.id='cursor-ring';ring.className='cursor-ring';document.body.appendChild(ring);}
-  dot.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99999;';
-  ring.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99998;';
-  var rx=window.innerWidth/2,ry=window.innerHeight/2,mx=rx,my=ry,visible=false;
-  document.addEventListener('mousemove',function(e){
-    mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';
-    if(!visible){visible=true;dot.style.opacity='1';ring.style.opacity='1';}
-  });
-  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';visible=false;});
-  document.addEventListener('mouseenter',function(){if(mx>0){dot.style.opacity='1';ring.style.opacity='1';visible=true;}});
-  (function loop(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
-}
-
-function initNav(){
-  var nav=document.querySelector('nav'),btn=document.getElementById('back-to-top'),bar=document.getElementById('progress-bar');
-  window.addEventListener('scroll',function(){
-    var y=window.scrollY; if(nav)nav.classList.toggle('scrolled',y>50);
-    if(btn)btn.classList.toggle('visible',y>400);
-    if(bar){var h=document.documentElement.scrollHeight-window.innerHeight;bar.style.width=(h>0?y/h*100:0)+'%';}
-  });
-  if(btn)btn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
-}
-
-function getStockBadge(s){if(s===undefined||s===null)return '';if(s<=0)return '<span class="stock-badge urgent">AGOTADO</span>';if(s<=2)return '<span class="stock-badge urgent">¡ÚLTIMAS '+s+'!</span>';if(s<=5)return '<span class="stock-badge low">POCAS UNIDADES</span>';return '';}
-function getStockClass(s){return(!s&&s!==0)||s>5?'ok':s<=2?'urgent':'low';}
-function getStockLabel(s){if(s===undefined||s===null)return'Disponible';if(s<=0)return'AGOTADO';if(s<=2)return'¡Últimas '+s+' unidades!';if(s<=5)return'Pocas unidades ('+s+')';return s+' en stock';}
-
-var recentViews=[];try{recentViews=JSON.parse(localStorage.getItem('lm-recent')||'[]');}catch(e){}
-function addRecentView(item){recentViews=recentViews.filter(function(i){return i.id!==item.id;});recentViews.unshift({id:item.id,name:item.name,img:item.img,price:item.price,store:item.store});if(recentViews.length>8)recentViews.pop();localStorage.setItem('lm-recent',JSON.stringify(recentViews));}
-function renderRecentViews(storeKey){var section=document.getElementById('recent-views-section');if(!section)return;var rel=recentViews.filter(function(i){return i.store===storeKey;}).slice(0,6);if(rel.length<2){section.style.display='none';return;}section.style.display='block';var grid=section.querySelector('.recent-grid');if(grid)grid.innerHTML=rel.map(function(item){return '<div class="recent-card" onclick="openModal('+item.id+')">'+'<img src="'+item.img+'" alt="'+item.name+'" loading="lazy">'+'<div class="recent-name">'+item.name+'</div>'+'<div class="recent-price">₡'+item.price.toLocaleString()+'</div></div>';}).join('');}
-
-// ── GALERÍA EN MODAL ──────────────────────────────────────────────────────────
-function getGalleryUrls(item) {
-  if (item.gallery && item.gallery.length > 0) return item.gallery.map(function(g){return g.url;});
-  return item.img ? [item.img] : [];
-}
-function getMainImg(item) {
-  if (item.gallery && item.gallery.length > 0) {
-    var m = item.gallery.find(function(g){return g.isMain;});
-    return m ? m.url : item.gallery[0].url;
-  }
-  return item.img || '';
-}
-
-var _modalGallery = [];
-var _modalGalleryIdx = 0;
-
-function renderModalGallery(urls, activeIdx) {
-  _modalGallery = urls; _modalGalleryIdx = activeIdx;
-  var wrap = document.getElementById('modal-gallery-wrap');
-  if (!wrap) return;
-  var mainImg = urls[activeIdx];
-  var thumbsHTML = urls.length > 1
-    ? '<div class="modal-thumbs">' +
-      urls.map(function(u, i){
-        return '<div class="modal-thumb '+(i===activeIdx?'active':'')+'" onclick="switchModalImg('+i+')">'+'<img src="'+u+'" alt="foto '+(i+1)+'"></div>';
-      }).join('') +
-      '</div>' : '';
-
-  wrap.innerHTML =
-    '<div class="modal-img-wrap" id="modal-main-img-wrap" onclick="zoomImg(\''+mainImg+'\')" style="cursor:zoom-in;">'+
-      '<img id="modal-main-img" src="'+mainImg+'" alt="">'+
-      '<div class="modal-zoom-hint">CLICK PARA AMPLIAR</div>'+
-      (urls.length>1?'<button class="modal-gallery-prev" onclick="event.stopPropagation();switchModalImg('+((activeIdx-1+urls.length)%urls.length)+')">‹</button>'+
-                     '<button class="modal-gallery-next" onclick="event.stopPropagation();switchModalImg('+((activeIdx+1)%urls.length)+')">›</button>':'') +
-    '</div>' + thumbsHTML;
-}
-
-function switchModalImg(idx) {
-  _modalGalleryIdx = idx;
-  // Actualizar imagen principal
-  var img = document.getElementById('modal-main-img');
-  if (img) {
-    img.style.opacity='0'; img.style.transition='opacity 0.2s';
-    setTimeout(function(){ img.src = _modalGallery[idx]; img.style.opacity='1'; }, 180);
-  }
-  // Actualizar wrap onclick para zoom
-  var wrap = document.getElementById('modal-main-img-wrap');
-  if (wrap) wrap.setAttribute('onclick', 'zoomImg(\''+_modalGallery[idx]+'\')');
-  // Actualizar prev/next
-  var prev = wrap && wrap.querySelector('.modal-gallery-prev');
-  var next = wrap && wrap.querySelector('.modal-gallery-next');
-  if (prev) prev.setAttribute('onclick', 'event.stopPropagation();switchModalImg('+((idx-1+_modalGallery.length)%_modalGallery.length)+')');
-  if (next) next.setAttribute('onclick', 'event.stopPropagation();switchModalImg('+((idx+1)%_modalGallery.length)+')');
-  // Actualizar thumbs activos
-  document.querySelectorAll('.modal-thumb').forEach(function(t,i){ t.classList.toggle('active',i===idx); });
-}
-
-function openModal(id){
-  inventory=getInventory();window._inventory=inventory;
-  var item=inventory.find(function(i){return i.id===id;});if(!item)return;
-  addRecentView(item);if(window._currentStore)renderRecentViews(window._currentStore);
-
-  var favs=window.getFavorites?window.getFavorites():JSON.parse(localStorage.getItem('lm-wishlist')||'[]');
-  var inWish=favs.includes(item.id);
-  var related=inventory.filter(function(i){return i.store===item.store&&i.type===item.type&&i.id!==item.id;}).slice(0,3);
-
-  var specsHTML='';
-  if(item.specs&&Object.keys(item.specs).length>0){
-    specsHTML='<div class="modal-specs"><div class="modal-specs-title">ESPECIFICACIONES</div>'+
-      Object.entries(item.specs).map(function(p){return '<div class="modal-spec-row"><span class="spec-key">'+p[0]+'</span><span class="spec-val">'+p[1]+'</span></div>';}).join('')+
-    '</div>';
-  }
-
-  var relatedHTML=related.length>0?'<div class="modal-related"><div class="modal-related-title">TAMBIÉN TE PUEDE GUSTAR</div><div class="related-grid">'+related.map(function(r){return '<div class="related-card" onclick="openModal('+r.id+')">'+'<img src="'+r.img+'" alt="'+r.name+'" loading="lazy">'+'<div class="related-name">'+r.name+'</div>'+'<div class="related-price">₡'+r.price.toLocaleString()+'</div></div>';}).join('')+'</div></div>':'';
-
-  var galleryUrls = getGalleryUrls(item);
-  var mainIdx = item.gallery ? item.gallery.findIndex(function(g){return g.isMain;}) : 0;
-  if (mainIdx < 0) mainIdx = 0;
-
-  var modal=document.getElementById('product-modal');
-  modal.innerHTML=
-    '<div class="modal-backdrop" onclick="closeModal()"></div>'+
-    '<div class="modal-box">'+
-      '<button class="modal-close" onclick="closeModal()">✕</button>'+
-      '<div class="modal-inner">'+
-        '<div class="modal-left"><div id="modal-gallery-wrap"></div></div>'+
-        '<div class="modal-right">'+
-          '<div class="modal-meta">'+
-            '<span class="modal-tag tag-'+item.type+'">'+item.type.toUpperCase()+'</span>'+
-            '<button class="modal-share-btn" onclick="shareProduct('+item.id+')">COMPARTIR ↗</button>'+
-          '</div>'+
-          '<div class="modal-name">'+item.name+'</div>'+
-          '<div class="modal-price">₡'+item.price.toLocaleString()+'</div>'+
-          '<div class="modal-stock '+getStockClass(item.stock)+'">'+getStockLabel(item.stock)+'</div>'+
-          '<div class="modal-desc">'+item.desc+'</div>'+
-          specsHTML+
-          '<div class="modal-actions">'+
-            '<button class="btn-modal-add" onclick="addToCart('+item.id+');closeModal()"><span>AGREGAR A LA BOLSA</span></button>'+
-            '<button class="btn-modal-wish '+(inWish?'wishlisted':'')+'" data-wish="'+item.id+'" onclick="wishFromModal('+item.id+',this)">♡</button>'+
-          '</div>'+
-          relatedHTML+
-        '</div>'+
-      '</div>'+
-    '</div>';
-
-  // Inyectar estilos de galería si no existen
-  if (!document.getElementById('gallery-modal-styles')) {
-    var st = document.createElement('style');
-    st.id = 'gallery-modal-styles';
-    st.textContent = \`
-      .modal-thumbs { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
-      .modal-thumb { width:56px; height:56px; border:1px solid rgba(245,240,232,0.1); overflow:hidden; cursor:pointer; transition:border-color 0.2s; flex-shrink:0; }
-      .modal-thumb img { width:100%; height:100%; object-fit:contain; }
-      .modal-thumb.active { border-color:var(--gold,#c9a84c); }
-      .modal-thumb:hover { border-color:rgba(201,168,76,0.5); }
-      .modal-gallery-prev,.modal-gallery-next {
-        position:absolute; top:50%; transform:translateY(-50%);
-        background:rgba(8,8,8,0.6); border:1px solid rgba(245,240,232,0.15);
-        color:#fff; width:32px; height:32px; font-size:1.2rem;
-        cursor:pointer; display:flex; align-items:center; justify-content:center;
-        transition:background 0.2s; z-index:3;
-      }
-      .modal-gallery-prev { left:6px; }
-      .modal-gallery-next { right:6px; }
-      .modal-gallery-prev:hover,.modal-gallery-next:hover { background:rgba(201,168,76,0.3); }
-    \`;
-    document.head.appendChild(st);
-  }
-
-  renderModalGallery(galleryUrls, mainIdx);
-  modal.classList.add('open'); document.body.style.overflow='hidden';
-}
-
-function wishFromModal(id,btn){var added=window.toggleFavorite?window.toggleFavorite(id):false;btn.classList.toggle('wishlisted',added);showToast(added?'Guardado en favoritos':'Eliminado de favoritos','info');}
-function closeModal(){var m=document.getElementById('product-modal');if(m)m.classList.remove('open');document.body.style.overflow='';}
-function zoomImg(src){var o=document.getElementById('img-zoom-overlay');if(!o){o=document.createElement('div');o.id='img-zoom-overlay';o.innerHTML='<div class="zoom-backdrop"></div><img>';o.addEventListener('click',function(){o.classList.remove('open');});document.body.appendChild(o);}o.querySelector('img').src=src;o.classList.add('open');}
-function shareProduct(id){var item=inventory.find(function(i){return i.id===id;});if(!item)return;if(navigator.share)navigator.share({title:item.name,text:item.name+' — ₡'+item.price.toLocaleString(),url:window.location.href}).catch(function(){});else navigator.clipboard.writeText(item.name+' — ₡'+item.price.toLocaleString()).then(function(){showToast('Copiado','info');}).catch(function(){});}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){closeModal();closeCart();}
-  if(e.key==='ArrowLeft'&&_modalGallery.length>1)switchModalImg((_modalGalleryIdx-1+_modalGallery.length)%_modalGallery.length);
-  if(e.key==='ArrowRight'&&_modalGallery.length>1)switchModalImg((_modalGalleryIdx+1)%_modalGallery.length);
-});
-
-function buildStore(storeKey){
-  inventory=getInventory();window._inventory=inventory;window._currentStore=storeKey;
-  var params=new URLSearchParams(window.location.search);
-  var typeFilter=params.get('type')||'all',searchVal=(params.get('q')||'').toLowerCase(),sortVal=params.get('sort')||'';
-  document.querySelectorAll('.filter-btn').forEach(function(btn){btn.classList.toggle('active',btn.dataset.type===typeFilter);});
-  var si=document.getElementById('search-input');if(si&&searchVal)si.value=searchVal;
-  var filtered=inventory.filter(function(item){
-    return item.store===storeKey&&(typeFilter==='all'||item.type===typeFilter)&&
-      (!searchVal||item.name.toLowerCase().includes(searchVal)||(item.desc||'').toLowerCase().includes(searchVal)||item.type.toLowerCase().includes(searchVal));
-  });
-  if(sortVal==='price-asc')filtered.sort(function(a,b){return a.price-b.price;});
-  if(sortVal==='price-desc')filtered.sort(function(a,b){return b.price-a.price;});
-  if(sortVal==='name')filtered.sort(function(a,b){return a.name.localeCompare(b.name);});
-  if(sortVal==='newest')filtered.sort(function(a,b){return b.id-a.id;});
-  renderGrid(filtered);renderRecentViews(storeKey);
-}
-
-function renderGrid(items){
-  var grid=document.getElementById('product-grid');if(!grid)return;
-  if(items.length===0){grid.innerHTML='<div class="no-results">Sin productos · <em>prueba con otro filtro</em></div>';return;}
-  var favs=window.getFavorites?window.getFavorites():JSON.parse(localStorage.getItem('lm-wishlist')||'[]');
-  grid.innerHTML=items.map(function(item){
-    var inWish=favs.includes(item.id),hasSpecs=item.specs&&Object.keys(item.specs).length>0;
-    var mainImg=getMainImg(item);
-    var galleryCount=item.gallery?item.gallery.length:1;
-    return '<div class="product-card reveal-card">'+getStockBadge(item.stock)+
-      '<button class="wish-btn '+(inWish?'wishlisted':'')+'" data-wish="'+item.id+'" onclick="cardWish('+item.id+',this)" title="Guardar">♡</button>'+
-      '<div class="product-img-wrap">'+
-        '<img src="'+mainImg+'" alt="'+item.name+'" loading="lazy">'+
-        (galleryCount>1?'<div class="product-gallery-dot">📷 '+galleryCount+'</div>':'')+
-        '<div class="product-img-overlay" onclick="openModal('+item.id+')"><span>VER DETALLES</span></div>'+
-      '</div>'+
-      '<span class="product-tag tag-'+item.type+'">'+item.type.toUpperCase()+'</span>'+
-      '<div class="product-name">'+item.name+'</div>'+
-      '<div class="product-price">₡'+item.price.toLocaleString()+'</div>'+
-      '<p class="product-desc">'+item.desc+'</p>'+
-      (hasSpecs?'<button class="add-btn" style="margin-bottom:10px;border-color:rgba(245,240,232,0.1);" onclick="openModal('+item.id+')"><span>VER ESPECIFICACIONES</span></button>':'')+
-      '<button class="add-btn" onclick="addToCart('+item.id+')"><span>AGREGAR A LA BOLSA</span></button>'+
-    '</div>';
-  }).join('');
-
-  // Inyectar estilo de badge de galería si no existe
-  if(!document.getElementById('gallery-badge-style')){
-    var s=document.createElement('style'); s.id='gallery-badge-style';
-    s.textContent='.product-gallery-dot{position:absolute;bottom:8px;right:8px;font-size:0.6rem;background:rgba(8,8,8,0.75);color:rgba(245,240,232,0.7);padding:3px 7px;letter-spacing:1px;pointer-events:none;}';
-    document.head.appendChild(s);
-  }
-
-  var observer=new IntersectionObserver(function(entries){entries.forEach(function(e,i){if(e.isIntersecting){setTimeout(function(){e.target.classList.add('revealed');},i*55);observer.unobserve(e.target);}});},{threshold:0.06});
-  grid.querySelectorAll('.reveal-card').forEach(function(c){observer.observe(c);});
-}
-
-function cardWish(id,btn){var added=window.toggleFavorite?window.toggleFavorite(id):false;btn.classList.toggle('wishlisted',added);showToast(added?'Guardado en favoritos':'Eliminado','info');}
-function filterStore(type,storeKey){var url=new URL(window.location);url.searchParams.set('type',type);url.searchParams.delete('q');history.replaceState({},'',url);buildStore(storeKey);}
-function onSearch(val,storeKey){var url=new URL(window.location);if(val)url.searchParams.set('q',val);else url.searchParams.delete('q');history.replaceState({},'',url);buildStore(storeKey);}
-function sortProducts(val,storeKey){var url=new URL(window.location);if(val)url.searchParams.set('sort',val);else url.searchParams.delete('sort');history.replaceState({},'',url);buildStore(storeKey);}
-
-window.addEventListener('DOMContentLoaded',function(){
-  initCursor();initNav();refreshCartUI();
-  if(document.body.dataset.store)buildStore(document.body.dataset.store);
-});
-`;
-}
-
-// Inicializar GitHub panel al cargar
-window.addEventListener('DOMContentLoaded', function() {
-  renderGHPanel();
-});
-</script>
-</body>
-</html>
