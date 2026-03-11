@@ -203,43 +203,12 @@ const DEFAULT_INVENTORY = [
     desc:"Plancha con placas recubiertas de cerámica infundida con aguacate y coco, para un cuidado y alisado excepcionales.", specs:{"Marca":"Conair","Color":"Verde Metalico","Material":"Plástico y Cerámica"} }
 ];
 
-function getInventory() {
-  return DEFAULT_INVENTORY;
-}
+function getInventory() { return DEFAULT_INVENTORY; }
 
 var inventory = getInventory();
 window._inventory = inventory;
 
-// ── MIGRATE: elegance-services → lm-inventory ─────────────────────────────
-(function migrateEleganceServices() {
-  try {
-    var raw = localStorage.getItem('elegance-services');
-    if (!raw) return;
-    var services = JSON.parse(raw);
-    if (!services || !services.length) return;
-    var inv = getInventory();
-    var hasEleganceServices = inv.some(function(i){ return i.store==='elegance' && i.duration; });
-    if (hasEleganceServices) { localStorage.removeItem('elegance-services'); return; }
-    // Remove old elegance products, add migrated services
-    inv = inv.filter(function(i){ return i.store !== 'elegance'; });
-    var maxId = inv.reduce(function(m,i){ return Math.max(m, typeof i.id==='number'?i.id:0); }, 25);
-    services.forEach(function(s, idx) {
-      inv.push({
-        id: maxId + idx + 1,
-        name: s.name, price: s.price, stock: null,
-        duration: s.duration || '60 min',
-        store: 'elegance', type: s.cat || 'facial',
-        img: s.img || '', gallery: s.img ? [{url:s.img,isMain:true}] : [],
-        desc: s.desc || '', specs: {}
-      });
-    });
-    localStorage.setItem('lm-inventory', JSON.stringify(inv));
-    localStorage.removeItem('elegance-services');
-    inventory = getInventory();
-    window._inventory = inventory;
-    console.log('Migrated', services.length, 'elegance services to lm-inventory');
-  } catch(e) { console.warn('Migration error:', e); }
-})();
+
 
 var cart = [];
 try { cart = JSON.parse(localStorage.getItem('lm-cart') || '[]'); } catch(e) { cart = []; }
