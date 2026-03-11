@@ -871,12 +871,52 @@ function doLogin() {
   if (pw === ADMIN_PASSWORD) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-panel').style.display = 'block';
-    renderAll();
+    // Intentar sincronizar inventario desde GitHub antes de renderizar
+    syncFromGitHub(function() {
+      renderAll();
+    });
   } else {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('pw-input').value = '';
     document.getElementById('pw-input').focus();
   }
+}
+
+// Descarga main.js de GitHub y extrae el inventario para sincronizar
+async function syncFromGitHub(callback) {
+  var cfg = loadGHConfig();
+  if (!cfg) { if (callback) callback(); return; }
+  try {
+    showToast('Sincronizando inventario desde GitHub...', 'info');
+    var apiBase = 'https://api.github.com/repos/' + cfg.user + '/' + cfg.repo;
+    var headers = { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' };
+    var res = await fetch(apiBase + '/contents/js/main.js', { headers });
+    if (!res.ok) throw new Error('No se pudo leer main.js');
+    var fd = await res.json();
+    // Decodificar base64
+    var jsContent = decodeURIComponent(escape(atob(fd.content.replace(/\n/g, ''))));
+    // Extraer DEFAULT_INVENTORY del archivo
+    var match = jsContent.match(/const DEFAULT_INVENTORY = \[([\s\S]*?)\];/);
+    if (!match) throw new Error('No se encontró DEFAULT_INVENTORY');
+    // Evaluar el array de productos de forma segura
+    var invArray = (new Function('return [' + match[1] + ']'))();
+    if (Array.isArray(invArray) && invArray.length > 0) {
+      // Solo actualizar si GitHub tiene MÁS productos que lo que tenemos local
+      var local = loadInventory();
+      if (invArray.length >= local.length) {
+        saveInventory(invArray);
+        inventory = invArray;
+        nextId = Math.max.apply(null, [25].concat(inventory.map(function(i){ return typeof i.id === 'number' ? i.id : 0; }))) + 1;
+        showToast('✓ Inventario sincronizado (' + invArray.length + ' productos)', 'success');
+      } else {
+        showToast('✓ Inventario local más actualizado (' + local.length + ' productos)', 'success');
+      }
+    }
+  } catch(e) {
+    console.warn('syncFromGitHub error:', e);
+    showToast('Sin conexión a GitHub — usando inventario local', 'info');
+  }
+  if (callback) callback();
 }
 function doLogout() {
   document.getElementById('login-screen').style.display = 'flex';
@@ -1003,7 +1043,6 @@ const DEFAULT_INVENTORY = [
 ];
 
 function loadInventory() {
-  // lm-inventory es la fuente de verdad — siempre tiene prioridad
   try {
     var lm = localStorage.getItem('lm-inventory');
     if (lm) { var p = JSON.parse(lm); if (Array.isArray(p) && p.length > 0) { localStorage.setItem('admin-inventory', lm); return p; } }
@@ -1508,8 +1547,8 @@ ${itemsStr}
 ];
 
 function getInventory() {
-  // DEFAULT_INVENTORY (hardcodeado en este archivo) es siempre la fuente de verdad base.
-  // lm-inventory solo se usa si tiene MÁS productos que el default (admin añadió algo en sesión).
+  // DEFAULT_INVENTORY hardcodeado es la fuente de verdad.
+  // Solo usar lm-inventory si tiene >= productos (viene de admin actualizado).
   try {
     var saved = localStorage.getItem('lm-inventory');
     if (saved) {
@@ -1519,7 +1558,6 @@ function getInventory() {
   } catch(e) {
     try { localStorage.removeItem('lm-inventory'); } catch(_) {}
   }
-  // Siempre sincronizar lm-inventory con el DEFAULT real
   try { localStorage.setItem('lm-inventory', JSON.stringify(DEFAULT_INVENTORY)); } catch(_) {}
   return DEFAULT_INVENTORY;
 }
