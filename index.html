@@ -580,7 +580,7 @@
     var di=0, fi=0, ei=0;
     var order = ['d','d','e','f','d','f','e','d','f','d','f','e','f'];
     order.forEach(function(s) {
-      if (s==='d' && di<divino.length)  { combined.push({type:'product', item:divino[di], store:'divino'}); di++; }
+      if (s==='d' && di<divino.length)  { combined.push({type:'product', item:divino[fi>0?di:di], store:'divino'}); di++; }
       if (s==='f' && fi<family.length)  { combined.push({type:'product', item:family[fi], store:'family'}); fi++; }
       if (s==='e' && ei<INDEX_ELEGANCE.length) { combined.push({type:'service', item:INDEX_ELEGANCE[ei]}); ei++; }
     });
