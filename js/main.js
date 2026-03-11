@@ -1,16 +1,6 @@
 // ═══════════════════════════════════════════════════════════
-// MAIN.JS — Luxury Mall · v5 (inventario a prueba de balas)
+// MAIN.JS — Luxury Mall · v4 (auto-generado por Admin)
 // ═══════════════════════════════════════════════════════════
-//
-// ✅ CÓMO AGREGAR PRODUCTOS DESDE AQUÍ AHORA:
-//    Agréga el objeto al array DEFAULT_INVENTORY abajo.
-//    El sistema lo fusionará automáticamente con el inventario
-//    del admin sin borrar NADA. Seguro al 100%.
-//
-// ⚠️  NUNCA cambiar DEFAULT_INVENTORY_VERSION a menos que
-//    quieras borrar TODO el inventario del admin (reset total).
-//
-// ════════════════════════════════════════════════════════════
 
 const DEFAULT_INVENTORY = [
   { id:6, name:"Victoria's Secret Amber Romance", price:10000, stock:20, store:"divino", type:"fragancias",
@@ -30,7 +20,7 @@ const DEFAULT_INVENTORY = [
     desc:"Fresca, masculina y sensual. Combina notas verdes y cálidas con toque cítrico.", specs:{} },
   { id:19, name:"SAMSUNG CHROMEBOOK GO", price:285000, stock:8, store:"divino", type:"tech",
     img:"https://cdcinternacional.com/wp-content/uploads/2024/01/XE340XDA-KA2US-2.jpg", gallery:[{"url":"https://cdcinternacional.com/wp-content/uploads/2024/01/XE340XDA-KA2US-2.jpg","isMain":true}],
-    desc:"REFURB ING CHROME CEL N4500 1.10-2.80/4GB/64GB/14″/PLATA", specs:{"Marca":"Samsung","Sistema Operativo":"Chrome","Procesador":"Celeron","Memoria Ram":"4GB","Estado":"Refurbished"} },
+    desc:"REFURB ING CHROME CEL N4500 1.10-2.80/4GB/64GB/14"/PLATA", specs:{"Marca":"Samsung","Sistema Operativo":"Chrome","Procesador":"Celeron","Memoria Ram":"4GB","Estado":"Refurbished"} },
   { id:38, name:"Cable Rainbow type C 1 metro", price:7000, stock:11, store:"divino", type:"tech",
     img:"https://www.acopluscr.com/public/6/productos/FEL2302234_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2302234_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2302234_2.webp?v=7798820","isMain":false}],
     desc:"Cable rainbow type c carga rápido y data", specs:{"Color":"Multicolor","Material":"Plástico PVC y TPE"} },
@@ -213,45 +203,8 @@ const DEFAULT_INVENTORY = [
     desc:"Plancha con placas recubiertas de cerámica infundida con aguacate y coco, para un cuidado y alisado excepcionales.", specs:{"Marca":"Conair","Color":"Verde Metalico","Material":"Plástico y Cerámica"} }
 ];
 
-// ── VERSIÓN DEL INVENTARIO BASE ───────────────────────────────────────────────
-// IMPORTANTE: Incrementar este número SOLO cuando se quiera forzar un reset
-// total del inventario (perderá productos del admin). En uso normal NUNCA cambiar.
-var DEFAULT_INVENTORY_VERSION = 1;
-
 function getInventory() {
-  // REGLA DE ORO:
-  // 1. Si existe lm-inventory en localStorage Y es un array válido → SIEMPRE usarlo.
-  //    El admin manda. No importa cuántos productos tenga el código.
-  // 2. Solo si NO existe o está corrupto → cargar DEFAULT_INVENTORY y guardarlo.
-  // 3. NUNCA comparar cantidades. El número de productos en el código no importa.
-  try {
-    var saved = localStorage.getItem('lm-inventory');
-    if (saved) {
-      var parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // Merge: agregar productos nuevos del DEFAULT que no existan en el guardado
-        // Esto permite añadir productos al código SIN borrar los del admin
-        var savedIds = {};
-        parsed.forEach(function(p){ savedIds[p.id] = true; });
-        var merged = false;
-        DEFAULT_INVENTORY.forEach(function(def) {
-          if (!savedIds[def.id]) {
-            parsed.push(def);
-            merged = true;
-          }
-        });
-        if (merged) {
-          try { localStorage.setItem('lm-inventory', JSON.stringify(parsed)); } catch(_) {}
-        }
-        return parsed;
-      }
-    }
-  } catch(e) {
-    try { localStorage.removeItem('lm-inventory'); } catch(_) {}
-  }
-  // Primera carga: guardar inventario base
-  try { localStorage.setItem('lm-inventory', JSON.stringify(DEFAULT_INVENTORY)); } catch(_) {}
-  return DEFAULT_INVENTORY.slice();
+  return DEFAULT_INVENTORY;
 }
 
 var inventory = getInventory();
@@ -383,22 +336,18 @@ function initCursor(){
     if(_d)_d.style.display='none'; if(_r)_r.style.display='none'; return;
   }
   var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot){ dot=document.createElement('div'); dot.id='cursor-dot'; dot.className='cursor-dot'; document.body.appendChild(dot); }
-  if(!ring){ ring=document.createElement('div'); ring.id='cursor-ring'; ring.className='cursor-ring'; document.body.appendChild(ring); }
+  if(!dot){dot=document.createElement('div');dot.id='cursor-dot';dot.className='cursor-dot';document.body.appendChild(dot);}
+  if(!ring){ring=document.createElement('div');ring.id='cursor-ring';ring.className='cursor-ring';document.body.appendChild(ring);}
   dot.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99999;';
   ring.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99998;';
   var rx=window.innerWidth/2,ry=window.innerHeight/2,mx=rx,my=ry,visible=false;
   document.addEventListener('mousemove',function(e){
-    mx=e.clientX; my=e.clientY;
-    dot.style.left=mx+'px'; dot.style.top=my+'px';
-    if(!visible){ visible=true; dot.style.opacity='1'; ring.style.opacity='1'; }
+    mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';
+    if(!visible){visible=true;dot.style.opacity='1';ring.style.opacity='1';}
   });
-  document.addEventListener('mouseleave',function(){ dot.style.opacity='0'; ring.style.opacity='0'; visible=false; });
-  document.addEventListener('mouseenter',function(){ if(mx>0){ dot.style.opacity='1'; ring.style.opacity='1'; visible=true; } });
-  var hoverSel='a,button,input,select,[onclick],[role=button],.product-card,.filter-btn,.add-btn,.wish-btn';
-  document.addEventListener('mouseover',function(e){ if(e.target&&e.target.closest&&e.target.closest(hoverSel)){ dot.classList.add('hovered'); ring.classList.add('hovered'); } });
-  document.addEventListener('mouseout',function(e){ if(e.target&&e.target.closest&&e.target.closest(hoverSel)){ dot.classList.remove('hovered'); ring.classList.remove('hovered'); } });
-  (function loop(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
+  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';visible=false;});
+  document.addEventListener('mouseenter',function(){if(mx>0){dot.style.opacity='1';ring.style.opacity='1';visible=true;}});
+  (function loop(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
 }
 
 function initNav(){
