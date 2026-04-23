@@ -705,19 +705,41 @@ let currentPage = 1;
 const PAGE_SIZE = 20;
 let confirmCallback = null;
 
+// ── CREDENCIALES ADMIN (deben coincidir con auth.js) ────────
+const GATE_ADMIN_EMAIL = 'admin@tecnocell.cr';
+const GATE_ADMIN_PASS  = 'Mall@Admin2025!';
+
+// ── SEED: garantiza que la cuenta admin siempre exista ──────
+function seedAdminAccount() {
+  const usersRaw = localStorage.getItem('lm-users');
+  const users = JSON.parse(usersRaw || '{}');
+  if (!users[GATE_ADMIN_EMAIL]) {
+    users[GATE_ADMIN_EMAIL] = {
+      name: 'Administrador JyD',
+      email: GATE_ADMIN_EMAIL,
+      password: btoa(GATE_ADMIN_PASS),
+      role: 'admin',
+      orders: [], favorites: [],
+      joined: new Date().toLocaleDateString('es-CR')
+    };
+    localStorage.setItem('lm-users', JSON.stringify(users));
+  }
+}
+
 // ── GATE LOGIN ──────────────────────────────────────────────
 function gateLogin() {
   const email = (document.getElementById('gate-email').value || '').trim().toLowerCase();
   const pass  = document.getElementById('gate-pass').value || '';
-  const errEl = document.getElementById('gate-err');
 
-  // Usar el sistema de auth de auth.js
+  seedAdminAccount(); // asegura cuenta admin disponible
   const users = JSON.parse(localStorage.getItem('lm-users') || '{}');
   const u = users[email];
-  if (!u) { showGateErr('Correo no registrado.'); return; }
-  if (u.password !== btoa(pass)) { showGateErr('Contraseña incorrecta.'); return; }
-  if (u.role !== 'admin') { showGateErr('Solo administradores pueden acceder.'); return; }
+  if (!u)                          { showGateErr('Correo no registrado.'); return; }
+  if (u.password !== btoa(pass))   { showGateErr('Contraseña incorrecta.'); return; }
+  if (u.role !== 'admin')          { showGateErr('Solo administradores pueden acceder.'); return; }
 
+  // Guardar sesión
+  localStorage.setItem('lm-session', JSON.stringify({ email }));
   document.getElementById('login-gate').style.display = 'none';
   document.getElementById('app-layout').style.display = 'flex';
   document.getElementById('sidebar-user-name').textContent = u.name;
@@ -731,12 +753,14 @@ function showGateErr(msg) {
 }
 
 function adminLogout() {
+  localStorage.removeItem('lm-session');
   document.getElementById('app-layout').style.display = 'none';
   document.getElementById('login-gate').style.display = 'flex';
 }
 
-// Auto-login if session active + admin
+// Auto-login si hay sesión activa de admin
 window.addEventListener('DOMContentLoaded', () => {
+  seedAdminAccount();
   const session = JSON.parse(localStorage.getItem('lm-session') || 'null');
   if (session) {
     const users = JSON.parse(localStorage.getItem('lm-users') || '{}');
@@ -748,6 +772,7 @@ window.addEventListener('DOMContentLoaded', () => {
       initAdmin();
     }
   }
+
 });
 
 // ── INIT ──────────────────────────────────────────────────
