@@ -3,22 +3,476 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FamilyCell And More — NOMBREPAG</title>
+  <title>Tecnocell — Tecnología y Celulares</title>
+  <meta name="description" content="Tecnocell: celulares, accesorios tech y más. Tu tienda de confianza en San José, Costa Rica.">
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
-    :root { --gold: #00e5ff; --gold-light: #80f4ff; }
-    .store-page-eyebrow,.store-number,.product-price,.cart-total-val,.store-cta { color:var(--cyan); }
-    .whatsapp-btn { background:var(--cyan); }
-    .whatsapp-btn:hover { background:#80f4ff; box-shadow:0 0 30px rgba(0,229,255,0.35); }
-    .filter-btn:hover,.filter-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,229,255,0.04); }
-    .product-card::before { background:linear-gradient(to right,transparent,var(--cyan),transparent); }
-    .cart-btn:hover { border-color:var(--cyan); color:var(--cyan); }
-    .add-btn::after { background:var(--cyan); }
-    .add-btn:hover span { color:#000; }
-    .btn-modal-add::after { background:var(--cyan); }
-    .btn-modal-add:hover span { color:#000; }
-    #progress-bar { background:linear-gradient(to right,var(--cyan),#80f4ff); }
+    /* ══════════════════════════════════════════════
+       TECNOCELL — GOLD-LUXURY OVERRIDE
+    ══════════════════════════════════════════════ */
+    :root {
+      --tc-gold:      #c9a84c;
+      --tc-gold2:     #f0d080;
+      --tc-gold3:     #a07830;
+      --tc-black:     #080808;
+      --tc-bg:        #0b0b0b;
+      --tc-glass:     rgba(201,168,76,0.06);
+      --tc-border:    rgba(201,168,76,0.25);
+      --tc-border2:   rgba(201,168,76,0.45);
+      --tc-text:      rgba(240,208,128,0.55);
+    }
+
+    /* ── BASE ── */
+    body { background: var(--tc-black); }
+
+    /* ── GRAIN / TEXTURE ── */
+    .grain { opacity: 0.06; }
+
+    /* ── PROGRESS BAR ── */
+    #progress-bar { background: linear-gradient(to right, var(--tc-gold), var(--tc-gold2)); box-shadow: 0 0 8px rgba(201,168,76,0.5); }
+
+    /* ── NAV ── */
+    nav { border-bottom-color: rgba(201,168,76,0.12); }
+    nav.scrolled { background: rgba(8,8,8,0.96); border-bottom-color: rgba(201,168,76,0.25); }
+    .nav-logo { color: var(--tc-gold); letter-spacing: 8px; }
+    .nav-logo em { color: var(--tc-gold2); font-style: normal; }
+    .nav-link { color: rgba(201,168,76,0.5); }
+    .nav-link:hover { color: var(--tc-gold); }
+    .cart-btn { border-color: rgba(201,168,76,0.2); color: var(--tc-gold); }
+    .cart-btn:hover { border-color: var(--tc-gold); }
+    .cart-count-badge { background: var(--tc-gold); color: #000; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar { padding: 20px 7%; gap: 6px; }
+    .filter-btn {
+      border-color: rgba(201,168,76,0.2); color: rgba(201,168,76,0.45);
+      font-size: 0.62rem; letter-spacing: 4px;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--tc-gold); color: var(--tc-gold);
+      background: rgba(201,168,76,0.05);
+    }
+
+    /* ── SEARCH / SORT BAR ── */
+    #search-input { background: rgba(201,168,76,0.04); border-color: rgba(201,168,76,0.2); color: var(--tc-gold); }
+    #search-input:focus { border-color: rgba(201,168,76,0.5); }
+    #search-input::placeholder { color: rgba(201,168,76,0.25); }
+    .sort-select { background: rgba(201,168,76,0.04); border-color: rgba(201,168,76,0.2); color: rgba(201,168,76,0.6); }
+    .sort-select:focus { border-color: var(--tc-gold); }
+
+    /* ── PRODUCT CARD ── */
+    .product-card { background: var(--tc-bg); }
+    .product-card::before { background: linear-gradient(to right, transparent, var(--tc-gold), transparent); }
+    .product-card:hover { background: rgba(201,168,76,0.03); }
+    .product-price { color: var(--tc-gold); }
+    .product-name { font-family: 'Playfair Display', serif; }
+    .add-btn { border-color: rgba(201,168,76,0.25); color: rgba(201,168,76,0.7); }
+    .add-btn::after { background: var(--tc-gold); }
+    .add-btn:hover span { color: #000; }
+    .add-btn.added { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.4); }
+    .add-btn.added span { color: var(--tc-gold); }
+    .wish-btn { color: rgba(201,168,76,0.3); }
+    .wish-btn.wishlisted { color: var(--tc-gold); }
+    .product-tag { border-color: rgba(201,168,76,0.3); color: var(--tc-gold); }
+
+    /* ── MODAL ── */
+    .modal-price { color: var(--tc-gold); }
+    .btn-modal-add::after { background: var(--tc-gold); }
+    .btn-modal-add:hover span { color: #000; }
+
+    /* ── CART ── */
+    .cart-total-val { color: var(--tc-gold); }
+    .whatsapp-btn {
+      background: var(--tc-gold);
+      color: #000;
+    }
+    .whatsapp-btn:hover { background: var(--tc-gold2); box-shadow: 0 0 30px rgba(201,168,76,0.35); }
+    .cart-item-price { color: var(--tc-gold); }
+    .recent-price { color: var(--tc-gold); }
+    .related-price { color: var(--tc-gold); }
+
+    /* ── HERO — COMPLETE REDESIGN ── */
+    .tc-hero {
+      position: relative; overflow: hidden;
+      min-height: 92vh; display: flex; align-items: center;
+      padding-top: 80px;
+    }
+
+    /* Matte black textured background */
+    .tc-hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 120% 80% at 30% 60%, #0e0c08 0%, #080808 60%, #050505 100%);
+    }
+
+    /* Heavy grain texture overlay */
+    .tc-hero-texture {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.04; pointer-events: none;
+    }
+
+    /* Gold warm glow bloom behind card grid */
+    .tc-hero-glow {
+      position: absolute;
+      width: 700px; height: 500px;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, rgba(201,168,76,0.03) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    /* Secondary glow top-right */
+    .tc-hero-glow2 {
+      position: absolute; top: -100px; right: 10%;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(201,168,76,0.04), transparent 70%);
+      pointer-events: none;
+    }
+
+    .tc-hero-inner {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      padding: 60px 7%;
+      width: 100%;
+      align-items: center;
+    }
+
+    /* ── HERO LEFT — TITLE + CARDS ── */
+    .tc-left { }
+
+    .tc-eyebrow {
+      font-size: 0.6rem; letter-spacing: 6px; text-transform: uppercase;
+      color: rgba(201,168,76,0.5); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .tc-eyebrow::before {
+      content: ''; display: inline-block; width: 36px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--tc-gold));
+    }
+
+    .tc-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4.5rem, 10vw, 8.5rem);
+      color: var(--tc-gold);
+      letter-spacing: 8px; line-height: 0.88;
+      margin-bottom: 24px;
+    }
+    .tc-title span {
+      display: block;
+      background: linear-gradient(135deg, var(--tc-gold2) 0%, var(--tc-gold) 50%, var(--tc-gold3) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tc-subtitle {
+      font-size: 0.82rem; color: rgba(201,168,76,0.4);
+      letter-spacing: 1.5px; max-width: 440px; line-height: 1.9;
+      margin-bottom: 48px;
+    }
+
+    /* ── CATEGORY CARDS ── */
+    .tc-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .tc-card {
+      background: rgba(201,168,76,0.04);
+      border: 1px solid rgba(201,168,76,0.18);
+      padding: 24px 16px 20px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.4s, background 0.4s, transform 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .tc-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, transparent, var(--tc-gold), transparent);
+      transform: scaleX(0); transition: transform 0.5s;
+    }
+    .tc-card:hover { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.07); transform: translateY(-3px); }
+    .tc-card:hover::before { transform: scaleX(1); }
+
+    .tc-card-icon {
+      font-size: 2.4rem; margin-bottom: 14px;
+      filter: drop-shadow(0 0 12px rgba(201,168,76,0.3));
+      transition: filter 0.3s, transform 0.3s;
+    }
+    .tc-card:hover .tc-card-icon { filter: drop-shadow(0 0 20px rgba(201,168,76,0.6)); transform: scale(1.1); }
+
+    /* Gold 3D effect on icons using CSS */
+    .tc-card-icon svg { width: 44px; height: 44px; }
+
+    .tc-card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem; letter-spacing: 5px;
+      color: var(--tc-gold); margin-bottom: 6px;
+    }
+    .tc-card-desc {
+      font-size: 0.62rem; color: rgba(201,168,76,0.35);
+      letter-spacing: 1.5px; line-height: 1.6; margin-bottom: 14px;
+    }
+    .tc-card-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 2px;
+      color: var(--tc-gold); margin-bottom: 16px; opacity: 0.85;
+    }
+    .tc-card-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      border: 1px solid rgba(201,168,76,0.4); background: none;
+      color: var(--tc-gold); font-size: 0.55rem; letter-spacing: 3px;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.3s; font-family: 'DM Sans', sans-serif; font-weight: 500;
+    }
+    .tc-card-btn:hover { background: var(--tc-gold); color: #000; }
+    .tc-card-btn svg { width: 12px; height: 12px; }
+
+    /* ── RIGHT VERTICAL MENU ── */
+    .tc-right-menu {
+      display: flex; flex-direction: column; gap: 12px;
+      align-items: center;
+    }
+    .tc-menu-item {
+      width: 64px; height: 64px;
+      border: 1px solid rgba(201,168,76,0.2);
+      background: rgba(201,168,76,0.04);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.35s;
+      position: relative;
+    }
+    .tc-menu-item::after {
+      content: attr(data-label);
+      position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%);
+      font-size: 0.52rem; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(201,168,76,0.4); white-space: nowrap;
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .tc-menu-item:hover { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.08); }
+    .tc-menu-item:hover::after { opacity: 1; }
+    .tc-menu-icon { font-size: 1.4rem; filter: drop-shadow(0 0 8px rgba(201,168,76,0.3)); }
+
+    /* ── WA CTA STRIP ── */
+    .wa-cta {
+      background: rgba(201,168,76,0.04);
+      border-top: 1px solid rgba(201,168,76,0.12);
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      padding: 36px 7%;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      flex-wrap: wrap;
+    }
+    .wa-cta-eyebrow { font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(201,168,76,0.4); margin-bottom: 4px; }
+    .wa-cta-title { font-size: 1.1rem; font-weight: 400; color: var(--tc-gold); font-family: 'Playfair Display', serif; }
+    .wa-cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 28px; background: none;
+      border: 1px solid var(--tc-gold); color: var(--tc-gold);
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+      text-decoration: none; transition: all 0.3s; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .wa-cta-btn:hover { background: var(--tc-gold); color: #000; box-shadow: 0 0 30px rgba(201,168,76,0.25); }
+
+    /* ── FOOTER ── */
+    footer { border-top-color: rgba(201,168,76,0.12); }
+    .footer-logo { color: var(--tc-gold); }
+    .footer-logo em { color: var(--tc-gold2); }
+    .footer-copy { color: rgba(201,168,76,0.25); }
+
+    /* ── RECENT VIEWS ── */
+    .recent-card img { border-color: rgba(201,168,76,0.1); }
+    .recent-card:hover img { border-color: rgba(201,168,76,0.35); }
+
+    /* ── BACK TO TOP ── */
+    #back-to-top { border-color: rgba(201,168,76,0.2); color: rgba(201,168,76,0.4); }
+    #back-to-top:hover { border-color: var(--tc-gold); color: var(--tc-gold); }
+
+    /* ── STOCK BADGES ── */
+    .stock-badge.low { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.3); color: var(--tc-gold); }
+
+    /* ── PRODUCTS GRID ── */
+    .products-grid { background: rgba(201,168,76,0.06); border-color: rgba(201,168,76,0.08); }
+
+    /* ── CURSOR RING on gold theme ── */
+    .cursor-ring { border-color: rgba(201,168,76,0.5); }
+    .cursor-dot { background: var(--tc-gold); }
+
+    /* ══════════════════════════════════════════════
+       WOW FACTOR — CHIP BG · GLOW · TILT · SCAN
+    ══════════════════════════════════════════════ */
+
+    /* ── CHIP CIRCUIT TEXTURE ── */
+    .tc-hero-chip {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        repeating-linear-gradient(0deg, transparent 0px, transparent 39px, rgba(201,168,76,0.055) 39px, rgba(201,168,76,0.055) 40px),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 39px, rgba(201,168,76,0.055) 39px, rgba(201,168,76,0.055) 40px),
+        repeating-linear-gradient(0deg, transparent 0px, transparent 119px, rgba(201,168,76,0.025) 119px, rgba(201,168,76,0.025) 120px),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 119px, rgba(201,168,76,0.025) 119px, rgba(201,168,76,0.025) 120px),
+        repeating-linear-gradient(45deg, transparent 0px, transparent 59px, rgba(201,168,76,0.012) 59px, rgba(201,168,76,0.012) 60px),
+        repeating-linear-gradient(-45deg, transparent 0px, transparent 59px, rgba(201,168,76,0.012) 59px, rgba(201,168,76,0.012) 60px);
+    }
+    .tc-hero-chip::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(201,168,76,0.14) 0%, transparent 16%),
+        radial-gradient(circle at 85% 70%, rgba(201,168,76,0.10) 0%, transparent 14%),
+        radial-gradient(circle at 50% 50%, rgba(201,168,76,0.07) 0%, transparent 22%),
+        radial-gradient(circle at 72% 18%, rgba(240,208,128,0.08) 0%, transparent 10%),
+        radial-gradient(circle at 28% 82%, rgba(201,168,76,0.08) 0%, transparent 10%),
+        radial-gradient(circle at 90% 40%, rgba(201,168,76,0.06) 0%, transparent 12%),
+        radial-gradient(circle at 8%  60%, rgba(201,168,76,0.06) 0%, transparent 10%);
+      animation: chipNodePulse 5s ease-in-out infinite alternate;
+    }
+    @keyframes chipNodePulse {
+      0%   { opacity: 0.45; }
+      100% { opacity: 1; }
+    }
+
+    /* ── VOLUMETRIC LIGHT behind title ── */
+    .tc-vol-light {
+      position: absolute; top: -15%; left: -8%;
+      width: 70%; height: 130%;
+      background: radial-gradient(ellipse at 35% 55%, rgba(201,168,76,0.20) 0%, rgba(201,168,76,0.08) 28%, rgba(160,120,48,0.03) 52%, transparent 68%);
+      pointer-events: none; z-index: 1;
+      animation: volLightPulse 4s ease-in-out infinite alternate;
+    }
+    @keyframes volLightPulse {
+      0%   { opacity: 0.65; transform: scale(1) translateY(0); }
+      100% { opacity: 1;    transform: scale(1.06) translateY(-10px); }
+    }
+
+    /* ── CRT SCANLINES ── */
+    .tc-scanline {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.025) 0px, rgba(0,0,0,0.025) 1px, transparent 1px, transparent 3px);
+    }
+
+    /* ── TITLE GLOW PULSE ── */
+    .tc-title {
+      animation: titleGlow 3.5s ease-in-out infinite alternate !important;
+    }
+    @keyframes titleGlow {
+      0%   { filter: drop-shadow(0 0 30px rgba(201,168,76,0.25)) drop-shadow(0 0 80px rgba(201,168,76,0.08)); }
+      100% { filter: drop-shadow(0 0 55px rgba(201,168,76,0.5))  drop-shadow(0 0 160px rgba(201,168,76,0.18)); }
+    }
+
+    /* ── LASER SCAN on category cards ── */
+    .tc-card { overflow: hidden; }
+    .tc-card::after {
+      content: ''; position: absolute;
+      top: -5%; left: 0; right: 0; height: 1px; z-index: 10;
+      background: linear-gradient(to right, transparent 0%, rgba(201,168,76,0.5) 20%, rgba(240,208,128,0.95) 50%, rgba(201,168,76,0.5) 80%, transparent 100%);
+      box-shadow: 0 0 8px rgba(240,208,128,0.7), 0 0 24px rgba(201,168,76,0.4);
+      animation: laserScan var(--scan-dur, 4s) ease-in-out var(--scan-delay, 0s) infinite;
+      pointer-events: none;
+    }
+    @keyframes laserScan {
+      0%   { top: -5%;   opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { top: 105%;  opacity: 0; }
+    }
+
+    /* ── 3D TILT on product cards ── */
+    #product-grid .product-card {
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    #product-grid .product-card:hover {
+      box-shadow: 0 28px 70px rgba(201,168,76,0.20), 0 4px 24px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,168,76,0.28) !important;
+    }
+    /* SHIMMER overlay */
+    #product-grid .product-card::after {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(125deg, transparent 30%, rgba(240,208,128,0.05) 50%, transparent 70%);
+      background-size: 300% 300%; opacity: 0; pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    #product-grid .product-card:hover::after {
+      opacity: 1;
+      animation: cardShimmer 1.8s linear infinite;
+    }
+    @keyframes cardShimmer {
+      0%   { background-position: 160% 160%; }
+      100% { background-position: -160% -160%; }
+    }
+
+    /* ── HERO STAT STRIP ── */
+    .tc-hero-stats {
+      display: flex; align-items: stretch; gap: 0;
+      margin-top: 44px;
+      border: 1px solid rgba(201,168,76,0.15);
+      background: rgba(201,168,76,0.03);
+    }
+    .tc-stat {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 16px 12px; gap: 4px;
+      border-right: 1px solid rgba(201,168,76,0.1);
+      position: relative; overflow: hidden;
+    }
+    .tc-stat:last-child { border-right: none; }
+    .tc-stat::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,168,76,0.6), transparent);
+      transform: scaleX(0); transition: transform 0.4s;
+    }
+    .tc-stat:hover::before { transform: scaleX(1); }
+    .tc-stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--tc-gold2) 0%, var(--tc-gold) 60%, var(--tc-gold3) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .tc-stat-label {
+      font-size: 0.5rem; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(201,168,76,0.4); text-align: center;
+    }
+
+    /* ── FLOATING PARTICLES ── */
+    .tc-particles { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .tc-particle {
+      position: absolute; width: 2px; height: 2px;
+      background: var(--tc-gold); border-radius: 50%; opacity: 0;
+      animation: particleFloat var(--pdur, 9s) ease-in-out var(--pdel, 0s) infinite;
+    }
+    @keyframes particleFloat {
+      0%   { transform: translateY(100vh) translateX(0) scale(0.5);   opacity: 0; }
+      8%   { opacity: 0.7; }
+      92%  { opacity: 0.25; }
+      100% { transform: translateY(-5vh)  translateX(var(--pdx,20px)) scale(0); opacity: 0; }
+    }
+
+    /* ── PRODUCTS GRID ambient lines ── */
+    .products-grid { position: relative; }
+
+    /* ── WA CTA grid pattern ── */
+    .wa-cta { position: relative; overflow: hidden; }
+    .wa-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(90deg, transparent 0, transparent 39px, rgba(201,168,76,0.03) 39px, rgba(201,168,76,0.03) 40px);
+      pointer-events: none;
+    }
+
+    @media (max-width: 900px) {
+      .tc-hero-inner { grid-template-columns: 1fr; padding: 40px 6%; }
+      .tc-right-menu { flex-direction: row; justify-content: center; }
+      .tc-menu-item::after { display: none; }
+      .tc-cards { grid-template-columns: repeat(2, 1fr); }
+      .tc-title { font-size: clamp(3.5rem, 14vw, 6rem); }
+      .tc-hero-stats { display: grid; grid-template-columns: 1fr 1fr; }
+      .tc-stat { border-right: 1px solid rgba(201,168,76,0.1) !important; }
+    }
+    @media (max-width: 540px) {
+      .tc-cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .tc-card { padding: 18px 12px; }
+    }
   </style>
 </head>
 <body data-store="family">
@@ -28,28 +482,187 @@
   <div id="cursor-ring" class="cursor-ring"></div>
 
   <nav>
-    <a href="index.html" class="nav-logo">NOMBRE<em>PAG</em></a>
+    <a href="index.html" class="nav-logo">TECNO<em>CELL</em></a>
     <div class="nav-right">
-      <a href="index.html" class="nav-link">← Volver</a>
+      <a href="index.html" class="nav-link">← Mall</a>
       <button class="cart-btn" onclick="toggleCart()">BOLSA&nbsp;<span class="cart-count cart-count-badge">0</span></button>
     </div>
   </nav>
 
-  <header class="store-page-hero">
-    <div class="store-page-bg" style="background-image:url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1600')"></div>
-    <div class="store-page-content">
-      <p class="store-page-eyebrow">Next Gen Technology · Nº 02</p>
-      <h1 class="store-page-title" style="font-family:'Bebas Neue',sans-serif;letter-spacing:4px;">FamilyCell And More</h1>
-    </div>
-  </header>
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="tc-hero">
+    <div class="tc-hero-bg"></div>
+    <div class="tc-hero-chip"></div>
+    <div class="tc-hero-texture"></div>
+    <div class="tc-vol-light"></div>
+    <div class="tc-scanline"></div>
+    <div class="tc-particles" id="tc-particles"></div>
+    <div class="tc-hero-glow"></div>
+    <div class="tc-hero-glow2"></div>
 
+    <div class="tc-hero-inner">
+      <!-- LEFT: title + cards -->
+      <div class="tc-left">
+        <div class="tc-eyebrow">Tu Familia Digital &middot; N&ordm; 02</div>
+
+        <h1 class="tc-title">
+          <span>TECNO</span>
+          <span>CELL</span>
+        </h1>
+
+        <p class="tc-subtitle">Celulares, accesorios y tecnolog&iacute;a. Confiable, conectada y para toda la familia.</p>
+
+        <!-- STAT STRIP -->
+        <div class="tc-hero-stats">
+          <div class="tc-stat"><div class="tc-stat-val">50+</div><div class="tc-stat-label">Productos Tech</div></div>
+          <div class="tc-stat"><div class="tc-stat-val">100%</div><div class="tc-stat-label">Garantía</div></div>
+          <div class="tc-stat"><div class="tc-stat-val">24/7</div><div class="tc-stat-label">WhatsApp</div></div>
+          <div class="tc-stat"><div class="tc-stat-val">CR</div><div class="tc-stat-label">San José</div></div>
+        </div>
+
+        <!-- CATEGORY CARDS -->
+        <div class="tc-cards">
+
+          <!-- CELULARES -->
+          <div class="tc-card" style="--scan-delay:0s;--scan-dur:3.8s" onclick="filterStore('celulares','family')">
+            <div class="tc-card-icon">
+              <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="3" width="24" height="38" rx="4" stroke="#c9a84c" stroke-width="1.5" fill="rgba(201,168,76,0.06)"/>
+                <rect x="14" y="8" width="16" height="24" rx="1.5" fill="rgba(201,168,76,0.08)" stroke="#c9a84c" stroke-width="0.8"/>
+                <circle cx="22" cy="37" r="2" fill="#c9a84c" opacity="0.7"/>
+                <rect x="17" y="5.5" width="10" height="1.2" rx="0.6" fill="#c9a84c" opacity="0.4"/>
+                <!-- screen shine -->
+                <line x1="16" y1="10" x2="20" y2="14" stroke="rgba(240,208,128,0.3)" stroke-width="0.8"/>
+              </svg>
+            </div>
+            <div class="tc-card-name">Celulares</div>
+            <div class="tc-card-desc">Smartphones &bull; iOS &amp; Android</div>
+            <div class="tc-card-price">desde &#8353;55.000</div>
+            <button class="tc-card-btn" onclick="event.stopPropagation();filterStore('celulares','family')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              Ver ahora
+            </button>
+          </div>
+
+          <!-- ACCESORIOS -->
+          <div class="tc-card" style="--scan-delay:1s;--scan-dur:4.2s" onclick="filterStore('accesorios','family')">
+            <div class="tc-card-icon">
+              <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 22 C8 13.2 14.3 6 22 6 C29.7 6 36 13.2 36 22" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+                <rect x="5" y="21" width="6" height="10" rx="3" fill="rgba(201,168,76,0.1)" stroke="#c9a84c" stroke-width="1.2"/>
+                <rect x="33" y="21" width="6" height="10" rx="3" fill="rgba(201,168,76,0.1)" stroke="#c9a84c" stroke-width="1.2"/>
+                <!-- cable -->
+                <path d="M11 30 Q11 36 16 36 L28 36 Q33 36 33 30" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.5"/>
+                <!-- shine -->
+                <path d="M10 18 Q14 10 22 8" stroke="rgba(240,208,128,0.3)" stroke-width="0.8" fill="none"/>
+              </svg>
+            </div>
+            <div class="tc-card-name">Accesorios</div>
+            <div class="tc-card-desc">Audífonos &bull; Cables &bull; Cases</div>
+            <div class="tc-card-price">desde &#8353;7.000</div>
+            <button class="tc-card-btn" onclick="event.stopPropagation();filterStore('accesorios','family')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              Ver ahora
+            </button>
+          </div>
+
+          <!-- TECH -->
+          <div class="tc-card" style="--scan-delay:1.9s;--scan-dur:3.5s" onclick="filterStore('tech','family')">
+            <div class="tc-card-icon">
+              <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="5" y="9" width="34" height="22" rx="2.5" stroke="#c9a84c" stroke-width="1.5" fill="rgba(201,168,76,0.05)"/>
+                <rect x="8" y="12" width="28" height="16" rx="1" fill="rgba(201,168,76,0.08)" stroke="#c9a84c" stroke-width="0.5"/>
+                <path d="M2 33 H42" stroke="#c9a84c" stroke-width="1.5"/>
+                <path d="M15 33 L12 38 H32 L29 33" fill="rgba(201,168,76,0.08)" stroke="#c9a84c" stroke-width="0.8"/>
+                <!-- screen detail -->
+                <line x1="10" y1="14" x2="14" y2="18" stroke="rgba(240,208,128,0.25)" stroke-width="0.8"/>
+                <circle cx="22" cy="20" r="2" fill="rgba(201,168,76,0.15)" stroke="#c9a84c" stroke-width="0.5"/>
+              </svg>
+            </div>
+            <div class="tc-card-name">Tech</div>
+            <div class="tc-card-desc">Laptops &bull; Tablets &bull; Gadgets</div>
+            <div class="tc-card-price">desde &#8353;80.000</div>
+            <button class="tc-card-btn" onclick="event.stopPropagation();filterStore('tech','family')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              Ver ahora
+            </button>
+          </div>
+
+          <!-- GARANTÍA -->
+          <div class="tc-card" style="--scan-delay:2.7s;--scan-dur:4.5s" onclick="filterStore('all','family')">
+            <div class="tc-card-icon">
+              <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- shield -->
+                <path d="M22 4 L38 10 V22 C38 31 30 38 22 40 C14 38 6 31 6 22 V10 Z" stroke="#c9a84c" stroke-width="1.4" fill="rgba(201,168,76,0.06)"/>
+                <!-- lightning -->
+                <path d="M24.5 12 L18 23 H22.5 L19.5 32 L27 21 H22.5 Z" fill="#c9a84c" opacity="0.8"/>
+                <!-- shine -->
+                <path d="M10 12 Q16 7 22 6" stroke="rgba(240,208,128,0.3)" stroke-width="0.8" fill="none"/>
+              </svg>
+            </div>
+            <div class="tc-card-name">Garantía</div>
+            <div class="tc-card-desc">Soporte &bull; Servicio &bull; Confianza</div>
+            <div class="tc-card-price">Incluida &#10003;</div>
+            <button class="tc-card-btn" onclick="event.stopPropagation();document.getElementById('search-input').scrollIntoView({behavior:'smooth'})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Saber más
+            </button>
+          </div>
+
+        </div><!-- /tc-cards -->
+      </div><!-- /tc-left -->
+
+      <!-- RIGHT: Vertical gold menu -->
+      <div class="tc-right-menu">
+        <div class="tc-menu-item" data-label="Celulares" onclick="filterStore('celulares','family')">
+          <span class="tc-menu-icon">
+            <svg width="26" height="26" viewBox="0 0 44 44" fill="none">
+              <rect x="10" y="3" width="24" height="38" rx="4" stroke="#c9a84c" stroke-width="1.5" fill="rgba(201,168,76,0.06)"/>
+              <rect x="14" y="8" width="16" height="24" rx="1.5" fill="rgba(201,168,76,0.06)" stroke="#c9a84c" stroke-width="0.7"/>
+              <circle cx="22" cy="37" r="2" fill="#c9a84c" opacity="0.6"/>
+            </svg>
+          </span>
+        </div>
+        <div class="tc-menu-item" data-label="Accesorios" onclick="filterStore('accesorios','family')">
+          <span class="tc-menu-icon">
+            <svg width="26" height="26" viewBox="0 0 44 44" fill="none">
+              <path d="M8 22 C8 13.2 14.3 6 22 6 C29.7 6 36 13.2 36 22" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+              <rect x="5" y="21" width="6" height="10" rx="3" fill="rgba(201,168,76,0.1)" stroke="#c9a84c" stroke-width="1.2"/>
+              <rect x="33" y="21" width="6" height="10" rx="3" fill="rgba(201,168,76,0.1)" stroke="#c9a84c" stroke-width="1.2"/>
+            </svg>
+          </span>
+        </div>
+        <div class="tc-menu-item" data-label="Tech" onclick="filterStore('tech','family')">
+          <span class="tc-menu-icon">
+            <svg width="26" height="26" viewBox="0 0 44 44" fill="none">
+              <rect x="5" y="9" width="34" height="22" rx="2.5" stroke="#c9a84c" stroke-width="1.5" fill="rgba(201,168,76,0.05)"/>
+              <rect x="8" y="12" width="28" height="16" rx="1" stroke="#c9a84c" stroke-width="0.5"/>
+              <path d="M2 33 H42" stroke="#c9a84c" stroke-width="1.5"/>
+            </svg>
+          </span>
+        </div>
+        <div class="tc-menu-item" data-label="Garantía" onclick="filterStore('all','family')">
+          <span class="tc-menu-icon">
+            <svg width="26" height="26" viewBox="0 0 44 44" fill="none">
+              <path d="M22 4 L38 10 V22 C38 31 30 38 22 40 C14 38 6 31 6 22 V10 Z" stroke="#c9a84c" stroke-width="1.4" fill="rgba(201,168,76,0.06)"/>
+              <path d="M24.5 12 L18 23 H22.5 L19.5 32 L27 21 H22.5 Z" fill="#c9a84c" opacity="0.8"/>
+            </svg>
+          </span>
+        </div>
+      </div><!-- /tc-right-menu -->
+
+    </div><!-- /tc-hero-inner -->
+  </div><!-- /tc-hero -->
+
+  <!-- FILTERS BAR -->
   <div class="filter-bar">
     <button class="filter-btn active" data-type="all" onclick="filterStore('all','family')">Todo</button>
-    <button class="filter-btn" data-type="tech" onclick="filterStore('tech','family')">Tech</button>
     <button class="filter-btn" data-type="celulares" onclick="filterStore('celulares','family')">Celulares</button>
+    <button class="filter-btn" data-type="tech" onclick="filterStore('tech','family')">Tech</button>
     <button class="filter-btn" data-type="accesorios" onclick="filterStore('accesorios','family')">Accesorios</button>
   </div>
 
+  <!-- SEARCH / SORT BAR -->
   <div class="toolbar">
     <div class="search-wrap">
       <input id="search-input" type="text" placeholder="Buscar productos..." oninput="onSearch(this.value,'family')">
@@ -63,18 +676,34 @@
     </select>
   </div>
 
+  <!-- PRODUCTS GRID -->
   <div class="products-grid" id="product-grid"></div>
 
+  <!-- RECENTLY VIEWED -->
   <section id="recent-views-section" style="display:none;">
     <div class="recent-label">VISTOS RECIENTEMENTE</div>
     <div class="recent-grid"></div>
   </section>
 
+  <!-- WHATSAPP CTA -->
+  <div class="wa-cta">
+    <div class="wa-cta-text">
+      <div class="wa-cta-eyebrow">Atención personalizada</div>
+      <div class="wa-cta-title">¿Preguntas? Escríbenos directo por WhatsApp</div>
+    </div>
+    <a href="https://web.whatsapp.com/send?phone=50687443315&text=¡Hola! Quiero información sobre productos de Tecnocell." target="_blank" class="wa-cta-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      CHATEAR AHORA
+    </a>
+  </div>
+
+  <!-- FOOTER -->
   <footer>
-    <div class="footer-logo">NOMBRE<em>PAG</em></div>
-    <div class="footer-copy">© 2025 Luxury Mall · San José, Costa Rica</div>
+    <div class="footer-logo">TECNO<em>CELL</em></div>
+    <div class="footer-copy">&copy; 2025 Tecnocell &middot; San Jos&eacute;, Costa Rica</div>
   </footer>
 
+  <!-- MODALS + CART -->
   <div id="product-modal"></div>
   <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
   <aside id="cart-panel" class="cart-panel">
@@ -82,70 +711,89 @@
       <div class="cart-panel-title">Tu Pedido</div>
       <div class="cart-head-right">
         <button class="cart-clear-btn" onclick="clearCart()">VACIAR</button>
-        <button class="cart-close" onclick="closeCart()">✕</button>
+        <button class="cart-close" onclick="closeCart()">&#10005;</button>
       </div>
     </div>
     <div class="cart-items-wrap" id="cart-items-wrap"></div>
     <div class="cart-panel-foot">
-      <div id="cart-subtotal-row" style="display:none;">
-        <span class="cart-total-label">Subtotal</span>
-        <span style="font-size:0.85rem;color:rgba(245,240,232,0.5);font-family:'Bebas Neue';letter-spacing:2px;">₡<span id="cart-total">0</span></span>
-      </div>
       <div class="cart-total-row">
         <span class="cart-total-label">Total</span>
-        <span class="cart-total-val">₡<span id="cart-total">0</span></span>
+        <span class="cart-total-val">&#8353;<span id="cart-total">0</span></span>
       </div>
-      <button class="whatsapp-btn" onclick="sendWhatsApp()" style="color:#000;">
+      <button class="whatsapp-btn" onclick="sendWhatsApp()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-        FINALIZAR PEDIDO
+        FINALIZAR PEDIDO POR WHATSAPP
       </button>
     </div>
   </aside>
 
-  <button id="back-to-top">↑</button>
+  <button id="back-to-top">&#8593;</button>
+
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
+
+  <!-- ── WOW EFFECTS: 3D TILT + PARTICLES ── -->
   <script>
-    (function() {
-      var STORE_KEY = 'family';
-      var DEFAULT_CATS = ['tech', 'celulares', 'accesorios'];
+  // ── PARTICLES in hero ────────────────────────────────────
+  (function initParticles(){
+    var wrap = document.getElementById('tc-particles');
+    if (!wrap) return;
+    var count = 28;
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('div');
+      p.className = 'tc-particle';
+      var left = Math.random() * 100;
+      var dur  = 7 + Math.random() * 8;
+      var del  = Math.random() * 10;
+      var dx   = (Math.random() - 0.5) * 80;
+      p.style.cssText = 'left:'+left+'%;--pdur:'+dur+'s;--pdel:'+del+'s;--pdx:'+dx+'px;';
+      wrap.appendChild(p);
+    }
+  })();
 
-      function getDynamicCats() {
-        try {
-          var saved = localStorage.getItem('admin-categories');
-          if (saved) {
-            var all = JSON.parse(saved);
-            if (all[STORE_KEY] && all[STORE_KEY].length > 0) return all[STORE_KEY];
-          }
-        } catch(e) {}
-        return DEFAULT_CATS;
-      }
+  // ── 3D CARD TILT ─────────────────────────────────────────
+  function applyTilt(card) {
+    card.addEventListener('mousemove', function(e) {
+      var r = card.getBoundingClientRect();
+      var x = e.clientX - r.left;
+      var y = e.clientY - r.top;
+      var mx = r.width  / 2;
+      var my = r.height / 2;
+      var rx = ((y - my) / my) * -6;
+      var ry = ((x - mx) / mx) *  6;
+      card.style.transition = 'transform 0.08s ease, box-shadow 0.3s';
+      card.style.transform = 'perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateZ(6px)';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transition = 'transform 0.55s cubic-bezier(.23,1,.32,1), box-shadow 0.3s';
+      card.style.transform = '';
+    });
+  }
 
-      function rebuildFilterBar() {
-        var bar = document.querySelector('.filter-bar');
-        if (!bar) return;
-        var cats = getDynamicCats();
-        var params = new URLSearchParams(window.location.search);
-        var active = params.get('type') || 'all';
-        var btns = '<button class="filter-btn' + (active === 'all' ? ' active' : '') + '" data-type="all" onclick="filterStore(\'all\',\'' + STORE_KEY + '\')">Todo</button>';
-        cats.forEach(function(cat) {
-          var label = cat.charAt(0).toUpperCase() + cat.slice(1);
-          var isActive = active === cat ? ' active' : '';
-          btns += '<button class="filter-btn' + isActive + '" data-type="' + cat + '" onclick="filterStore(\'' + cat + '\',\'' + STORE_KEY + '\')">' + label + '</button>';
-        });
-        bar.innerHTML = btns;
-      }
+  function initTilt() {
+    document.querySelectorAll('#product-grid .product-card').forEach(function(c) {
+      if (!c._tiltInit) { c._tiltInit = true; applyTilt(c); }
+    });
+  }
 
-      window.addEventListener('DOMContentLoaded', function() {
-        rebuildFilterBar();
+  // Re-run tilt after each grid render (MutationObserver)
+  var grid = document.getElementById('product-grid');
+  if (grid) {
+    new MutationObserver(function(){ setTimeout(initTilt, 80); })
+      .observe(grid, { childList: true });
+  }
+
+  // Sync filter buttons with main.js filterStore
+  (function(){
+    var _orig = window.filterStore;
+    window.filterStore = function(type, storeKey) {
+      if (_orig) _orig(type, storeKey);
+      document.querySelectorAll('.filter-bar .filter-btn').forEach(function(btn){
+        btn.classList.toggle('active', btn.dataset.type === type || (type === 'all' && btn.dataset.type === 'all'));
       });
-
-      var _orig = window.filterStore;
-      window.filterStore = function(type, storeKey) {
-        if (_orig) _orig(type, storeKey);
-        rebuildFilterBar();
-      };
-    })();
+    };
+  })();
   </script>
+
 </body>
 </html>

@@ -20,7 +20,7 @@ const DEFAULT_INVENTORY = [
     desc:"Fresca, masculina y sensual. Combina notas verdes y cálidas con toque cítrico.", specs:{} },
   { id:19, name:"SAMSUNG CHROMEBOOK GO", price:285000, stock:8, store:"divino", type:"tech",
     img:"https://cdcinternacional.com/wp-content/uploads/2024/01/XE340XDA-KA2US-2.jpg", gallery:[{"url":"https://cdcinternacional.com/wp-content/uploads/2024/01/XE340XDA-KA2US-2.jpg","isMain":true}],
-    desc:"REFURB ING CHROME CEL N4500 1.10-2.80/4GB/64GB/14"/PLATA", specs:{"Marca":"Samsung","Sistema Operativo":"Chrome","Procesador":"Celeron","Memoria Ram":"4GB","Estado":"Refurbished"} },
+    desc:"REFURB ING CHROME CEL N4500 1.10-2.80/4GB/64GB/14 pulgadas/PLATA", specs:{"Marca":"Samsung","Sistema Operativo":"Chrome","Procesador":"Celeron","Memoria Ram":"4GB","Estado":"Refurbished"} },
   { id:38, name:"Cable Rainbow type C 1 metro", price:7000, stock:11, store:"divino", type:"tech",
     img:"https://www.acopluscr.com/public/6/productos/FEL2302234_1.webp?v=7798820", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2302234_1.webp?v=7798820","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2302234_2.webp?v=7798820","isMain":false}],
     desc:"Cable rainbow type c carga rápido y data", specs:{"Color":"Multicolor","Material":"Plástico PVC y TPE"} },
@@ -135,15 +135,119 @@ const DEFAULT_INVENTORY = [
   { id:65, name:"Utensilio de Cocina 2 en 1 Cuchillo y Tijera", price:10500, stock:3, store:"divino", type:"hogar",
     img:"https://www.acopluscr.com/public/6/productos/FEL2410011_1.webp?v=9363716", gallery:[{"url":"https://www.acopluscr.com/public/6/productos/FEL2410011_1.webp?v=9363716","isMain":true},{"url":"https://www.acopluscr.com/public/6/productos/FEL2410011_2.webp?v=9363716","isMain":false},{"url":"https://www.acopluscr.com/public/6/productos/FEL2410011_3.webp?v=9363716","isMain":false}],
     desc:"Herramienta 6 en 1: cuchillo, tijeras, abrebotellas, cascanueces, pelador y sierra para pan.", specs:{"Color:":"Rojo con Negro.","Material:":"Acero inoxidable."} },
-  { id:7, name:"NVIDIA RTX 4090 Lab", price:1100000, stock:4, store:"family", type:"tech",
+  { id:7, name:"NVIDIA RTX 4090 24GB", price:1100000, stock:4, store:"family", type:"tech",
     img:"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg", gallery:[{"url":"https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg","isMain":true}],
-    desc:"24 GB GDDR6X, máxima potencia gráfica.", specs:{"VRAM":"24 GB GDDR6X","Núcleos CUDA":"16384","TDP":"450 W","Interfaz":"PCIe 4.0 x16"} },
-  { id:9, name:"iPhone 15 Pro Max", price:980000, stock:6, store:"family", type:"celulares",
-    img:"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800","isMain":true}],
-    desc:"Titanio, cámara 48MP, chip A17 Pro.", specs:{"Chip":"A17 Pro","Cámara":"48 MP triple","Almacenamiento":"256 GB","Material":"Titanio grado 5"} },
-  { id:10, name:"AirPods Pro 2 Gen", price:210000, stock:11, store:"family", type:"accesorios",
+    desc:"24 GB GDDR6X, maxima potencia grafica para gaming y creacion profesional.", specs:{"VRAM":"24 GB GDDR6X","Nucleos CUDA":"16384","TDP":"450 W","Interfaz":"PCIe 4.0 x16"} },
+  { id:9, name:"iPhone 15 Pro Max 256GB", price:980000, stock:6, store:"family", type:"celulares",
+    img:"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=800","isMain":false}],
+    desc:"Titanio, camara 48MP con zoom optico 5x, chip A17 Pro. La experiencia iPhone mas avanzada.", specs:{"Chip":"A17 Pro","Camara":"48 MP triple + teleobjetivo 5x","Almacenamiento":"256 GB","Material":"Titanio grado 5","Pantalla":"6.7 Super Retina XDR"} },
+  { id:10, name:"AirPods Pro 2da Gen", price:210000, stock:11, store:"family", type:"accesorios",
     img:"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800","isMain":true}],
-    desc:"Cancelación activa de ruido, audio espacial.", specs:{"ANC":"Activa adaptativa","Batería":"6h + 24h estuche","Chip":"H2"} },
+    desc:"Cancelacion activa de ruido adaptativa, audio espacial y hasta 30h de bateria con el estuche.", specs:{"ANC":"Activa adaptativa H2","Bateria":"6h + 24h estuche","Chip":"H2","Resistencia":"IPX4"} },
+  { id:74, name:"Samsung Galaxy S24 Ultra 256GB", price:890000, stock:5, store:"family", type:"celulares",
+    img:"https://images.unsplash.com/photo-1706865886026-a6a0278c4e20?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1706865886026-a6a0278c4e20?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?q=80&w=800","isMain":false}],
+    desc:"S Pen integrado, camara 200MP, pantalla Dynamic AMOLED 2X de 6.8 pulgadas. Galaxy AI incluido.", specs:{"Procesador":"Snapdragon 8 Gen 3","RAM":"12 GB","Almacenamiento":"256 GB","S Pen":"Integrado"} },
+  { id:75, name:"Xiaomi Redmi Note 13 Pro 256GB", price:285000, stock:12, store:"family", type:"celulares",
+    img:"https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=800","isMain":true}],
+    desc:"Camara principal 200MP, pantalla AMOLED 120Hz, carga rapida 67W. Rendimiento premium a precio justo.", specs:{"Chipset":"Snapdragon 7s Gen 2","RAM":"8 GB","Camara":"200 MP","Bateria":"5000 mAh","Carga":"67W"} },
+  { id:76, name:"MacBook Air M2 13 pulgadas", price:1150000, stock:3, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800","isMain":false}],
+    desc:"Chip M2 con CPU 8 nucleos, pantalla Liquid Retina 13.6 pulgadas, hasta 18h de bateria. Sin ventilador.", specs:{"Chip":"Apple M2","RAM":"8 GB unificada","Almacenamiento":"256 GB SSD","Pantalla":"13.6 Liquid Retina","Bateria":"18 horas"} },
+  { id:77, name:"iPad Air 11 M2 Wi-Fi 128GB", price:720000, stock:4, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=800","isMain":true}],
+    desc:"Pantalla Liquid Retina 11 pulgadas, chip M2, compatible con Apple Pencil Pro y Magic Keyboard.", specs:{"Chip":"Apple M2","Pantalla":"11 pulgadas Liquid Retina","Almacenamiento":"128 GB"} },
+  { id:78, name:"Samsung Galaxy Tab S9 FE Wi-Fi", price:420000, stock:7, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1561154464-82e9adf32764?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1561154464-82e9adf32764?q=80&w=800","isMain":true}],
+    desc:"Pantalla 10.9 Dynamic AMOLED, S Pen incluido, bateria 8000 mAh, resistente al agua IP68.", specs:{"RAM":"6 GB","S Pen":"Incluido","Bateria":"8000 mAh","Resistencia":"IP68"} },
+  { id:79, name:"Sony WH-1000XM5 Audifonos ANC", price:320000, stock:8, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800","isMain":false}],
+    desc:"La mejor cancelacion de ruido del mercado. 30h de bateria, ocho microfonos, audio de alta resolucion.", specs:{"ANC":"8 microfonos con V1 y QN1","Bateria":"30 horas con ANC","Conector":"USB-C + Jack 3.5mm","Peso":"250 g"} },
+  { id:80, name:"Apple Watch Series 9 GPS 41mm", price:420000, stock:9, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=800","isMain":true}],
+    desc:"Pantalla siempre activa, Siri en el dispositivo, temperatura corporal, ECG. Resistente al agua 50m.", specs:{"Chip":"S9 SiP","Pantalla":"LTPO OLED siempre activa","GPS":"L1 + L5","Agua":"50 m"} },
+  { id:81, name:"Samsung Galaxy Buds3 Pro", price:175000, stock:15, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1590658268037-6bf12165928e?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1590658268037-6bf12165928e?q=80&w=800","isMain":true}],
+    desc:"ANC inteligente con 3 microfonos, audio de alta resolucion 24 bits, hasta 37h con el estuche.", specs:{"ANC":"3 microfonos por auricular","Bateria":"7h + 30h estuche","Resistencia":"IPX7"} },
+  { id:82, name:"Cargador MagSafe 15W Original", price:55000, stock:20, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=800","isMain":true}],
+    desc:"Carga magnetica de 15W para iPhone 12 y superior. Alineacion perfecta y carga rapida certificada Apple.", specs:{"Potencia":"15W max","Compatibilidad":"iPhone 12, 13, 14, 15, 16","Cable":"USB-C 1m"} },
+  { id:83, name:"Motorola Edge 50 Pro 256GB", price:380000, stock:10, store:"family", type:"celulares",
+    img:"https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800","isMain":true}],
+    desc:"Pantalla pOLED 144Hz, camara 50MP OIS, carga TurboPower 125W. Rapido y fiable.", specs:{"Chipset":"Snapdragon 7 Gen 3","RAM":"12 GB","Pantalla":"6.67 pOLED 144Hz","Carga":"125W"} },
+  { id:84, name:"Nintendo Switch OLED 64GB", price:450000, stock:5, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1589394716116-3571d1b08aef?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1589394716116-3571d1b08aef?q=80&w=800","isMain":true}],
+    desc:"Pantalla OLED vibrante de 7 pulgadas, base con puerto LAN integrado, 64 GB de almacenamiento.", specs:{"Pantalla":"7 pulgadas OLED","Almacenamiento":"64 GB","Bateria":"4.5-9 horas"} },
+
+  { id:86, name:"Samsung Galaxy Watch 7 44mm", price:295000, stock:7, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1434493651957-4ec10c7b4d54?q=80&w=800","isMain":false},{"url":"https://images.unsplash.com/photo-1517433670267-08bbd4be890f?q=80&w=800","isMain":false}],
+    desc:"Smartwatch con monitor de salud avanzado, GPS, sensor de temperatura corporal, BioActive y 40 horas de batería. Resistente al agua 5ATM.",
+    specs:{"Pantalla":"1.5 pulg. Super AMOLED","Procesador":"Exynos W1000","RAM":"2 GB","Almacenamiento":"32 GB","Batería":"500 mAh","Resistencia":"5ATM + IP68","GPS":"L1+L5 de doble frecuencia"} },
+
+  { id:87, name:"Teclado Mecánico RGB HyperX Alloy Origins", price:185000, stock:5, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1595044426077-d36d9236d54a?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1595044426077-d36d9236d54a?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=800","isMain":false},{"url":"https://images.unsplash.com/photo-1541140532154-b024d705b90a?q=80&w=800","isMain":false}],
+    desc:"Teclado mecánico compacto TKL con switches HyperX Red lineales, iluminación RGB per-tecla y software HyperX NGENUITY. Construcción de aluminio aeroespacial.",
+    specs:{"Switches":"HyperX Red (lineal)","Iluminación":"RGB per-tecla","Conexión":"USB-C desmontable","Material":"Aluminio aeroespacial","Distribución":"TKL (87 teclas)","Polling Rate":"1000 Hz"} },
+
+  { id:88, name:"Monitor Gaming 27\" 165Hz IPS", price:420000, stock:4, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1527443224154-c4a573d50c0f?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1527443224154-c4a573d50c0f?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1593152167544-085d3b9c4938?q=80&w=800","isMain":false}],
+    desc:"Monitor IPS de 27 pulgadas con 165Hz y 1ms de respuesta. Perfecto para gaming competitivo y trabajo creativo. Compatible con AMD FreeSync Premium.",
+    specs:{"Panel":"IPS","Resolución":"2560x1440 QHD","Frecuencia":"165 Hz","Tiempo de Respuesta":"1 ms GTG","HDR":"DisplayHDR 400","Conectividad":"2x HDMI 2.0 + 1x DisplayPort 1.4"} },
+
+  { id:89, name:"Cámara de Seguridad 4K WiFi 360°", price:78000, stock:12, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=800","isMain":false}],
+    desc:"Cámara IP 360° con resolución 4K, visión nocturna a color, detección de movimiento por IA y almacenamiento en la nube. Compatible con Alexa y Google Home.",
+    specs:{"Resolución":"4K (8MP)","Ángulo":"360° panorámico","Visión Nocturna":"A color hasta 10m","Conectividad":"WiFi 2.4GHz + 5GHz","Detección":"IA — personas, vehículos, mascotas","Almacenamiento":"MicroSD hasta 256GB + Nube"} },
+
+  { id:90, name:"Altavoz Bluetooth JBL Charge 5", price:135000, stock:9, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1545454675-3531b543be5d?q=80&w=800","isMain":false}],
+    desc:"Altavoz portátil con 20h de batería, IP67 resistente al agua, potente bajo extra y función Power Bank para cargar tu celular. Tecnología PartyBoost para conectar múltiples bocinas.",
+    specs:{"Batería":"20 horas","Resistencia":"IP67 (sumergible)","Salida":"30W","Bluetooth":"5.1","Power Bank":"Sí","PartyBoost":"Sí — múltiples JBL"} },
+
+  { id:91, name:"SSD NVMe Samsung 980 Pro 1TB", price:115000, stock:8, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=800","isMain":false}],
+    desc:"SSD NVMe PCIe 4.0 con velocidades de hasta 7000 MB/s en lectura. Ideal para gaming, edición de video 4K y profesionales que exigen máximo rendimiento.",
+    specs:{"Capacidad":"1 TB","Interfaz":"PCIe 4.0 NVMe M.2","Lectura":"7000 MB/s","Escritura":"5000 MB/s","NAND":"Samsung V-NAND MLC","Garantía":"5 años"} },
+
+  { id:92, name:"Meta Quest 3 128GB — VR Headset", price:690000, stock:3, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=800","isMain":false}],
+    desc:"Headset de realidad mixta con pantallas de alta resolución, procesador Snapdragon XR2 Gen 2 y passthrough a color. Gaming VR, productividad y entretenimiento sin cables.",
+    specs:{"Almacenamiento":"128 GB","Procesador":"Snapdragon XR2 Gen 2","Pantalla":"2064x2208 por ojo","FOV":"110° horizontal","Batería":"2-3 horas continuo","Passthrough":"A color (RGB)"} },
+
+  { id:93, name:"Webcam Logitech MX Brio 4K", price:145000, stock:6, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1587119161562-2d7f86cf4d3d?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1587119161562-2d7f86cf4d3d?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1576502200916-3808e07386a5?q=80&w=800","isMain":false}],
+    desc:"Webcam 4K con corrección de luz con IA, privacidad total (obturador físico), micrófono con cancelación de ruido y soporte de 90 fps en 1080p. Ideal para streaming y videollamadas.",
+    specs:{"Resolución":"4K 30fps / 1080p 90fps","Campo Visual":"65° / 78° / 90° ajustable","Micrófono":"Doble, cancelación ruido IA","Privacidad":"Obturador físico","HDR":"Sí","Conexión":"USB-C"} },
+
+  { id:94, name:"RAM DDR5 Corsair Vengeance 32GB", price:125000, stock:10, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800","isMain":false}],
+    desc:"Kit de 32GB (2x16GB) DDR5 a 6000MHz con latencia CL36. Diseño de aluminio con iluminación RGB dinámica. Compatible con Intel Alder/Raptor Lake y AMD AM5.",
+    specs:{"Capacidad":"32 GB (2x16GB)","Tipo":"DDR5","Velocidad":"6000 MHz","Latencia":"CL36","Voltaje":"1.35V","Iluminación":"RGB Capellix"} },
+
+  { id:95, name:"Controlador Xbox Series X Carbon Black", price:98000, stock:15, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1580234811497-9df7fd2f357e?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1580234811497-9df7fd2f357e?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?q=80&w=800","isMain":false}],
+    desc:"Control oficial Xbox con botón Share, gatillos con textura y palancas antideslizantes mejoradas. Compatible con Xbox Series X|S, Xbox One y PC vía Bluetooth o USB-C.",
+    specs:{"Botón Share":"Sí","Conectividad":"Bluetooth + USB-C","Batería":"AA x2 (hasta 40h)","Compatible":"Xbox Series X/S, Xbox One, PC, Android, iOS","Vibración":"Rumble en gatillos"} },
+
+  { id:96, name:"Laptop MSI Stealth 16 AI i9 RTX4080", price:2850000, stock:2, store:"family", type:"tech",
+    img:"https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=800",
+    gallery:[{"url":"https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=800","isMain":true},{"url":"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800","isMain":false},{"url":"https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=800","isMain":false}],
+    desc:"Laptop gaming ultra-delgada con Intel Core i9 de 14ª gen, RTX 4080 12GB, pantalla OLED 4K 120Hz y 32GB DDR5. La bestia para gaming, streaming y creación de contenido.",
+    specs:{"CPU":"Intel Core i9-14900HX","GPU":"NVIDIA RTX 4080 12GB","RAM":"32 GB DDR5","Almacenamiento":"2 TB NVMe PCIe 5.0","Pantalla":"16\" OLED 4K 120Hz","Batería":"99.9 Wh"} },
+
+  { id:85, name:"Power Bank 20000mAh 65W PD", price:52000, stock:18, store:"family", type:"accesorios",
+    img:"https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=800","isMain":true}],
+    desc:"20000mAh con carga rapida 65W PD, compatible con laptops. 2 USB-A + 1 USB-C + pantalla LCD.", specs:{"Capacidad":"20000 mAh","Carga":"65W PD","Puertos":"2x USB-A + 1x USB-C"} },
+
   { id:12, name:"Uñas Acrílicas", price:25000, stock:0, store:"elegance", type:"unas",
     img:"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800", gallery:[{"url":"https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800","isMain":true}],
     desc:"Construcción completa en acrílico con diseño incluido. Incluye forma, limado, sellado y decoración.", specs:{} },
@@ -203,7 +307,17 @@ const DEFAULT_INVENTORY = [
     desc:"Plancha con placas recubiertas de cerámica infundida con aguacate y coco, para un cuidado y alisado excepcionales.", specs:{"Marca":"Conair","Color":"Verde Metalico","Material":"Plástico y Cerámica"} }
 ];
 
-function getInventory() { return DEFAULT_INVENTORY; }
+function getInventory() {
+  // Use admin-saved inventory if available, otherwise use default
+  try {
+    var saved = localStorage.getItem('admin-inventory');
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch(e) {}
+  return DEFAULT_INVENTORY;
+}
 
 var inventory = getInventory();
 window._inventory = inventory;
@@ -299,24 +413,74 @@ function showToast(msg,type){
 window.showToast=showToast;
 
 function initCursor(){
-  if(window.__cursorInit)return; window.__cursorInit=true;
-  if(window.matchMedia('(pointer:coarse)').matches){
-    var _d=document.getElementById('cursor-dot'),_r=document.getElementById('cursor-ring');
-    if(_d)_d.style.display='none'; if(_r)_r.style.display='none'; return;
+  if(window.__cursorInit) return;
+  window.__cursorInit = true;
+
+  var dot  = document.getElementById('cursor-dot');
+  var ring = document.getElementById('cursor-ring');
+
+  // On touch devices: hide custom cursor elements and do NOT apply cursor:none
+  if(window.matchMedia('(pointer:coarse)').matches || !window.matchMedia('(hover:hover)').matches){
+    if(dot)  dot.style.display  = 'none';
+    if(ring) ring.style.display = 'none';
+    // Restore normal cursor for touch users
+    document.documentElement.style.cursor = 'auto';
+    document.body.style.cursor = 'auto';
+    return;
   }
-  var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot){dot=document.createElement('div');dot.id='cursor-dot';dot.className='cursor-dot';document.body.appendChild(dot);}
-  if(!ring){ring=document.createElement('div');ring.id='cursor-ring';ring.className='cursor-ring';document.body.appendChild(ring);}
-  dot.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99999;';
-  ring.style.cssText+='display:block;position:fixed;pointer-events:none;z-index:99998;';
-  var rx=window.innerWidth/2,ry=window.innerHeight/2,mx=rx,my=ry,visible=false;
-  document.addEventListener('mousemove',function(e){
-    mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';
-    if(!visible){visible=true;dot.style.opacity='1';ring.style.opacity='1';}
+
+  // Desktop: apply cursor:none to body only, then show custom cursor
+  document.body.style.cursor = 'none';
+
+  if(!dot){
+    dot = document.createElement('div');
+    dot.id = 'cursor-dot'; dot.className = 'cursor-dot';
+    document.body.appendChild(dot);
+  }
+  if(!ring){
+    ring = document.createElement('div');
+    ring.id = 'cursor-ring'; ring.className = 'cursor-ring';
+    document.body.appendChild(ring);
+  }
+  dot.style.cssText  += 'display:block;position:fixed;pointer-events:none;z-index:99999;';
+  ring.style.cssText += 'display:block;position:fixed;pointer-events:none;z-index:99998;';
+
+  var rx = window.innerWidth/2, ry = window.innerHeight/2;
+  var mx = rx, my = ry, visible = false;
+
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    if(!visible){ visible = true; dot.style.opacity = '1'; ring.style.opacity = '1'; }
   });
-  document.addEventListener('mouseleave',function(){dot.style.opacity='0';ring.style.opacity='0';visible=false;});
-  document.addEventListener('mouseenter',function(){if(mx>0){dot.style.opacity='1';ring.style.opacity='1';visible=true;}});
-  (function loop(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+  document.addEventListener('mouseleave', function(){
+    dot.style.opacity = '0'; ring.style.opacity = '0'; visible = false;
+  });
+  document.addEventListener('mouseenter', function(){
+    if(mx > 0){ dot.style.opacity = '1'; ring.style.opacity = '1'; visible = true; }
+  });
+
+  // Hover effect on interactive elements
+  var hoverEls = 'a, button, [onclick], .product-card, .store-card, .filter-btn, .add-btn, .wish-btn, .recent-card, .related-card';
+  document.addEventListener('mouseover', function(e){
+    if(e.target.closest(hoverEls)){
+      ring.style.width  = '56px'; ring.style.height = '56px';
+      ring.style.borderColor = 'rgba(201,168,76,0.5)';
+    }
+  });
+  document.addEventListener('mouseout', function(e){
+    if(e.target.closest(hoverEls)){
+      ring.style.width  = '36px'; ring.style.height = '36px';
+      ring.style.borderColor = 'rgba(245,240,232,0.6)';
+    }
+  });
+
+  (function loop(){
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
 }
 
 function initNav(){

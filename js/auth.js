@@ -81,7 +81,7 @@ const css = `
   display:flex; align-items:center; gap:8px;
   font-size:0.65rem; letter-spacing:3px; text-transform:uppercase;
   background:none; border:1px solid rgba(245,240,232,0.1);
-  color:rgba(245,240,232,0.6); padding:9px 16px; cursor:none;
+  color:rgba(245,240,232,0.6); padding:9px 16px; cursor:pointer;
   transition:0.3s; white-space:nowrap; position:relative;
 }
 .auth-btn:hover { border-color:var(--gold); color:var(--gold); }
@@ -124,7 +124,7 @@ const css = `
 }
 .auth-close {
   background:none; border:none; color:rgba(245,240,232,0.3);
-  font-size:1.1rem; cursor:none; transition:color 0.2s; padding:4px;
+  font-size:1.1rem; cursor:pointer; transition:color 0.2s; padding:4px;
 }
 .auth-close:hover { color:var(--white); }
 
@@ -133,7 +133,7 @@ const css = `
 .auth-tab {
   flex:1; padding:12px; background:none; border:none;
   font-size:0.6rem; letter-spacing:3px; text-transform:uppercase;
-  color:rgba(245,240,232,0.3); cursor:none; transition:0.2s;
+  color:rgba(245,240,232,0.3); cursor:pointer; transition:0.2s;
   border-bottom:2px solid transparent; margin-bottom:-1px;
 }
 .auth-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
@@ -157,7 +157,7 @@ const css = `
 
 .auth-submit {
   width:100%; padding:13px; background:var(--gold); color:#000;
-  border:none; cursor:none; font-family:'DM Sans',sans-serif;
+  border:none; cursor:pointer; font-family:'DM Sans',sans-serif;
   font-size:0.65rem; font-weight:700; letter-spacing:4px; text-transform:uppercase;
   transition:0.2s; margin-top:4px;
 }
@@ -196,7 +196,7 @@ const css = `
   display:flex; align-items:center; gap:12px;
   padding:12px 0; border-bottom:1px solid rgba(245,240,232,0.05);
   font-size:0.78rem; color:rgba(245,240,232,0.55);
-  cursor:none; transition:color 0.2s; background:none; border-left:none; border-right:none; border-top:none; width:100%; text-align:left;
+  cursor:pointer; transition:color 0.2s; background:none; border-left:none; border-right:none; border-top:none; width:100%; text-align:left;
 }
 .auth-menu-item:hover { color:var(--white); }
 .auth-menu-item .item-icon { font-size:1rem; width:20px; text-align:center; }
@@ -208,7 +208,7 @@ const css = `
   padding:11px; background:none;
   border:1px solid rgba(245,240,232,0.1); color:rgba(245,240,232,0.3);
   font-size:0.6rem; letter-spacing:3px; text-transform:uppercase;
-  cursor:none; transition:0.2s;
+  cursor:pointer; transition:0.2s;
 }
 .auth-logout:hover { border-color:#e05050; color:#e05050; }
 
@@ -232,7 +232,7 @@ const css = `
 .fav-item {
   display:flex; align-items:center; gap:12px;
   padding:10px 0; border-bottom:1px solid rgba(245,240,232,0.05);
-  cursor:none; transition:opacity 0.2s;
+  cursor:pointer; transition:opacity 0.2s;
 }
 .fav-item:hover { opacity:0.75; }
 .fav-item img { width:44px; height:44px; object-fit:contain; background:rgba(245,240,232,0.04); border:1px solid rgba(245,240,232,0.08); }
