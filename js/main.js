@@ -11,19 +11,9 @@ const DEFAULT_INVENTORY = [
     "store": "divino",
     "type": "moda",
     "img": "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "Saco de seda fría, corte estructurado, forro de lujo.",
-    "specs": {
-      "Material": "Seda fría premium",
-      "Corte": "Estructurado",
-      "Forro": "Lujo",
-      "Origen": "Colombia"
-    }
+    "gallery": [{"url": "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800", "isMain": true}],
+    "desc": "Saco de seda fría premium, corte estructurado y forro de satén italiano.",
+    "specs": {"Material": "Seda fría premium", "Corte": "Slim Fit", "Origen": "Italia"}
   },
   {
     "id": 2,
@@ -33,273 +23,93 @@ const DEFAULT_INVENTORY = [
     "store": "divino",
     "type": "moda",
     "img": "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "Vestido de noche, caída perfecta, exclusivo.",
-    "specs": {
-      "Silueta": "A-line",
-      "Tela": "Chifón",
-      "Largo": "Maxi",
-      "Ocasión": "Gala / Noche"
-    }
+    "gallery": [{"url": "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800", "isMain": true}],
+    "desc": "Vestido de alta costura, seda negra profunda con detalles en encaje francés.",
+    "specs": {"Silueta": "Sirena", "Tela": "Seda Genuina", "Ocasión": "Gala"}
   },
   {
     "id": 3,
     "name": "MacBook Pro M3 Elite",
     "price": 1850000,
     "stock": 5,
-    "store": "divino",
+    "store": "family",
     "type": "tech",
-    "img": "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg",
-    "gallery": [
-      {
-        "url": "https://intelec.co.cr/wp-content/uploads/2023/11/APPLE-MACBOOK-PRO-M3.jpg",
-        "isMain": true
-      }
-    ],
-    "desc": "Chip M3, 18 GB RAM, pantalla Liquid Retina XDR.",
-    "specs": {
-      "Chip": "Apple M3",
-      "RAM": "18 GB",
-      "Almacenamiento": "512 GB SSD",
-      "Pantalla": "Liquid Retina XDR 14\""
-    }
-  },
-  {
-    "id": 4,
-    "name": "Camisa Lino 'Nube'",
-    "price": 95000,
-    "stock": 12,
-    "store": "divino",
-    "type": "moda",
-    "img": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "Lino premium, bordado artesanal.",
-    "specs": {
-      "Material": "Lino premium",
-      "Bordado": "Artesanal",
-      "Cuello": "Clásico",
-      "Tallas": "XS–XL"
-    }
-  },
-  {
-    "id": 5,
-    "name": "Bolso Cuero Artesanal",
-    "price": 210000,
-    "stock": 2,
-    "store": "divino",
-    "type": "moda",
-    "img": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "Cuero genuino, costura a mano, edición limitada.",
-    "specs": {
-      "Material": "Cuero genuino",
-      "Costura": "A mano",
-      "Edición": "Limitada",
-      "Dimensiones": "32 × 24 × 10 cm"
-    }
-  },
-  {
-    "id": 6,
-    "name": "Victoria's Secret Amber Romance",
-    "price": 10000,
-    "stock": 20,
-    "store": "divino",
-    "type": "fragancias",
-    "img": "https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg",
-    "gallery": [
-      {
-        "url": "https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg",
-        "isMain": true
-      }
-    ],
-    "desc": "Ámbar resinoso y crema de vainilla.",
-    "specs": {
-      "Familia": "Oriental",
-      "Notas base": "Ámbar, Vainilla",
-      "Notas corazón": "Gardenia",
-      "Presentación": "Loción 250 ml"
-    }
+    "img": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800",
+    "gallery": [{"url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800", "isMain": true}],
+    "desc": "El pináculo del poder portátil. Chip M3 Pro, 18GB RAM y pantalla Liquid Retina XDR.",
+    "specs": {"Chip": "Apple M3 Pro", "RAM": "18GB", "Pantalla": "Liquid Retina XDR"}
   },
   {
     "id": 7,
-    "name": "NVIDIA RTX 4090 Lab",
+    "name": "NVIDIA RTX 4090 Lab Edition",
     "price": 1100000,
     "stock": 4,
     "store": "family",
     "type": "tech",
-    "img": "https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg",
-    "gallery": [
-      {
-        "url": "https://m.media-amazon.com/images/I/61S4V6X7uYL._AC_SL1500_.jpg",
-        "isMain": true
-      }
-    ],
-    "desc": "24 GB GDDR6X, máxima potencia gráfica.",
-    "specs": {
-      "VRAM": "24 GB GDDR6X",
-      "Núcleos CUDA": "16384",
-      "TDP": "450 W",
-      "Interfaz": "PCIe 4.0 x16"
-    }
-  },
-  {
-    "id": 8,
-    "name": "Teclado Custom 'Cell'",
-    "price": 145000,
-    "stock": 7,
-    "store": "family",
-    "type": "tech",
-    "img": "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "Switches mecánicos Cherry MX, aluminio CNC.",
-    "specs": {
-      "Switches": "Cherry MX Red",
-      "Cuerpo": "Aluminio CNC",
-      "Conectividad": "USB-C",
-      "Retroiluminación": "RGB"
-    }
+    "img": "https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=800",
+    "gallery": [{"url": "https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=800", "isMain": true}],
+    "desc": "24GB GDDR6X de pura potencia. La tarjeta gráfica más rápida del planeta para creadores y gamers.",
+    "specs": {"VRAM": "24GB GDDR6X", "Núcleos": "16384 CUDA"}
   },
   {
     "id": 9,
-    "name": "iPhone 15 Pro Max",
+    "name": "iPhone 15 Pro Max Titanium",
     "price": 980000,
     "stock": 6,
     "store": "family",
     "type": "celulares",
     "img": "https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "Titanio, cámara 48MP, chip A17 Pro.",
-    "specs": {
-      "Chip": "A17 Pro",
-      "Cámara": "48 MP triple",
-      "Almacenamiento": "256 GB",
-      "Material": "Titanio grado 5"
-    }
+    "gallery": [{"url": "https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800", "isMain": true}],
+    "desc": "Forjado en titanio aeroespacial. Cámara de 48MP y el chip A17 Pro.",
+    "specs": {"Material": "Titanio Grado 5", "Chip": "A17 Pro", "Cámara": "48MP Pro"}
   },
   {
     "id": 10,
-    "name": "AirPods Pro 2 Gen",
-    "price": 210000,
-    "stock": 11,
+    "name": "AirPods Pro Max Obsidian",
+    "price": 420000,
+    "stock": 8,
     "store": "family",
     "type": "accesorios",
-    "img": "https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "Cancelación activa de ruido, audio espacial.",
-    "specs": {
-      "ANC": "Activa adaptativa",
-      "Audio": "Espacial personalizado",
-      "Batería": "6h + 24h estuche",
-      "Chip": "H2"
-    }
+    "img": "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?q=80&w=800",
+    "gallery": [{"url": "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?q=80&w=800", "isMain": true}],
+    "desc": "Cancelación de ruido líder en la industria y audio espacial personalizado.",
+    "specs": {"Audio": "Espacial", "Batería": "20 horas", "ANC": "Activa"}
   },
   {
     "id": 11,
-    "name": "Monitor 4K OLED 32\"",
-    "price": 620000,
+    "name": "Monitor OLED 4K Ultrawide",
+    "price": 750000,
     "stock": 3,
     "store": "family",
     "type": "tech",
     "img": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800",
-    "gallery": [
-      {
-        "url": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800",
-        "isMain": true
-      }
-    ],
-    "desc": "OLED, 120Hz, HDR True Black 400.",
-    "specs": {
-      "Panel": "OLED",
-      "Resolución": "3840×2160",
-      "Tasa de refresco": "120 Hz",
-      "HDR": "True Black 400"
-    }
+    "gallery": [{"url": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800", "isMain": true}],
+    "desc": "Negros infinitos y una tasa de refresco de 175Hz para la experiencia visual definitiva.",
+    "specs": {"Panel": "OLED 4K", "Refresco": "175Hz", "HDR": "HDR1000"}
   },
   {
-    "id": 16,
-    "name": "Victoria's Secret Romance",
-    "price": 10000,
-    "stock": 15,
-    "store": "divino",
-    "type": "fragancias",
-    "img": "https://victoriassecretbeautycr.vtexassets.com/arquivos/ids/172845-1200-1600?v=638030941474070000&width=1200&height=1600&aspect=true",
-    "gallery": [
-      {
-        "url": "https://victoriassecretbeautycr.vtexassets.com/arquivos/ids/172845-1200-1600?v=638030941474070000&width=1200&height=1600&aspect=true",
-        "isMain": true
-      }
-    ],
-    "desc": "Pétalos de rosa. Almizcle puro.",
-    "specs": {
-      "Familia": "Floral",
-      "Notas base": "Almizcle blanco",
-      "Notas corazón": "Rosa, Lila",
-      "Presentación": "Loción 250 ml"
-    }
-  },
-  {
-    "id": 17,
-    "name": "Victoria's Secret Romantic",
-    "price": 10000,
-    "stock": 18,
-    "store": "divino",
-    "type": "fragancias",
-    "img": "https://cdnx.jumpseller.com/la-perfumeria-cl/image/69524237/resize/540/540?1762793584",
-    "gallery": [
-      {
-        "url": "https://cdnx.jumpseller.com/la-perfumeria-cl/image/69524237/resize/540/540?1762793584",
-        "isMain": true
-      }
-    ],
-    "desc": "Floral – clásico, femenino y delicado.",
-    "specs": {
-      "Familia": "Floral",
-      "Notas base": "Sándalo",
-      "Notas corazón": "Jazmín, Rosa",
-      "Presentación": "Loción 250 ml"
-    }
-  },
-  {
-    "id": 18,
-    "name": "hola amigos",
+    "id": 12,
+    "name": "Sony Alpha A7 IV Kit",
+    "price": 1450000,
+    "stock": 2,
     "store": "family",
     "type": "tech",
-    "price": 13000,
-    "stock": 78,
-    "desc": "hola",
-    "img": "",
-    "gallery": [],
-    "specs": {}
+    "img": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800",
+    "gallery": [{"url": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800", "isMain": true}],
+    "desc": "Cámara Mirrorless Full-Frame de 33MP. El estándar para fotografía y video profesional.",
+    "specs": {"Sensor": "33MP Full-Frame", "Video": "4K 60p"}
+  },
+  {
+    "id": 6,
+    "name": "Victoria's Secret Amber Romance",
+    "price": 12000,
+    "stock": 20,
+    "store": "divino",
+    "type": "fragancias",
+    "img": "https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg",
+    "gallery": [{"url": "https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg", "isMain": true}],
+    "desc": "Ámbar resinoso y crema de vainilla. Una fragancia cálida y seductora.",
+    "specs": {"Familia": "Oriental", "Notas": "Ámbar, Vainilla"}
   }
 ];
 
