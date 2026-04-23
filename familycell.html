@@ -17,7 +17,11 @@
       --tc-card: #0e0e0e;
     }
 
-    body { background: var(--tc-bg); cursor: none; }
+    body { background: var(--tc-bg); }
+    /* Custom cursor managed by main.js — pointer is hidden only when cursor init runs on desktop */
+    a, button, [onclick], .product-card, .tc-cat, .filter-btn, .add-btn, .wish-btn, .store-card {
+      cursor: pointer;
+    }
 
     /* NAV */
     .nav-logo { color: var(--tc-gold); letter-spacing: 8px; }

@@ -494,7 +494,8 @@
     <div class="topbar">
       <div class="topbar-title" id="page-title">Gestión de Productos</div>
       <div class="topbar-right">
-        <button class="btn btn-ghost btn-sm" onclick="showSection('export')">💾 Guardar cambios</button>
+        <span id="save-badge" style="font-size:0.72rem;color:var(--green);letter-spacing:1px;opacity:0;transition:opacity 0.4s;"></span>
+        <button class="btn btn-ghost btn-sm" onclick="manualSave()">💾 Guardar cambios</button>
         <button class="btn btn-primary" onclick="openNewProduct()">+ Agregar Producto</button>
       </div>
     </div>
@@ -551,8 +552,9 @@
         <div>
           <div style="margin-bottom:12px;">
             <div style="font-weight:600;margin-bottom:6px;">📤 Exportar inventario actual</div>
-            <p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px;">Copia este código y guárdalo en <strong>js/main.js</strong> para que los cambios sean permanentes.</p>
+            <p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px;">Descarga el archivo <strong>main.js</strong> actualizado con todos los productos para reemplazarlo en el servidor.</p>
             <button class="btn btn-primary" style="margin-bottom:12px;" onclick="generateExport()">Generar código</button>
+            <button class="btn btn-ghost" style="margin-left:8px;" onclick="downloadMainJs()">⬇ Descargar main.js</button>
             <button class="btn btn-ghost" style="margin-left:8px;" onclick="copyExport()">📋 Copiar</button>
           </div>
           <textarea class="code-area" id="export-area" placeholder="Haz click en 'Generar código'..." readonly></textarea>
@@ -685,7 +687,7 @@
 const STORE_TYPES = {
   family:   ['tech', 'celulares', 'accesorios'],
   divino:   ['fragancias', 'cosméticos', 'tech', 'hogar', 'ropa'],
-  elegance: ['facial', 'corporal', 'unas', 'cejas-pestanas']
+  elegance: ['facial', 'corporal', 'unas', 'cejas-pestanas', 'belleza']
 };
 
 const STORE_NAMES = {
@@ -773,6 +775,15 @@ function saveInventory() {
   localStorage.setItem('admin-inventory', JSON.stringify(adminInventory));
   // Also update window._inventory so the live store pages work
   window._inventory = adminInventory;
+  // Badge: update last-saved timestamp
+  var now = new Date().toLocaleTimeString('es-CR', {hour:'2-digit',minute:'2-digit'});
+  var badge = document.getElementById('save-badge');
+  if (badge) { badge.textContent = 'Guardado ' + now; badge.style.opacity = '1'; setTimeout(function(){ badge.style.opacity = '0'; }, 3000); }
+}
+
+function manualSave() {
+  saveInventory();
+  toast('Cambios guardados correctamente ✓', 'ok');
 }
 
 // Override getInventory so the cart/modal work with admin changes
@@ -1196,9 +1207,22 @@ function closeConfirm() {
 // ── EXPORT / IMPORT ─────────────────────────────────────
 function generateExport() {
   const json = JSON.stringify(adminInventory, null, 2);
-  const code = `const DEFAULT_INVENTORY = ${json};\n\nfunction getInventory() { return DEFAULT_INVENTORY; }`;
-  document.getElementById('export-area').value = code;
-  toast('Código generado ✓', 'ok');
+  const inventoryBlock = `const DEFAULT_INVENTORY = ${json};`;
+
+  // Try to fetch the full main.js to produce a complete replacement
+  fetch('js/main.js')
+    .then(r => r.text())
+    .then(src => {
+      // Replace the DEFAULT_INVENTORY block in main.js
+      const updated = src.replace(/const DEFAULT_INVENTORY\s*=\s*\[[\s\S]*?\];/, inventoryBlock);
+      document.getElementById('export-area').value = updated;
+      toast('Código generado ✓ — listo para descargar', 'ok');
+    })
+    .catch(() => {
+      // Fallback: just output the inventory array
+      document.getElementById('export-area').value = inventoryBlock;
+      toast('Código generado ✓', 'ok');
+    });
 }
 
 function copyExport() {
@@ -1207,6 +1231,19 @@ function copyExport() {
   navigator.clipboard.writeText(area.value).then(() => toast('Copiado al portapapeles ✓', 'ok')).catch(() => {
     area.select(); document.execCommand('copy'); toast('Copiado ✓', 'ok');
   });
+}
+
+function downloadMainJs() {
+  generateExport();
+  const area = document.getElementById('export-area');
+  if (!area.value) return;
+  const blob = new Blob([area.value], { type: 'text/javascript' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'main.js';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  toast('main.js descargado ✓ — Reemplázalo en la carpeta js/', 'ok');
 }
 
 function importInventory() {

@@ -523,16 +523,6 @@
     { src:'https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?q=80&w=800', label:'Audio Precision' },
   ];
 
-  // ── ELEGANCE SERVICES ──────────────────────────────
-  var INDEX_ELEGANCE = [
-    { isService:true, name:'Limpieza Facial Profunda', price:22000,
-      img:'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=600',
-      waLink:'https://api.whatsapp.com/message/FW6MOU7RBY2LJ1' },
-    { isService:true, name:'Extensión de Pestañas', price:35000,
-      img:'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=600',
-      waLink:'https://api.whatsapp.com/message/FW6MOU7RBY2LJ1' },
-  ];
-
   function renderLookbook() {
     var track = document.getElementById('lookbook-track');
     if (!track) return;
@@ -545,43 +535,68 @@
     }).join('');
   }
 
+  function getMainImgIndex(item) {
+    if (item.gallery && item.gallery.length > 0) {
+      var m = item.gallery.find(function(g){ return g.isMain; });
+      return m ? m.url : item.gallery[0].url;
+    }
+    return item.img || 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800';
+  }
+
   function renderIndexProducts() {
     var grid = document.getElementById('index-products-grid');
     if (!grid) return;
 
     var inv = (typeof getInventory === 'function') ? getInventory() : [];
-    var family = inv.filter(function(i){ return i.store === 'family'; }).slice(0, 10);
+    // Get both Tecnocell and Elegance items from live inventory
+    var family   = inv.filter(function(i){ return i.store === 'family'; });
+    var elegance = inv.filter(function(i){ return i.store === 'elegance'; });
 
+    // Interleave: 2 Tecnocell, 1 Elegance, repeat
     var combined = [];
     var fi = 0, ei = 0;
-    while (fi < family.length || ei < INDEX_ELEGANCE.length) {
-      if (fi < family.length) combined.push({ type:'product', item:family[fi++], store:'family' });
-      if (fi < family.length) combined.push({ type:'product', item:family[fi++], store:'family' });
-      if (ei < INDEX_ELEGANCE.length) combined.push({ type:'service', item:INDEX_ELEGANCE[ei++] });
+    while (fi < family.length || ei < elegance.length) {
+      if (fi < family.length) combined.push({ store:'family',  item: family[fi++] });
+      if (fi < family.length) combined.push({ store:'family',  item: family[fi++] });
+      if (ei < elegance.length) combined.push({ store:'elegance', item: elegance[ei++] });
+    }
+    // Cap at 12 cards
+    combined = combined.slice(0, 12);
+
+    if (combined.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:rgba(245,240,232,0.2);padding:40px;letter-spacing:3px;font-size:0.8rem;">PRODUCTOS NO DISPONIBLES</div>';
+      return;
     }
 
     grid.innerHTML = combined.map(function(entry) {
       var item = entry.item;
-      if (entry.type === 'service') {
-        return '<div class="index-product-card revealed" onclick="window.location.href=\'' + item.waLink + '\'">' +
-          '<div class="ipc-store-dot" style="background:#c8956c22; color:#c8956c; border-color:#c8956c33;">Elegance</div>' +
-          '<div class="ipc-img-wrap"><img src="' + item.img + '" alt="' + item.name + '">' +
-            '<div class="ipc-overlay"><button class="ipc-overlay-btn" style="border-color:#c8956c;color:#c8956c;">AGENDAR</button></div>' +
+      var imgSrc = getMainImgIndex(item);
+
+      if (entry.store === 'elegance') {
+        var waLink = 'https://api.whatsapp.com/message/FW6MOU7RBY2LJ1?autoload=1&app_absent=0';
+        return '<div class="index-product-card revealed" onclick="window.location.href=\'elegance.html\'">' +
+          '<div class="ipc-store-dot" style="background:#c8956c22;color:#c8956c;border-color:#c8956c33;">Elegance</div>' +
+          '<div class="ipc-img-wrap"><img src="' + imgSrc + '" alt="' + item.name + '" loading="lazy">' +
+            '<div class="ipc-overlay"><button class="ipc-overlay-btn" style="border-color:#c8956c;color:#c8956c;" onclick="event.stopPropagation();window.open(\'' + waLink + '\',\'_blank\')">AGENDAR</button></div>' +
           '</div>' +
           '<div class="ipc-info">' +
             '<div class="ipc-name">' + item.name + '</div>' +
             '<div class="ipc-price" style="color:#c8956c;">&#8353;' + Number(item.price).toLocaleString() + '</div>' +
+            '<div class="ipc-store-tag">Elegance Beauty Esthetic</div>' +
           '</div>' +
         '</div>';
       }
+
+      // Tecnocell product
       return '<div class="index-product-card revealed tc-glass-card" onclick="window.location.href=\'familycell.html\'">' +
-        '<div class="ipc-store-dot" style="background:rgba(201,168,76,0.1); color:#c9a84c; border-color:rgba(201,168,76,0.2);">Tecnocell</div>' +
-        '<div class="ipc-img-wrap"><img src="' + item.img + '" alt="' + item.name + '">' +
+        '<div class="ipc-store-dot" style="background:rgba(201,168,76,0.1);color:#c9a84c;border-color:rgba(201,168,76,0.2);">Tecnocell</div>' +
+        '<div class="ipc-img-wrap"><img src="' + imgSrc + '" alt="' + item.name + '" loading="lazy">' +
           '<div class="ipc-overlay"><button class="ipc-overlay-btn">DESCUBRIR</button></div>' +
         '</div>' +
         '<div class="ipc-info">' +
           '<div class="ipc-name">' + item.name + '</div>' +
           '<div class="ipc-price">&#8353;' + Number(item.price).toLocaleString() + '</div>' +
+          '<div class="ipc-store-tag">Tecnocell</div>' +
         '</div>' +
       '</div>';
     }).join('');
