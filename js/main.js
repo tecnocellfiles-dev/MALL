@@ -5,171 +5,20 @@
 const DEFAULT_INVENTORY = [
   {
     "id": 1,
-    "name": "Saco 'Cielo' Silk-Line",
-    "price": 285000,
-    "stock": 8,
-    "store": "divino",
-    "type": "moda",
-    "img": "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1594932224456-80697a3288d8?q=80&w=800", "isMain": true}],
-    "desc": "Saco de seda fría premium, corte estructurado y forro de satén italiano.",
-    "specs": {"Material": "Seda fría premium", "Corte": "Slim Fit", "Origen": "Italia"}
-  },
-  {
-    "id": 3,
-    "name": "MacBook Pro M3 Elite",
-    "price": 1850000,
-    "stock": 5,
+    "name": "samsung",
     "store": "family",
     "type": "tech",
-    "img": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800", "isMain": true}],
-    "desc": "El pináculo del poder portátil. Chip M3 Pro, 18GB RAM y pantalla Liquid Retina XDR.",
-    "specs": {"Chip": "Apple M3 Pro", "RAM": "18GB", "Pantalla": "Liquid Retina XDR"}
-  },
-  {
-    "id": 9,
-    "name": "iPhone 15 Pro Max Titanium",
-    "price": 980000,
-    "stock": 6,
-    "store": "family",
-    "type": "celulares",
-    "img": "https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1695048064029-b98bdf717f4b?q=80&w=800", "isMain": true}],
-    "desc": "Forjado en titanio aeroespacial. Cámara de 48MP y el chip A17 Pro.",
-    "specs": {"Material": "Titanio Grado 5", "Chip": "A17 Pro", "Cámara": "48MP Pro"}
-  },
-  {
-    "id": 11,
-    "name": "Monitor OLED 4K Ultrawide",
-    "price": 750000,
-    "stock": 3,
-    "store": "family",
-    "type": "tech",
-    "img": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800", "isMain": true}],
-    "desc": "Negros infinitos y una tasa de refresco de 175Hz para la experiencia visual definitiva.",
-    "specs": {"Panel": "OLED 4K", "Refresco": "175Hz", "HDR": "HDR1000"}
-  },
-  {
-    "id": 13,
-    "name": "Samsung Galaxy S24 Ultra",
-    "price": 890000,
-    "stock": 7,
-    "store": "family",
-    "type": "celulares",
-    "img": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?q=80&w=800", "isMain": true}],
-    "desc": "Pantalla Dynamic AMOLED 2X, 200MP y S Pen integrado. La cima del ecosistema Android.",
-    "specs": {"Pantalla": "6.8\" AMOLED 2X", "Cámara": "200MP", "S Pen": "Incluido"}
-  },
-  {
-    "id": 14,
-    "name": "iPad Pro M4 12.9\"",
-    "price": 1200000,
-    "stock": 4,
-    "store": "family",
-    "type": "tech",
-    "img": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=800", "isMain": true}],
-    "desc": "Chip M4, pantalla Ultra Retina XDR Tandem OLED. La tableta más avanzada del mundo.",
-    "specs": {"Chip": "Apple M4", "Pantalla": "12.9\" Tandem OLED", "Conectividad": "Wi-Fi 6E + 5G"}
-  },
-  {
-    "id": 15,
-    "name": "Case Magsafe iPhone 15 Pro",
-    "price": 35000,
-    "stock": 20,
-    "store": "family",
-    "type": "accesorios",
-    "img": "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?q=80&w=800", "isMain": true}],
-    "desc": "Case premium con soporte MagSafe integrado. Protección total y carga inalámbrica.",
-    "specs": {"Compatibilidad": "iPhone 15 Pro / Pro Max", "Material": "Silicona premium", "MagSafe": "Sí"}
-  },
-  {
-    "id": 16,
-    "name": "Cargador GaN 140W USB-C",
-    "price": 48000,
-    "stock": 15,
-    "store": "family",
-    "type": "accesorios",
-    "img": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?q=80&w=800", "isMain": true}],
-    "desc": "Cargador compacto GaN de 140W con 3 puertos. Carga rápida para laptops, celulares y tablets.",
-    "specs": {"Potencia": "140W", "Puertos": "2x USB-C + 1x USB-A", "Tecnología": "GaN III"}
-  },
-  {
-    "id": 17,
-    "name": "Apple Watch Series 10",
-    "price": 550000,
-    "stock": 5,
-    "store": "family",
-    "type": "accesorios",
-    "img": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800", "isMain": true}],
-    "desc": "El reloj inteligente más avanzado. Monitoreo de salud 24/7, GPS y pantalla Always-On.",
-    "specs": {"Display": "OLED Always-On", "GPS": "L1 + L5", "Batería": "18 horas"}
-  },
-  {
-    "id": 20,
-    "name": "Limpieza Facial Profunda",
-    "price": 22000,
-    "stock": 30,
-    "store": "elegance",
-    "type": "facial",
-    "img": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800", "isMain": true}],
-    "desc": "Limpieza completa de poros, extracción de comedones y mascarilla hidratante.",
-    "specs": {"Duración": "60 min", "Para": "Todo tipo de piel", "Incluye": "Mascarilla + hidratación"}
-  },
-  {
-    "id": 21,
-    "name": "Extensión de Pestañas",
-    "price": 35000,
-    "stock": 20,
-    "store": "elegance",
-    "type": "cejas-pestanas",
-    "img": "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=800", "isMain": true}],
-    "desc": "Extensiones pelo a pelo para una mirada más intensa. Efecto natural, cat eye o volumen.",
-    "specs": {"Tipo": "Pelo a pelo / Volumen", "Duración": "3-4 semanas", "Relleno": "Disponible"}
-  },
-  {
-    "id": 22,
-    "name": "Diseño de Uñas Acrílicas",
     "price": 25000,
-    "stock": 25,
-    "store": "elegance",
-    "type": "unas",
-    "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=800", "isMain": true}],
-    "desc": "Construcción completa en acrílico con diseño incluido. Forma, limado, sellado y decoración.",
-    "specs": {"Incluye": "Diseño a elección", "Durabilidad": "3-4 semanas", "Remoción": "Disponible"}
-  },
-  {
-    "id": 23,
-    "name": "Tratamiento Anti-edad",
-    "price": 40000,
-    "stock": 15,
-    "store": "elegance",
-    "type": "facial",
-    "img": "https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800",
-    "gallery": [{"url": "https://images.unsplash.com/photo-1552693673-1bf958298935?q=80&w=800", "isMain": true}],
-    "desc": "Protocolo de rejuvenecimiento con activos de alta concentración. Reduce líneas de expresión.",
-    "specs": {"Activos": "Retinol, Vitamina C", "Sesiones": "4-6 recomendadas", "Duración": "75 min"}
-  },
-  {
-    "id": 6,
-    "name": "Victoria's Secret Amber Romance",
-    "price": 12000,
-    "stock": 20,
-    "store": "divino",
-    "type": "fragancias",
-    "img": "https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg",
-    "gallery": [{"url": "https://es.victoriassecret.com/p/1000x1333/png/zz/25/02/12/00/112592030037_OM_F.jpg", "isMain": true}],
-    "desc": "Ámbar resinoso y crema de vainilla. Una fragancia cálida y seductora.",
-    "specs": {"Familia": "Oriental", "Notas": "Ámbar, Vainilla"}
+    "stock": 6,
+    "desc": "hosm",
+    "img": "https://www.google.com/imgres?q=s25%20ultra&imgurl=https%3A%2F%2Fwww.intelec.co.cr%2Fwp-content%2Fuploads%2F2025%2F01%2FS938-G.webp&imgrefurl=https%3A%2F%2Fwww.intelec.co.cr%2Fsamsung-galaxy-s25-ultra-1tb%2F&docid=oPb5HPTvYe_N6M&tbnid=djX3GQt6Bx-MSM&vet=12ahUKEwio_ciMrIeUAxUMZzABHbTRDWwQnPAOegQIFxAB..i&w=1495&h=1507&hcb=2&ved=2ahUKEwio_ciMrIeUAxUMZzABHbTRDWwQnPAOegQIFxAB",
+    "gallery": [
+      {
+        "url": "https://www.google.com/imgres?q=s25%20ultra&imgurl=https%3A%2F%2Fwww.intelec.co.cr%2Fwp-content%2Fuploads%2F2025%2F01%2FS938-G.webp&imgrefurl=https%3A%2F%2Fwww.intelec.co.cr%2Fsamsung-galaxy-s25-ultra-1tb%2F&docid=oPb5HPTvYe_N6M&tbnid=djX3GQt6Bx-MSM&vet=12ahUKEwio_ciMrIeUAxUMZzABHbTRDWwQnPAOegQIFxAB..i&w=1495&h=1507&hcb=2&ved=2ahUKEwio_ciMrIeUAxUMZzABHbTRDWwQnPAOegQIFxAB",
+        "isMain": true
+      }
+    ],
+    "specs": {}
   }
 ];
 
