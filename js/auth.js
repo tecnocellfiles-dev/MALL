@@ -14,9 +14,9 @@ const EMAILJS_TEMPLATE_ID = 'TU_TEMPLATE_ID';  // En Email Templates
 const ADMIN_NOTIFY_EMAIL  = 'jydtecnocell@gmail.com'; // Tu correo personal
 
 // ─── CREDENCIALES ADMIN ──────────────────────────────────
-const ADMIN_EMAIL = 'admin@tecnocell.cr';
-const ADMIN_PASS  = 'Mall@Admin2025!';
-const ADMIN_CODE  = 'TECNO#ADMIN2025';
+const ADMIN_EMAIL = '0000';
+const ADMIN_PASS  = '0000';
+const ADMIN_CODE  = '0000';
 
 // ─── CONFIG ──────────────────────────────────────────────
 const STORE_KEY   = 'lm-users';
