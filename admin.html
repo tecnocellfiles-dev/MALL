@@ -427,18 +427,17 @@
 <div class="login-gate" id="login-gate">
   <div class="login-box">
     <div class="login-logo">ADMIN</div>
-    <div class="login-sub">Panel de Control · Tecnocell</div>
+    <div class="login-sub">Panel de Control · El Mall</div>
     <div class="login-field">
-      <label class="login-label">Correo electrónico</label>
-      <input class="login-input" type="email" id="gate-email" placeholder="admin@ejemplo.com" onkeydown="if(event.key==='Enter')gateLogin()">
+      <label class="login-label">Usuario</label>
+      <input class="login-input" type="text" id="gate-email" placeholder="admin" autocomplete="username" onkeydown="if(event.key==='Enter')gateLogin()">
     </div>
     <div class="login-field">
       <label class="login-label">Contraseña</label>
-      <input class="login-input" type="password" id="gate-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')gateLogin()">
+      <input class="login-input" type="password" id="gate-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')gateLogin()">
     </div>
-    <div class="login-err" id="gate-err">Credenciales incorrectas. Solo administradores.</div>
+    <div class="login-err" id="gate-err">Usuario o contraseña incorrectos.</div>
     <button class="btn btn-primary" style="width:100%;margin-top:20px;padding:13px;font-size:0.85rem;letter-spacing:2px;" onclick="gateLogin()">INGRESAR</button>
-    <p style="font-size:0.72rem;color:var(--text3);margin-top:16px;">¿No tienes acceso? Solicita una cuenta con código admin.</p>
   </div>
 </div>
 
@@ -705,45 +704,19 @@ let currentPage = 1;
 const PAGE_SIZE = 20;
 let confirmCallback = null;
 
-// ── CREDENCIALES ADMIN (deben coincidir con auth.js) ────────
-const GATE_ADMIN_EMAIL = 'admin@tecnocell.cr';
-const GATE_ADMIN_PASS  = 'Mall@Admin2025!';
-
-// ── SEED: garantiza que la cuenta admin siempre exista ──────
-function seedAdminAccount() {
-  const usersRaw = localStorage.getItem('lm-users');
-  const users = JSON.parse(usersRaw || '{}');
-  if (!users[GATE_ADMIN_EMAIL]) {
-    users[GATE_ADMIN_EMAIL] = {
-      name: 'Administrador JyD',
-      email: GATE_ADMIN_EMAIL,
-      password: btoa(GATE_ADMIN_PASS),
-      role: 'admin',
-      orders: [], favorites: [],
-      joined: new Date().toLocaleDateString('es-CR')
-    };
-    localStorage.setItem('lm-users', JSON.stringify(users));
-  }
-}
-
-// ── GATE LOGIN ──────────────────────────────────────────────
+// ── GATE LOGIN — usa Auth de auth.js ───────────────────────
 function gateLogin() {
-  const email = (document.getElementById('gate-email').value || '').trim().toLowerCase();
-  const pass  = document.getElementById('gate-pass').value || '';
+  const user = (document.getElementById('gate-email').value || '').trim();
+  const pass = document.getElementById('gate-pass').value || '';
 
-  seedAdminAccount(); // asegura cuenta admin disponible
-  const users = JSON.parse(localStorage.getItem('lm-users') || '{}');
-  const u = users[email];
-  if (!u)                          { showGateErr('Correo no registrado.'); return; }
-  if (u.password !== btoa(pass))   { showGateErr('Contraseña incorrecta.'); return; }
-  if (u.role !== 'admin')          { showGateErr('Solo administradores pueden acceder.'); return; }
-
-  // Guardar sesión
-  localStorage.setItem('lm-session', JSON.stringify({ email }));
-  document.getElementById('login-gate').style.display = 'none';
-  document.getElementById('app-layout').style.display = 'flex';
-  document.getElementById('sidebar-user-name').textContent = u.name;
-  initAdmin();
+  if (window.Auth && window.Auth.login(user, pass)) {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('app-layout').style.display = 'flex';
+    document.getElementById('sidebar-user-name').textContent = 'Administrador';
+    initAdmin();
+  } else {
+    showGateErr('Usuario o contraseña incorrectos.');
+  }
 }
 
 function showGateErr(msg) {
@@ -753,26 +726,21 @@ function showGateErr(msg) {
 }
 
 function adminLogout() {
-  localStorage.removeItem('lm-session');
-  document.getElementById('app-layout').style.display = 'none';
-  document.getElementById('login-gate').style.display = 'flex';
+  if (window.Auth) window.Auth.logout();
+  else {
+    localStorage.removeItem('mall_session');
+    window.location.href = 'index.html';
+  }
 }
 
-// Auto-login si hay sesión activa de admin
+// auth.js ya maneja el auto-login en DOMContentLoaded para admin.html
+// Si auth.js no lo hizo (no está cargado aún), lo hacemos aquí como fallback
 window.addEventListener('DOMContentLoaded', () => {
-  seedAdminAccount();
-  const session = JSON.parse(localStorage.getItem('lm-session') || 'null');
-  if (session) {
-    const users = JSON.parse(localStorage.getItem('lm-users') || '{}');
-    const u = users[session.email];
-    if (u && u.role === 'admin') {
-      document.getElementById('login-gate').style.display = 'none';
-      document.getElementById('app-layout').style.display = 'flex';
-      document.getElementById('sidebar-user-name').textContent = u.name;
-      initAdmin();
-    }
+  // Solo actuar si auth.js NO ya procesó el gate (auth.js lo hace antes)
+  const loginGate = document.getElementById('login-gate');
+  if (loginGate && loginGate.style.display !== 'none') {
+    // auth.js ya mostró el login o dejó el estado correcto — no hacer nada
   }
-
 });
 
 // ── INIT ──────────────────────────────────────────────────

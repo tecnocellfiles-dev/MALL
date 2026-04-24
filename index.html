@@ -548,17 +548,19 @@
     if (!grid) return;
 
     var inv = (typeof getInventory === 'function') ? getInventory() : [];
-    // Get both Tecnocell and Elegance items from live inventory
+    // Obtener productos de todas las tiendas
     var family   = inv.filter(function(i){ return i.store === 'family'; });
     var elegance = inv.filter(function(i){ return i.store === 'elegance'; });
+    var divino   = inv.filter(function(i){ return i.store === 'divino'; });
 
-    // Interleave: 2 Tecnocell, 1 Elegance, repeat
+    // Intercalar: 2 Tecnocell, 1 Elegance, 1 Divino, repetir
     var combined = [];
-    var fi = 0, ei = 0;
-    while (fi < family.length || ei < elegance.length) {
-      if (fi < family.length) combined.push({ store:'family',  item: family[fi++] });
-      if (fi < family.length) combined.push({ store:'family',  item: family[fi++] });
+    var fi = 0, ei = 0, di = 0;
+    while (fi < family.length || ei < elegance.length || di < divino.length) {
+      if (fi < family.length)   combined.push({ store:'family',   item: family[fi++] });
+      if (fi < family.length)   combined.push({ store:'family',   item: family[fi++] });
       if (ei < elegance.length) combined.push({ store:'elegance', item: elegance[ei++] });
+      if (di < divino.length)   combined.push({ store:'divino',   item: divino[di++] });
     }
     // Cap at 12 cards
     combined = combined.slice(0, 12);
@@ -583,6 +585,22 @@
             '<div class="ipc-name">' + item.name + '</div>' +
             '<div class="ipc-price" style="color:#c8956c;">&#8353;' + Number(item.price).toLocaleString() + '</div>' +
             '<div class="ipc-store-tag">Elegance Beauty Esthetic</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // Divino Cielo product
+      if (entry.store === 'divino') {
+        var waLinkD = 'https://api.whatsapp.com/message/LQMOAQKS3LFII1?autoload=1&app_absent=0';
+        return '<div class="index-product-card revealed" onclick="window.location.href=\'divino.html\'">' +
+          '<div class="ipc-store-dot" style="background:rgba(201,168,76,0.1);color:#c9a84c;border-color:rgba(201,168,76,0.2);">Divino Cielo</div>' +
+          '<div class="ipc-img-wrap"><img src="' + imgSrc + '" alt="' + item.name + '" loading="lazy">' +
+            '<div class="ipc-overlay"><button class="ipc-overlay-btn" onclick="event.stopPropagation();window.location.href=\'divino.html\'">VER</button></div>' +
+          '</div>' +
+          '<div class="ipc-info">' +
+            '<div class="ipc-name">' + item.name + '</div>' +
+            '<div class="ipc-price">&#8353;' + Number(item.price).toLocaleString() + '</div>' +
+            '<div class="ipc-store-tag">Divino Cielo</div>' +
           '</div>' +
         '</div>';
       }
